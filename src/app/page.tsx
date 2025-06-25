@@ -218,17 +218,26 @@ export default function HomePage() {
               <Result
                 status="success"
                 icon={<CheckCircleTwoTone twoToneColor={token.colorSuccess} />}
-                title="可报考科类"
+                title="本科和专科可报考科类"
                 subTitle={
                   <div style={{ marginTop: 16 }}>
-                    <Typography.Text strong>您的分数：{score}分</Typography.Text>
+                    <Typography.Text strong style={{ fontSize: 16 }}>您的分数：{score}分</Typography.Text>
+                    <Typography.Paragraph style={{ marginTop: 8, color: token.colorTextSecondary }}>
+                      以下是您可以报考的本科和专科科类，无论您当前选择的是哪个标签页
+                    </Typography.Paragraph>
                     <Divider style={{ margin: "12px 0" }} />
                     
                     {/* 本科匹配结果 */}
                     {groupedResults["本科"].length > 0 && (
                       <div style={{ marginBottom: 16 }}>
-                        <Typography.Title level={5} style={{ color: token.colorPrimary, marginBottom: 12 }}>
-                          本科可报考科类
+                        <Typography.Title level={5} style={{ 
+                          color: token.colorPrimary, 
+                          marginBottom: 12,
+                          backgroundColor: 'rgba(24, 144, 255, 0.1)',
+                          padding: '8px 12px',
+                          borderRadius: '4px'
+                        }}>
+                          本科可报考科类 ({groupedResults["本科"].length}个)
                         </Typography.Title>
                         <ul style={{ textAlign: "left", padding: 0, listStyle: "none" }}>
                           {groupedResults["本科"].map(m => (
@@ -246,8 +255,14 @@ export default function HomePage() {
                     {/* 专科匹配结果 */}
                     {groupedResults["专科"].length > 0 && (
                       <div>
-                        <Typography.Title level={5} style={{ color: "#722ed1", marginBottom: 12 }}>
-                          专科可报考科类
+                        <Typography.Title level={5} style={{ 
+                          color: "#722ed1", 
+                          marginBottom: 12,
+                          backgroundColor: 'rgba(114, 46, 209, 0.1)',
+                          padding: '8px 12px',
+                          borderRadius: '4px'
+                        }}>
+                          专科可报考科类 ({groupedResults["专科"].length}个)
                         </Typography.Title>
                         <ul style={{ textAlign: "left", padding: 0, listStyle: "none" }}>
                           {groupedResults["专科"].map(m => (
