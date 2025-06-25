@@ -27,7 +27,7 @@ export default function ScoreChart({ data, years }: ScoreChartProps) {
     name: item.category,
     type: "line" as const,
     data: years.map(y => parseScore(item.lines[y])),
-    connectNulls: true,
+    connectNulls: false,
     smooth: true,
     symbol: "circle",
     symbolSize: 8,
