@@ -97,7 +97,7 @@ export default function HomePage() {
           输入分数，匹配科类，查看历年分数线走势
         </Typography.Paragraph>
       </div>
-      <Layout.Content style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px 24px" }}>
+      <Layout.Content style={{ maxWidth: 1920, margin: "0 auto", padding: "0 24px 24px" }}>
         <Card 
           style={{ 
             marginBottom: 24,

@@ -89,6 +89,8 @@ export default function ScoreChart({ data, years }: ScoreChartProps) {
         option={option} 
         style={{ width: "100%", height: "100%" }} 
         opts={{ renderer: "canvas" }}
+        notMerge={true}
+        lazyUpdate={false}
       />
     </div>
   );
