@@ -287,7 +287,7 @@ export default function HomePage() {
           )}
         </Card>
         <Typography.Paragraph type="secondary" style={{ textAlign: "center" }}>
-          数据来源：广东省教育考试院，仅供参考
+          数据来源：<a href="https://eea.gd.gov.cn/bmbk/kszs/" target="_blank" rel="noopener noreferrer">广东省教育考试院</a>，仅供参考
         </Typography.Paragraph>
       </Layout.Content>
     </Layout>
