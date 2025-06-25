@@ -24,7 +24,7 @@ jobs:
           cache: 'pnpm'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --save-dev typescript @types/react @types/node
 
       - name: Build and Export
         run: |
