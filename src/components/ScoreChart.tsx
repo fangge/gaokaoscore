@@ -2,7 +2,7 @@
 import React from "react";
 import ReactECharts from "echarts-for-react";
 
-type Year = "2021" | "2022" | "2023" | "2024";
+type Year = "2021" | "2022" | "2023" | "2024" | "2025";
 type Line = { [year in Year]?: string };
 type GaokaoItem = {
   type: "本科" | "专科";

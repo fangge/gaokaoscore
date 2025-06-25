@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { Layout, Tabs, InputNumber, Select, Card, Typography, Result, Space, theme, Tag, Divider } from "antd";
 import { CheckCircleTwoTone, TrophyTwoTone, BookTwoTone } from "@ant-design/icons";
 
-type Year = "2021" | "2022" | "2023" | "2024";
+type Year = "2021" | "2022" | "2023" | "2024" | "2025";
 type Line = { [year in Year]?: string };
 type GaokaoItem = {
   type: "本科" | "专科";
@@ -13,7 +13,7 @@ type GaokaoItem = {
   lines: Line;
 };
 
-const years: Year[] = ["2021", "2022", "2023", "2024"];
+const years: Year[] = ["2021", "2022", "2023", "2024", "2025"];
 const allData: GaokaoItem[] = gaokaoData as GaokaoItem[];
 
 const ScoreChart = dynamic(() => import("../components/ScoreChart"), { ssr: false });
@@ -28,13 +28,13 @@ const matchCategory = (
   return allData
     .filter(d => d.type === type)
     .filter(d => {
-      const line = d.lines["2024"];
+      const line = d.lines["2025"];
       if (!line || line === "-") return false;
       const mainScore = parseInt(line.split("/")[0], 10);
       return !isNaN(mainScore) && score >= mainScore;
     })
     .map(d => {
-      const line = d.lines["2024"];
+      const line = d.lines["2025"];
       const mainScore = parseInt(line!.split("/")[0], 10);
       return {
         category: d.category,
