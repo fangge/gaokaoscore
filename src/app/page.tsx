@@ -22,11 +22,9 @@ const getCategories = (type: "本科" | "专科") =>
   Array.from(new Set(allData.filter(d => d.type === type).map(d => d.category)));
 
 const matchCategory = (
-  score: number,
-  type: "本科" | "专科"
-): { category: string; difference: number }[] => {
+  score: number
+): { type: "本科" | "专科"; category: string; difference: number }[] => {
   return allData
-    .filter(d => d.type === type)
     .filter(d => {
       const line = d.lines["2025"];
       if (!line || line === "-") return false;
@@ -37,18 +35,26 @@ const matchCategory = (
       const line = d.lines["2025"];
       const mainScore = parseInt(line!.split("/")[0], 10);
       return {
+        type: d.type,
         category: d.category,
         difference: score - mainScore
       };
     })
-    .sort((a, b) => a.difference - b.difference);
+    .sort((a, b) => {
+      // 先按类型排序（本科在前，专科在后）
+      if (a.type !== b.type) {
+        return a.type === "本科" ? -1 : 1;
+      }
+      // 再按分差排序（从小到大）
+      return a.difference - b.difference;
+    });
 };
 
 export default function HomePage() {
   const [tab, setTab] = useState<"本科" | "专科">("本科");
   const [score, setScore] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("全部");
-  const [matchedResults, setMatchedResults] = useState<{ category: string; difference: number }[]>([]);
+  const [matchedResults, setMatchedResults] = useState<{ type: "本科" | "专科"; category: string; difference: number }[]>([]);
   const [hasMatched, setHasMatched] = useState<boolean>(false);
   const resultCardRef = React.useRef<HTMLDivElement>(null);
 
@@ -66,7 +72,7 @@ export default function HomePage() {
       setMatchedResults([]);
       setHasMatched(true);
     } else {
-      const results = matchCategory(score, tab);
+      const results = matchCategory(score);
       setMatchedResults(results);
       setHasMatched(true);
     }
@@ -78,6 +84,15 @@ export default function HomePage() {
       }
     }, 100);
   };
+
+  // 按类型分组匹配结果
+  const groupedResults = useMemo(() => {
+    const grouped = {
+      "本科": matchedResults.filter(r => r.type === "本科"),
+      "专科": matchedResults.filter(r => r.type === "专科")
+    };
+    return grouped;
+  }, [matchedResults]);
 
   const { token } = theme.useToken();
 
@@ -208,16 +223,44 @@ export default function HomePage() {
                   <div style={{ marginTop: 16 }}>
                     <Typography.Text strong>您的分数：{score}分</Typography.Text>
                     <Divider style={{ margin: "12px 0" }} />
-                    <ul style={{ textAlign: "left", padding: 0, listStyle: "none" }}>
-                      {matchedResults.map(m => (
-                        <li key={m.category} style={{ margin: "8px 0", fontSize: 16 }}>
-                          <Space>
-                            <span>{m.category}</span>
-                            <Tag color="success">高出{m.difference}分</Tag>
-                          </Space>
-                        </li>
-                      ))}
-                    </ul>
+                    
+                    {/* 本科匹配结果 */}
+                    {groupedResults["本科"].length > 0 && (
+                      <div style={{ marginBottom: 16 }}>
+                        <Typography.Title level={5} style={{ color: token.colorPrimary, marginBottom: 12 }}>
+                          本科可报考科类
+                        </Typography.Title>
+                        <ul style={{ textAlign: "left", padding: 0, listStyle: "none" }}>
+                          {groupedResults["本科"].map(m => (
+                            <li key={`本科-${m.category}`} style={{ margin: "8px 0", fontSize: 16 }}>
+                              <Space>
+                                <span>{m.category}</span>
+                                <Tag color="success">高出{m.difference}分</Tag>
+                              </Space>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {/* 专科匹配结果 */}
+                    {groupedResults["专科"].length > 0 && (
+                      <div>
+                        <Typography.Title level={5} style={{ color: "#722ed1", marginBottom: 12 }}>
+                          专科可报考科类
+                        </Typography.Title>
+                        <ul style={{ textAlign: "left", padding: 0, listStyle: "none" }}>
+                          {groupedResults["专科"].map(m => (
+                            <li key={`专科-${m.category}`} style={{ margin: "8px 0", fontSize: 16 }}>
+                              <Space>
+                                <span>{m.category}</span>
+                                <Tag color="purple">高出{m.difference}分</Tag>
+                              </Space>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
                 }
               />
