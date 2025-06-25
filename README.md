@@ -13,14 +13,13 @@ pnpm install
 pnpm dev
 ```
 
-## 构建与导出静态站点
+## 构建静态站点
 
 ```bash
 pnpm build
-pnpm export
 ```
 
-导出后静态文件在 `out/` 目录。
+构建后静态文件在 `out/` 目录。
 
 ## GitHub Pages 部署
 
