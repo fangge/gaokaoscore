@@ -7,7 +7,7 @@ pnpm-debug.log*
 
 # Next.js
 .next/
-out/
+# out/ - 保留out目录用于GitHub Pages
 build/
 .cache/
 dist/
