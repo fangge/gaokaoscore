@@ -50,6 +50,7 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("全部");
   const [matchedResults, setMatchedResults] = useState<{ category: string; difference: number }[]>([]);
   const [hasMatched, setHasMatched] = useState<boolean>(false);
+  const resultCardRef = React.useRef<HTMLDivElement>(null);
 
   const categories = useMemo(() => ["全部", ...getCategories(tab)], [tab]);
   const filteredData = useMemo(
@@ -64,11 +65,18 @@ export default function HomePage() {
     if (typeof score !== "number" || isNaN(score)) {
       setMatchedResults([]);
       setHasMatched(true);
-      return;
+    } else {
+      const results = matchCategory(score, tab);
+      setMatchedResults(results);
+      setHasMatched(true);
     }
-    const results = matchCategory(score, tab);
-    setMatchedResults(results);
-    setHasMatched(true);
+    
+    // 滚动到结果区域
+    setTimeout(() => {
+      if (resultCardRef.current) {
+        resultCardRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }, 100);
   };
 
   const { token } = theme.useToken();
@@ -78,7 +86,7 @@ export default function HomePage() {
       <div 
         style={{ 
           background: "linear-gradient(135deg, #1677ff 0%, #4096ff 100%)",
-          padding: "40px 0 50px",
+          padding: "40px 0 20px",
           marginBottom: 24,
           boxShadow: "0 4px 12px rgba(0,0,0,0.1)"
         }}
@@ -175,6 +183,7 @@ export default function HomePage() {
           </Space>
         </Card>
         <Card
+          ref={resultCardRef}
           title={
             <div style={{ display: "flex", alignItems: "center" }}>
               <TrophyTwoTone twoToneColor="#faad14" />

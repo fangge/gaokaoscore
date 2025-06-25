@@ -61,7 +61,6 @@ export default function ScoreChart({ data, years }: ScoreChartProps) {
     xAxis: {
       type: "category" as const,
       data: years.map(year => `${year}年`),
-      name: "年份",
       nameLocation: "middle" as const,
       nameGap: 30,
       nameTextStyle: {
@@ -75,7 +74,6 @@ export default function ScoreChart({ data, years }: ScoreChartProps) {
     },
     yAxis: {
       type: "value" as const,
-      name: "分数",
       nameLocation: "middle" as const,
       nameGap: 40,
       nameTextStyle: {
