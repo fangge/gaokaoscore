@@ -1,0 +1,40 @@
+# Node
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Next.js
+.next/
+out/
+build/
+.cache/
+dist/
+
+# Env
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Mac
+.DS_Store
+
+# Editor
+.vscode/
+.idea/
+*.swp
+
+# Logs
+logs/
+*.log
+
+# Test coverage
+coverage/
+
+# Misc
+*.tgz
+*.lock-wscript
+*.tsbuildinfo
