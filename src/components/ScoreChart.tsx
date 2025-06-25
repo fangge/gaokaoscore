@@ -60,7 +60,14 @@ export default function ScoreChart({ data, years }: ScoreChartProps) {
     },
     xAxis: {
       type: "category" as const,
-      data: years,
+      data: years.map(year => `${year}年`),
+      name: "年份",
+      nameLocation: "middle" as const,
+      nameGap: 30,
+      nameTextStyle: {
+        fontWeight: "bold" as const,
+        fontSize: 16
+      },
       axisLabel: { 
         fontWeight: "bold" as const,
         fontSize: 14
@@ -68,6 +75,13 @@ export default function ScoreChart({ data, years }: ScoreChartProps) {
     },
     yAxis: {
       type: "value" as const,
+      name: "分数",
+      nameLocation: "middle" as const,
+      nameGap: 40,
+      nameTextStyle: {
+        fontWeight: "bold" as const,
+        fontSize: 16
+      },
       min: "dataMin",
       max: "dataMax",
       axisLabel: { 
