@@ -48,6 +48,8 @@ export default function HomePage() {
   const [tab, setTab] = useState<"本科" | "专科">("本科");
   const [score, setScore] = useState<number | null>(null);
   const [selectedCategory, setSelectedCategory] = useState<string>("全部");
+  const [matchedResults, setMatchedResults] = useState<{ category: string; difference: number }[]>([]);
+  const [hasMatched, setHasMatched] = useState<boolean>(false);
 
   const categories = useMemo(() => ["全部", ...getCategories(tab)], [tab]);
   const filteredData = useMemo(
@@ -58,10 +60,16 @@ export default function HomePage() {
     [tab, selectedCategory]
   );
 
-  const matched = useMemo(() => {
-    if (typeof score !== "number" || isNaN(score)) return [];
-    return matchCategory(score, tab);
-  }, [score, tab]);
+  const handleMatch = () => {
+    if (typeof score !== "number" || isNaN(score)) {
+      setMatchedResults([]);
+      setHasMatched(true);
+      return;
+    }
+    const results = matchCategory(score, tab);
+    setMatchedResults(results);
+    setHasMatched(true);
+  };
 
   const { token } = theme.useToken();
 
@@ -115,7 +123,7 @@ export default function HomePage() {
             tabBarGutter={32}
           />
           <Space direction="vertical" size="large" style={{ width: "100%" }}>
-            <Space wrap>
+            <Space wrap align="center">
               <span style={{ fontWeight: 500 }}>输入高考分数：</span>
               <InputNumber
                 min={0}
@@ -126,6 +134,22 @@ export default function HomePage() {
                 style={{ width: 120 }}
                 aria-label="高考分数输入"
               />
+              <button 
+                onClick={handleMatch}
+                style={{
+                  backgroundColor: token.colorPrimary,
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '4px',
+                  padding: '4px 15px',
+                  cursor: 'pointer',
+                  fontWeight: 500,
+                  height: '32px'
+                }}
+                aria-label="匹配科类"
+              >
+                匹配科类
+              </button>
               <span style={{ fontWeight: 500, marginLeft: 24 }}>科类筛选：</span>
               <Select
                 value={selectedCategory}
@@ -165,8 +189,8 @@ export default function HomePage() {
           }}
           headStyle={{ color: token.colorSuccess }}
         >
-          {typeof score === "number" && !isNaN(score) ? (
-            matched.length > 0 ? (
+          {hasMatched ? (
+            matchedResults.length > 0 ? (
               <Result
                 status="success"
                 icon={<CheckCircleTwoTone twoToneColor={token.colorSuccess} />}
@@ -176,7 +200,7 @@ export default function HomePage() {
                     <Typography.Text strong>您的分数：{score}分</Typography.Text>
                     <Divider style={{ margin: "12px 0" }} />
                     <ul style={{ textAlign: "left", padding: 0, listStyle: "none" }}>
-                      {matched.map(m => (
+                      {matchedResults.map(m => (
                         <li key={m.category} style={{ margin: "8px 0", fontSize: 16 }}>
                           <Space>
                             <span>{m.category}</span>
