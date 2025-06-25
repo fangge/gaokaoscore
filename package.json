@@ -1,0 +1,23 @@
+{
+  "name": "gaokaoscore",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "export": "next export"
+  },
+  "dependencies": {
+    "@ant-design/icons": "^6.0.0",
+    "antd": "^5.26.2",
+    "autoprefixer": "^10.0.0",
+    "echarts": "^5.0.0",
+    "echarts-for-react": "^3.0.0",
+    "next": "^14.0.0",
+    "postcss": "^8.0.0",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "tailwindcss": "^3.0.0"
+  }
+}

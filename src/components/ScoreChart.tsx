@@ -29,40 +29,67 @@ export default function ScoreChart({ data, years }: ScoreChartProps) {
     data: years.map(y => parseScore(item.lines[y])),
     connectNulls: true,
     smooth: true,
-    symbol: "circle"
+    symbol: "circle",
+    symbolSize: 8,
+    lineStyle: {
+      width: 3
+    }
   }));
 
   const option = {
     tooltip: {
-      trigger: "axis" as const
+      trigger: "axis" as const,
+      backgroundColor: "rgba(255,255,255,0.9)",
+      borderColor: "#ccc",
+      borderWidth: 1,
+      textStyle: {
+        color: "#333"
+      }
     },
     legend: {
       data: data.map(d => d.category),
-      type: "scroll"
+      type: "scroll",
+      bottom: 0,
+      padding: [5, 5, 5, 5]
     },
     grid: {
-      left: 40,
-      right: 20,
+      left: 50,
+      right: 30,
       top: 40,
-      bottom: 30
+      bottom: 60
     },
     xAxis: {
       type: "category" as const,
       data: years,
-      axisLabel: { fontWeight: "bold" as const }
+      axisLabel: { 
+        fontWeight: "bold" as const,
+        fontSize: 14
+      }
     },
     yAxis: {
       type: "value" as const,
       min: "dataMin",
       max: "dataMax",
-      axisLabel: { fontWeight: "bold" as const }
+      axisLabel: { 
+        fontWeight: "bold" as const,
+        fontSize: 14
+      },
+      splitLine: {
+        lineStyle: {
+          type: "dashed" as const
+        }
+      }
     },
     series
   };
 
   return (
-    <div className="w-full h-80" tabIndex={0} aria-label="分数线折线图">
-      <ReactECharts option={option} style={{ width: "100%", height: 320 }} />
+    <div style={{ width: "100%", height: "100%" }} tabIndex={0} aria-label="分数线折线图">
+      <ReactECharts 
+        option={option} 
+        style={{ width: "100%", height: "100%" }} 
+        opts={{ renderer: "canvas" }}
+      />
     </div>
   );
 }
