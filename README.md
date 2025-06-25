@@ -27,9 +27,9 @@ pnpm build
 
 1. 推送代码到GitHub仓库后，GitHub Actions会自动触发部署流程。
 2. 在仓库 Settings → Pages，按以下步骤配置：
-   - Source: 选择 "Deploy from a branch"
-   - Branch: 选择 "gh-pages" 分支和 "/" (root) 文件夹
-   - 点击 "Save" 保存设置
+   - Source: 选择 "GitHub Actions"（而不是"Deploy from a branch"）
+   - 这将使用我们配置的GitHub Actions工作流来构建和部署网站
+   - 无需手动选择分支，GitHub Actions会自动将构建结果部署到gh-pages分支
 3. 稍等片刻（通常2-3分钟），GitHub Actions完成部署后，即可通过GitHub Pages访问网站。
    - 网站地址通常为：https://[用户名].github.io/gaokaoscore/
    - 可在仓库的Actions标签页查看部署进度
