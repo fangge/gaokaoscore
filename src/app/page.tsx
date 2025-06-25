@@ -127,6 +127,23 @@ export default function HomePage() {
         >
           输入分数，匹配科类，查看历年分数线走势
         </Typography.Paragraph>
+        <Typography.Paragraph 
+          style={{ 
+            textAlign: "center", 
+            color: "rgba(255,255,255,0.75)",
+            marginTop: 4,
+            fontSize: 14
+          }}
+        >
+          <a 
+            href="https://eea.gd.gov.cn/ptgk/content/post_4733327.html" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ color: "rgba(255,255,255,0.9)" }}
+          >
+            2025年数据来源
+          </a>
+        </Typography.Paragraph>
       </div>
       <Layout.Content style={{ maxWidth: 1920, margin: "0 auto", padding: "0 24px 24px" }}>
         <Card 
