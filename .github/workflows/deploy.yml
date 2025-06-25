@@ -4,6 +4,12 @@ on:
   push:
     branches: [main]
 
+# 设置GITHUB_TOKEN的权限
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
