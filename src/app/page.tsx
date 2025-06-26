@@ -1,9 +1,10 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import gaokaoData from "../../data/gaokao_lines.json";
+import scoreDistributions from "../../data/score_distributions.json";
 import dynamic from "next/dynamic";
 import { Layout, Tabs, InputNumber, Select, Card, Typography, Result, Space, theme, Tag, Divider } from "antd";
-import { CheckCircleTwoTone, TrophyTwoTone, BookTwoTone } from "@ant-design/icons";
+import { CheckCircleTwoTone, TrophyTwoTone, BookTwoTone, BarChartOutlined } from "@ant-design/icons";
 
 type Year = "2021" | "2022" | "2023" | "2024" | "2025";
 type Line = { [year in Year]?: string };
@@ -17,6 +18,7 @@ const years: Year[] = ["2021", "2022", "2023", "2024", "2025"];
 const allData: GaokaoItem[] = gaokaoData as GaokaoItem[];
 
 const ScoreChart = dynamic(() => import("../components/ScoreChart"), { ssr: false });
+const ScoreDistributionChart = dynamic(() => import("../components/ScoreDistributionChart"), { ssr: false });
 
 const getCategories = (type: "本科" | "专科") =>
   Array.from(new Set(allData.filter(d => d.type === type).map(d => d.category)));
@@ -56,6 +58,7 @@ export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("全部");
   const [matchedResults, setMatchedResults] = useState<{ type: "本科" | "专科"; category: string; difference: number }[]>([]);
   const [hasMatched, setHasMatched] = useState<boolean>(false);
+  const [selectedDistributionCategory, setSelectedDistributionCategory] = useState<string | null>(null);
   const resultCardRef = React.useRef<HTMLDivElement>(null);
 
   const categories = useMemo(() => ["全部", ...getCategories(tab)], [tab]);
@@ -66,6 +69,31 @@ export default function HomePage() {
       ),
     [tab, selectedCategory]
   );
+  
+  // Find the score distribution data for the selected category
+  const distributionData = useMemo(() => {
+    if (!selectedDistributionCategory) return null;
+    
+    const categoryData = scoreDistributions.find(d => d.category === selectedDistributionCategory);
+    return categoryData ? categoryData.scoreData : null;
+  }, [selectedDistributionCategory]);
+  
+  // Update selected distribution category when a match is found
+  useEffect(() => {
+    if (matchedResults.length > 0) {
+      // Prioritize 普通类(历史) or 普通类(物理) if matched
+      const priorityCategory = matchedResults.find(r => 
+        r.category === "普通类(历史)" || r.category === "普通类(物理)"
+      );
+      
+      if (priorityCategory) {
+        setSelectedDistributionCategory(priorityCategory.category);
+      } else {
+        // Otherwise use the first match
+        setSelectedDistributionCategory(matchedResults[0].category);
+      }
+    }
+  }, [matchedResults]);
 
   const handleMatch = () => {
     if (typeof score !== "number" || isNaN(score)) {
@@ -212,6 +240,36 @@ export default function HomePage() {
             >
               <ScoreChart data={filteredData} years={years} />
             </Card>
+            
+            {distributionData && (
+              <Card
+                type="inner"
+                title={
+                  <div style={{ display: "flex", alignItems: "center" }}>
+                    <BarChartOutlined style={{ color: token.colorPrimary }} />
+                    <span style={{ marginLeft: 8 }}>
+                      {selectedDistributionCategory} 分数分布与排名
+                    </span>
+                  </div>
+                }
+                style={{ marginTop: 16, background: "#fafcff", borderRadius: 8 }}
+                bodyStyle={{ padding: 0, height: 500 }}
+                extra={
+                  <Select
+                    value={selectedDistributionCategory}
+                    onChange={setSelectedDistributionCategory}
+                    style={{ width: 180 }}
+                    options={scoreDistributions.map(d => ({ value: d.category, label: d.category }))}
+                    placeholder="选择科类查看分布"
+                  />
+                }
+              >
+                <ScoreDistributionChart 
+                  categoryData={distributionData} 
+                  userScore={score ?? undefined}
+                />
+              </Card>
+            )}
           </Space>
         </Card>
         <Card
@@ -262,6 +320,26 @@ export default function HomePage() {
                               <Space>
                                 <span>{m.category}</span>
                                 <Tag color="success">高出{m.difference}分</Tag>
+                                {/* 排名信息 */}
+                                {(() => {
+                                  const dist = scoreDistributions.find(d => d.category === m.category);
+                                  if (dist && typeof score === "number") {
+                                    // 找到分数≤score的最大项
+                                    const sorted = [...dist.scoreData].sort((a, b) => b.score - a.score);
+                                    const total = sorted.length > 0 ? sorted[sorted.length - 1].cumulative : 0;
+                                    let found = sorted.find(d => d.score <= score);
+                                    if (!found && sorted.length > 0) found = sorted[sorted.length - 1];
+                                    if (found) {
+                                      const percentile = ((found.cumulative / total) * 100).toFixed(2);
+                                      return (
+                                        <Tag color="blue" style={{ fontWeight: 500 }}>
+                                          排名: {found.cumulative} / {total}（超越{percentile}%考生）
+                                        </Tag>
+                                      );
+                                    }
+                                  }
+                                  return null;
+                                })()}
                               </Space>
                             </li>
                           ))}
@@ -287,6 +365,25 @@ export default function HomePage() {
                               <Space>
                                 <span>{m.category}</span>
                                 <Tag color="purple">高出{m.difference}分</Tag>
+                                {/* 排名信息 */}
+                                {(() => {
+                                  const dist = scoreDistributions.find(d => d.category === m.category);
+                                  if (dist && typeof score === "number") {
+                                    const sorted = [...dist.scoreData].sort((a, b) => b.score - a.score);
+                                    const total = sorted.length > 0 ? sorted[sorted.length - 1].cumulative : 0;
+                                    let found = sorted.find(d => d.score <= score);
+                                    if (!found && sorted.length > 0) found = sorted[sorted.length - 1];
+                                    if (found) {
+                                      const percentile = ((found.cumulative / total) * 100).toFixed(2);
+                                      return (
+                                        <Tag color="blue" style={{ fontWeight: 500 }}>
+                                          排名: {found.cumulative} / {total}（超越{percentile}%考生）
+                                        </Tag>
+                                      );
+                                    }
+                                  }
+                                  return null;
+                                })()}
                               </Space>
                             </li>
                           ))}
