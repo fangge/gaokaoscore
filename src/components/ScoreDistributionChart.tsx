@@ -15,7 +15,9 @@ interface ScoreDistributionChartProps {
 export default function ScoreDistributionChart({ categoryData, userScore }: ScoreDistributionChartProps) {
   // Sort data by score in descending order
   const sortedData = useMemo(() => {
-    return [...categoryData].sort((a, b) => b.score - a.score);
+    return categoryData && categoryData.length > 0 
+      ? [...categoryData].sort((a, b) => b.score - a.score) 
+      : [];
   }, [categoryData]);
 
   // Calculate total number of students
@@ -23,26 +25,29 @@ export default function ScoreDistributionChart({ categoryData, userScore }: Scor
     return sortedData.length > 0 ? sortedData[sortedData.length - 1].cumulative : 0;
   }, [sortedData]);
 
+  // Show empty state if no data
+  const isEmpty = sortedData.length === 0;
+
   // Calculate user's ranking if userScore is provided
   const userRanking = useMemo(() => {
-    if (!userScore || sortedData.length === 0) return null;
-    
-    // Find the closest score entry that is less than or equal to userScore
+    if (typeof userScore !== "number" || sortedData.length === 0) return null;
+    // 找到第一个分数小于等于userScore的分段
     for (let i = 0; i < sortedData.length; i++) {
       if (sortedData[i].score <= userScore) {
+        // 高于该分数的人数 = sortedData[i].cumulative - sortedData[i].count
+        const aboveCount = sortedData[i].cumulative - sortedData[i].count;
         return {
           score: userScore,
           rank: sortedData[i].cumulative,
-          percentile: ((sortedData[i].cumulative / totalStudents) * 100).toFixed(2)
+          percentile: ((aboveCount / totalStudents) * 100).toFixed(2)
         };
       }
     }
-    
-    // If no match found, user is at the bottom
+    // 没有匹配分数，视为最低分，排名为总人数，百分比为0
     return {
       score: userScore,
       rank: totalStudents,
-      percentile: "100.00"
+      percentile: "0.00"
     };
   }, [userScore, sortedData, totalStudents]);
 
@@ -53,7 +58,7 @@ export default function ScoreDistributionChart({ categoryData, userScore }: Scor
   // Chart options
   const option: EChartsOption = {
     tooltip: {
-      trigger: "axis" as const,
+      trigger: isEmpty ? undefined : "axis" as const,
       axisPointer: {
         type: "shadow" as const
       },
@@ -62,16 +67,27 @@ export default function ScoreDistributionChart({ categoryData, userScore }: Scor
         const count = params[0].data;
         const item = sortedData.find(d => d.score === score);
         const cumulative = item ? item.cumulative : 0;
-        const percentile = ((cumulative / totalStudents) * 100).toFixed(2);
-        
+        const aboveCount = cumulative - (item ? item.count : 0);
+        const rawPercentile = (aboveCount / totalStudents) * 100;
+        const percentile = (rawPercentile < 0.01 && rawPercentile > 0) ? "0.01" : rawPercentile.toFixed(2);
         return `
           <div style="font-weight: bold; margin-bottom: 5px;">分数: ${score}</div>
           <div>该分数人数: ${count}人</div>
           <div>累计人数: ${cumulative}人</div>
-          <div>超过全省考生: ${percentile}%</div>
         `;
       }
     },
+    graphic: isEmpty ? {
+      type: 'text',
+      left: 'center',
+      top: 'middle',
+      style: {
+        text: '暂无该科目的分数分布数据',
+        fontSize: 16,
+        fontWeight: 'normal',
+        fill: '#666'
+      }
+    } : undefined,
     grid: {
       left: 50,
       right: 30,
@@ -156,7 +172,8 @@ export default function ScoreDistributionChart({ categoryData, userScore }: Scor
         notMerge={true}
         lazyUpdate={false}
       />
-      {userRanking && (
+      {/* 排名卡片仅在用户点击匹配后（如传入showRankingCard=true）才显示，默认始终显示图表 */}
+      {typeof userScore === "number" && userRanking && (
         <div
           style={{
             position: "absolute",
@@ -174,7 +191,7 @@ export default function ScoreDistributionChart({ categoryData, userScore }: Scor
           </div>
           <div>分数: {userRanking.score}</div>
           <div>排名: {userRanking.rank}</div>
-          <div>超过全省考生: {userRanking.percentile}%</div>
+          <div>高于全省考生: {userRanking.percentile}%</div>
         </div>
       )}
     </div>
