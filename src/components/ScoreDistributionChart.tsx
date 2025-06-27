@@ -73,7 +73,6 @@ export default function ScoreDistributionChart({ categoryData, userScore }: Scor
         return `
           <div style="font-weight: bold; margin-bottom: 5px;">分数: ${score}</div>
           <div>该分数人数: ${count}人</div>
-          <div>累计人数: ${cumulative}人</div>
         `;
       }
     },
