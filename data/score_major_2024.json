@@ -28586,7 +28586,6 @@
       "minscore": 611,
       "minrank": 1773
     },
-    
     {
       "schoolid": 10053,
       "schoolname": "中国政法大学",
@@ -29082,7 +29081,6 @@
       "minscore": 500,
       "minrank": 38687
     },
-    
     {
       "schoolid": 10136,
       "schoolname": "内蒙古民族大学",
@@ -29578,7 +29576,6 @@
       "minscore": 505,
       "minrank": 36103
     },
-    
     {
       "schoolid": 10203,
       "schoolname": "吉林师范大学",
@@ -30074,7 +30071,6 @@
       "minscore": 613,
       "minrank": 1629
     },
-    
     {
       "schoolid": 10272,
       "schoolname": "上海财经大学",
@@ -30570,7 +30566,6 @@
       "minscore": 573,
       "minrank": 7792
     },
-    
     {
       "schoolid": 10345,
       "schoolname": "浙江师范大学(中外合作办学)",
@@ -31066,7 +31061,6 @@
       "minscore": 520,
       "minrank": 27739
     },
-    
     {
       "schoolid": 10407,
       "schoolname": "江西理工大学",
@@ -31562,7 +31556,6 @@
       "minscore": 534,
       "minrank": 21022
     },
-    
     {
       "schoolid": 10445,
       "schoolname": "山东师范大学",
@@ -32058,7 +32051,6 @@
       "minscore": 517,
       "minrank": 29026
     },
-    
     {
       "schoolid": 10507,
       "schoolname": "湖北中医药大学",
@@ -32554,7 +32546,6 @@
       "minscore": 493,
       "minrank": 43374
     },
-    
     {
       "schoolid": 10548,
       "schoolname": "怀化学院",
@@ -33050,7 +33041,6 @@
       "minscore": 574,
       "minrank": 7615
     },
-    
     {
       "schoolid": 10574,
       "schoolname": "华南师范大学",
@@ -33546,7 +33536,6 @@
       "minscore": 511,
       "minrank": 32381
     },
-    
     {
       "schoolid": 10580,
       "schoolname": "肇庆学院",
@@ -34042,7 +34031,6 @@
       "minscore": 539,
       "minrank": 18850
     },
-    
     {
       "schoolid": 10592,
       "schoolname": "广东财经大学",
@@ -34538,7 +34526,6 @@
       "minscore": 493,
       "minrank": 43593
     },
-    
     {
       "schoolid": 10624,
       "schoolname": "中国民用航空飞行学院",
@@ -35034,7 +35021,6 @@
       "minscore": 495,
       "minrank": 42418
     },
-    
     {
       "schoolid": 10667,
       "schoolname": "安顺学院",
@@ -35530,7 +35516,6 @@
       "minscore": 594,
       "minrank": 3742
     },
-    
     {
       "schoolid": 10730,
       "schoolname": "兰州大学",
@@ -36026,7 +36011,6 @@
       "minscore": 460,
       "minrank": 68019
     },
-    
     {
       "schoolid": 10822,
       "schoolname": "广东白云学院",
@@ -36522,7 +36506,6 @@
       "minscore": 482,
       "minrank": 51318
     },
-    
     {
       "schoolid": 11104,
       "schoolname": "华北科技学院",
@@ -37018,7 +37001,6 @@
       "minscore": 509,
       "minrank": 33614
     },
-    
     {
       "schoolid": 11414,
       "schoolname": "中国石油大学(北京)",
@@ -37096,9 +37078,9 @@
       "schoolname": "长春工程学院(本科预科班)",
       "majorid": 204,
       "plannum": 2,
-      "actualnum": 0,
-      "minscore":0,
-      "minrank":0
+      "actualnum": "-",
+      "minscore": "-",
+      "minrank": 0
     },
     {
       "schoolid": 11439,
@@ -37514,7 +37496,6 @@
       "minscore": 533,
       "minrank": 21184
     },
-    
     {
       "schoolid": 11647,
       "schoolname": "浙江传媒学院",
@@ -38010,7 +37991,6 @@
       "minscore": 482,
       "minrank": 51131
     },
-    
     {
       "schoolid": 11835,
       "schoolname": "上海政法学院",
@@ -38304,9 +38284,9 @@
       "schoolname": "佛山大学(原佛山科学技术学院)(地方专",
       "majorid": 224,
       "plannum": 10,
-      "actualnum": 0,
-      "minscore":0,
-      "minrank":0
+      "actualnum": "-",
+      "minscore": "-",
+      "minrank": 0
     },
     {
       "schoolid": 11847,
@@ -38506,7 +38486,6 @@
       "minscore": 481,
       "minrank": 52172
     },
-    
     {
       "schoolid": 12362,
       "schoolname": "武汉生物工程学院",
@@ -38735,7 +38714,7 @@
     {
       "schoolid": 12620,
       "schoolname": "广东外语外贸大学南国商学院(联合培养)",
-      "majorid":231,
+      "majorid": 231,
       "plannum": 114,
       "actualnum": 114,
       "minscore": 446,
@@ -39002,7 +38981,6 @@
       "minscore": 477,
       "minrank": 55094
     },
-    
     {
       "schoolid": 12713,
       "schoolname": "西安外事学院",
@@ -39341,9 +39319,9 @@
       "schoolname": "武汉城市学院",
       "majorid": 202,
       "plannum": 1,
-      "actualnum": 0,
-      "minscore":0,
-      "minrank":0
+      "actualnum": "-",
+      "minscore": "-",
+      "minrank": 0
     },
     {
       "schoolid": 13236,
@@ -39498,7 +39476,6 @@
       "minscore": 488,
       "minrank": 47067
     },
-    
     {
       "schoolid": 13262,
       "schoolname": "文华学院",
@@ -39621,9 +39598,9 @@
       "schoolname": "丽江文化旅游学院",
       "majorid": 204,
       "plannum": 2,
-      "actualnum": 0,
-      "minscore":0,
-      "minrank":0
+      "actualnum": "-",
+      "minscore": "-",
+      "minrank": 0
     },
     {
       "schoolid": 13330,
@@ -39994,7 +39971,6 @@
       "minscore": 491,
       "minrank": 44724
     },
-    
     {
       "schoolid": 13471,
       "schoolname": "集美大学诚毅学院",
@@ -40490,7 +40466,6 @@
       "minscore": 433,
       "minrank": 90679
     },
-    
     {
       "schoolid": 13657,
       "schoolname": "广州应用科技学院",
@@ -40802,9 +40777,9 @@
       "schoolname": "广州工商学院",
       "majorid": 204,
       "plannum": 28,
-      "actualnum": 0,
-      "minscore":0,
-      "minrank":0
+      "actualnum": "-",
+      "minscore": "-",
+      "minrank": 0
     },
     {
       "schoolid": 13714,
@@ -40986,7 +40961,6 @@
       "minscore": 474,
       "minrank": 56730
     },
-    
     {
       "schoolid": 13776,
       "schoolname": "江西软件职业技术大学",
@@ -41482,7 +41456,6 @@
       "minscore": 478,
       "minrank": 54403
     },
-    
     {
       "schoolid": 13995,
       "schoolname": "青岛工学院",
@@ -41978,7 +41951,6 @@
       "minscore": 569,
       "minrank": 8769
     },
-    
     {
       "schoolid": 16405,
       "schoolname": "温州肯恩大学",
@@ -42018,7 +41990,7 @@
     {
       "schoolid": 19002,
       "schoolname": "中国人民大学(苏州校区)(中外合作办学)",
-      "majorid":201,
+      "majorid": 201,
       "plannum": 7,
       "actualnum": 7,
       "minscore": 619,
@@ -42027,7 +41999,7 @@
     {
       "schoolid": 19004,
       "schoolname": "北京交通大学(威海校区)(中外合作办学)",
-      "majorid":201,
+      "majorid": 201,
       "plannum": 3,
       "actualnum": 3,
       "minscore": 573,

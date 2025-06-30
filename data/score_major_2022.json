@@ -30,7 +30,7 @@
     {
       "schoolid": 10003,
       "schoolname": "清华大学",
-      "majorid": 0,
+      "majorid": "-",
       "plannum": 59,
       "actualnum": 63,
       "minscore": 683,
@@ -13550,8 +13550,8 @@
       "schoolname": "西藏大学",
       "majorid": 205,
       "plannum": 2,
-      "actualnum": 0,
-      "minscore": 0,
+      "actualnum": "-",
+      "minscore": "-",
       "minrank": 0
     },
     {
@@ -22568,8 +22568,8 @@
       "schoolname": "深圳北理莫斯科大学",
       "majorid": 202,
       "plannum": 2,
-      "actualnum": 0,
-      "minscore": 0,
+      "actualnum": "-",
+      "minscore": "-",
       "minrank": 0
     },
     {
@@ -22577,8 +22577,8 @@
       "schoolname": "深圳北理莫斯科大学",
       "majorid": 203,
       "plannum": 1,
-      "actualnum": 0,
-      "minscore": 0,
+      "actualnum": "-",
+      "minscore": "-",
       "minrank": 0
     },
     {
@@ -23099,7 +23099,7 @@
     {
       "schoolid": 10001,
       "schoolname": "北京大学",
-      "majorid": 0,
+      "majorid": "-",
       "plannum": 24,
       "actualnum": 24,
       "minscore": 651,
