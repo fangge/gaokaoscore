@@ -42,7 +42,9 @@ type ScoreMajorItem = {
   schoolname: string;
   majorid: number;
   minscore: number;
-  extinfo: string;
+  plannum: number;
+  actualnum: number;
+  minrank: number;
 };
 // 用于Table渲染的类型，schoolid/majorid为string
 type ScoreMajorTableItem = {
@@ -51,6 +53,10 @@ type ScoreMajorTableItem = {
   majorid: string;
   minscore: number;
   extinfo: string;
+
+  plannum: number;
+  actualnum: number;
+  minrank: number;
 };
 type ScoreMajor2024 = {
   physics: ScoreMajorItem[] | ScoreMajorItem[][];
@@ -367,6 +373,17 @@ export default function HomePage() {
               匹配
             </button>
           </Space>
+          {mainTab == 'main' && (
+            <Tabs
+              activeKey={tab}
+              onChange={(k) => setTab(k as '本科' | '专科')}
+              items={[
+                { key: '本科', label: '本科' },
+                { key: '专科', label: '专科' }
+              ]}
+              tabBarGutter={32}
+            />
+          )}
           {mainTab === 'main' && (
             <Card
               ref={resultCardRef}
@@ -498,15 +515,6 @@ export default function HomePage() {
           )}
           {mainTab === 'main' ? (
             <>
-              <Tabs
-                activeKey={tab}
-                onChange={(k) => setTab(k as '本科' | '专科')}
-                items={[
-                  { key: '本科', label: '本科' },
-                  { key: '专科', label: '专科' }
-                ]}
-                tabBarGutter={32}
-              />
               <Space
                 direction="vertical"
                 size="large"
@@ -783,8 +791,22 @@ export default function HomePage() {
                         defaultSortOrder: 'descend'
                       },
                       {
-                        title: '备注',
-                        dataIndex: 'extinfo',
+                        title: '投档最低排位',
+                        dataIndex: 'minrank',
+                        align: 'center',
+                        width: 220,
+                        render: (text: string) => text || '-'
+                      },
+                      {
+                        title: '计划数',
+                        dataIndex: 'plannum',
+                        align: 'center',
+                        width: 220,
+                        render: (text: string) => text || '-'
+                      },
+                      {
+                        title: '投档人数',
+                        dataIndex: 'actualnum',
                         align: 'center',
                         width: 220,
                         render: (text: string) => text || '-'
@@ -829,11 +851,7 @@ export default function HomePage() {
                               majorid: String(item.majorid)
                             }))) as ScoreMajorTableItem[]
                     }
-                    pagination={{
-                      pageSize: 50,
-                      showSizeChanger: true,
-                      pageSizeOptions: [10, 20, 50, 100]
-                    }}
+                    pagination={false}
                     scroll={{ x: 800, y: 520 }}
                     bordered
                     locale={{
@@ -843,7 +861,21 @@ export default function HomePage() {
                     style={{ background: '#fff', borderRadius: 8 }}
                   />
                   <div style={{ fontSize: 12, color: '#999', marginTop: 8 }}>
-                    数据来源：<a href="https://www.gxeea.cn/view/content_1013_30535.htm" target="_blank">2024年本科普通批院校专业组投档最低分数线（首选历史科目组）</a>、<a href="https://www.gxeea.cn/view/content_1013_30534.htm" target="_blank">2024年本科普通批院校专业组投档最低分数线（首选物理科目组）</a>仅供参考
+                    数据来源：
+                    <a
+                      href="https://www.gxeea.cn/view/content_1013_30535.htm"
+                      target="_blank"
+                    >
+                      2024年本科普通批院校专业组投档最低分数线（首选历史科目组）
+                    </a>
+                    、
+                    <a
+                      href="https://www.gxeea.cn/view/content_1013_30534.htm"
+                      target="_blank"
+                    >
+                      2024年本科普通批院校专业组投档最低分数线（首选物理科目组）
+                    </a>
+                    仅供参考
                   </div>
                 </div>
               </Card>
