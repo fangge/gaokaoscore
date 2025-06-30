@@ -863,18 +863,12 @@ export default function HomePage() {
                   <div style={{ fontSize: 12, color: '#999', marginTop: 8 }}>
                     数据来源：
                     <a
-                      href="https://www.gxeea.cn/view/content_1013_30535.htm"
+                      href="https://eea.gd.gov.cn/ptgk/content/post_4458330.html"
                       target="_blank"
                     >
-                      2024年本科普通批院校专业组投档最低分数线（首选历史科目组）
+                      2024年广东省普通高考本科批次正式投档
                     </a>
-                    、
-                    <a
-                      href="https://www.gxeea.cn/view/content_1013_30534.htm"
-                      target="_blank"
-                    >
-                      2024年本科普通批院校专业组投档最低分数线（首选物理科目组）
-                    </a>
+                    
                     仅供参考
                   </div>
                 </div>
