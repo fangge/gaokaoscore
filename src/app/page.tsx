@@ -2,7 +2,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import gaokaoData from '../../data/gaokao_lines.json';
 import scoreDistributions from '../../data/score_distributions.json';
-import scoreMajor2024 from '../../data/score_major_2024.json';
 import dynamic from 'next/dynamic';
 import {
   Layout,
@@ -16,7 +15,8 @@ import {
   theme,
   Tag,
   Divider,
-  Table
+  Table,
+  Spin
 } from 'antd';
 import {
   CheckCircleTwoTone,
@@ -40,7 +40,7 @@ type DistributionsItem = {
 type ScoreMajorItem = {
   schoolid: number;
   schoolname: string;
-  majorid: number;
+  majorid: number | string;
   minscore: number;
   plannum: number;
   actualnum: number;
@@ -58,7 +58,7 @@ type ScoreMajorTableItem = {
   actualnum: number;
   minrank: number;
 };
-type ScoreMajor2024 = {
+type ScoreMajor = {
   physics: ScoreMajorItem[] | ScoreMajorItem[][];
   history: ScoreMajorItem[] | ScoreMajorItem[][];
 };
@@ -153,13 +153,36 @@ export default function HomePage() {
     useState<string | null>(null);
   const resultCardRef = React.useRef<HTMLDivElement>(null);
 
-  // 2024专业组数据处理
-  const scoreMajorData: ScoreMajor2024 = scoreMajor2024 as ScoreMajor2024;
+  // 动态加载专业组数据
+  const [yearTab, setYearTab] = useState<'2022' | '2023' | '2024'>('2024');
+  const [scoreMajorDataDynamic, setScoreMajorDataDynamic] = useState<ScoreMajor | null>(null);
+  const [loadingMajorData, setLoadingMajorData] = useState<boolean>(false);
+
   // 兼容物理组数据为二维数组
   const flattenMajor = (arr: ScoreMajorItem[] | ScoreMajorItem[][]) =>
     Array.isArray(arr[0])
       ? (arr as ScoreMajorItem[][]).flat()
       : (arr as ScoreMajorItem[]);
+
+  // 动态加载scoreMajorData
+  useEffect(() => {
+    let isMounted = true;
+    setLoadingMajorData(true);
+    const importMap = {
+      '2022': () => import('../../data/score_major_2022.json'),
+      '2023': () => import('../../data/score_major_2023.json'),
+      '2024': () => import('../../data/score_major_2024.json')
+    };
+    importMap[yearTab]().then((mod) => {
+      if (isMounted) {
+        setScoreMajorDataDynamic(mod.default as ScoreMajor);
+        setLoadingMajorData(false);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [yearTab]);
 
   // 2024专业组投档线搜索相关
   const [majorSearch, setMajorSearch] = useState<{
@@ -172,9 +195,9 @@ export default function HomePage() {
     setMajorSearch({ schoolid: '', schoolname: '' });
   }, [majorTab]);
 
-  // 匹配2024专业组
-  const matchedMajor2024 = useMemo(() => {
-    if (typeof score !== 'number' || isNaN(score))
+  // 匹配当前年份专业组
+  const matchedMajorDynamic = useMemo(() => {
+    if (!scoreMajorDataDynamic || typeof score !== 'number' || isNaN(score))
       return { physics: [], history: [] };
     const filterFn = (arr: ScoreMajorItem[] | ScoreMajorItem[][]) =>
       flattenMajor(arr).filter(
@@ -184,10 +207,10 @@ export default function HomePage() {
           score >= item.minscore
       );
     return {
-      physics: filterFn(scoreMajorData.physics),
-      history: filterFn(scoreMajorData.history)
+      physics: filterFn(scoreMajorDataDynamic.physics),
+      history: filterFn(scoreMajorDataDynamic.history)
     };
-  }, [score, scoreMajorData]);
+  }, [score, scoreMajorDataDynamic]);
 
   // 当前tab下所有分布数据
   const filteredDistributions = useMemo(
@@ -332,7 +355,7 @@ export default function HomePage() {
             onChange={(k) => setMainTab(k as 'main' | 'major2024')}
             items={[
               { key: 'main', label: '分数线匹配' },
-              { key: 'major2024', label: '2024本科普通批专业组投档线' }
+              { key: 'major2024', label: '2022-2024本科普通批专业组投档线' }
             ]}
             tabBarGutter={32}
           />
@@ -598,277 +621,304 @@ export default function HomePage() {
                 }}
                 bodyStyle={{ padding: 0 }}
               >
+                {/* 年份切换tab */}
+                <Tabs
+                  activeKey={yearTab}
+                  onChange={(k) => setYearTab(k as '2022' | '2023' | '2024')}
+                  items={[
+                    { key: '2022', label: '2022年' },
+                    { key: '2023', label: '2023年' },
+                    { key: '2024', label: '2024年' }
+                  ]}
+                  tabBarGutter={32}
+                  style={{ padding: '0 16px', marginTop: 8 }}
+                />
                 <Tabs
                   activeKey={majorTab}
                   onChange={(k) => setMajorTab(k as 'physics' | 'history')}
                   items={[
-                    { key: 'physics', label: '首选物理组' },
-                    { key: 'history', label: '首选历史组' }
+                    { key: 'physics', label: '物理组' },
+                    { key: 'history', label: '历史组' }
                   ]}
                   tabBarGutter={32}
                 />
                 <div style={{ padding: 16 }}>
-                  <Table<ScoreMajorTableItem>
-                    rowKey={(row: ScoreMajorTableItem): string =>
-                      `${row.schoolid}-${row.majorid}`
-                    }
-                    columns={[
-                      {
-                        title: '院校代码',
-                        dataIndex: 'schoolid',
-                        align: 'center',
-                        width: 100,
-                        sorter: (a, b) =>
-                          Number(a.schoolid) - Number(b.schoolid),
-                        filterDropdown: ({
-                          setSelectedKeys,
-                          selectedKeys,
-                          confirm,
-                          clearFilters
-                        }) => (
-                          <div style={{ padding: 8 }}>
-                            <InputNumber
-                              placeholder="搜索院校代码"
-                              value={
-                                selectedKeys[0] !== undefined &&
-                                selectedKeys[0] !== null
-                                  ? Number(String(selectedKeys[0]))
-                                  : undefined
-                              }
-                              onChange={(
-                                v: number | string | bigint | null | undefined
-                              ) => {
-                                if (
-                                  v === undefined ||
-                                  v === null ||
-                                  Number.isNaN(v)
-                                ) {
-                                  setSelectedKeys([]);
-                                } else {
-                                  const val =
-                                    typeof v === 'bigint' ? v.toString() : v;
-                                  setSelectedKeys([String(val)]);
-                                }
-                              }}
-                              style={{
-                                width: 120,
-                                marginBottom: 8,
-                                display: 'block'
-                              }}
-                              onPressEnter={() => confirm()}
-                            />
-                            <Space>
-                              <button
-                                onClick={() => confirm()}
-                                style={{
-                                  color: '#1677ff',
-                                  border: 'none',
-                                  background: 'none',
-                                  cursor: 'pointer'
-                                }}
-                                type="button"
-                              >
-                                搜索
-                              </button>
-                              <button
-                                onClick={() => clearFilters && clearFilters()}
-                                style={{
-                                  color: '#999',
-                                  border: 'none',
-                                  background: 'none',
-                                  cursor: 'pointer'
-                                }}
-                                type="button"
-                              >
-                                重置
-                              </button>
-                            </Space>
-                          </div>
-                        ),
-                        filterIcon: (filtered) => (
-                          <span
-                            style={{ color: filtered ? '#1677ff' : undefined }}
-                          >
-                            🔍
-                          </span>
-                        ),
-                        onFilter: (value, record) =>
-                          String(record.schoolid).includes(
-                            typeof value === 'bigint'
-                              ? value.toString()
-                              : String(value)
-                          )
-                      },
-                      {
-                        title: '院校名称',
-                        dataIndex: 'schoolname',
-                        align: 'center',
-                        width: 180,
-                        render: (text: string) => (
-                          <span style={{ fontWeight: 500 }}>{text}</span>
-                        ),
-                        filterDropdown: ({
-                          setSelectedKeys,
-                          selectedKeys,
-                          confirm,
-                          clearFilters
-                        }) => (
-                          <div style={{ padding: 8 }}>
-                            <input
-                              placeholder="搜索院校名称"
-                              value={
-                                selectedKeys[0] !== undefined &&
-                                selectedKeys[0] !== null
-                                  ? String(selectedKeys[0])
-                                  : ''
-                              }
-                              onChange={(e) =>
-                                setSelectedKeys(
-                                  e.target.value ? [e.target.value] : []
-                                )
-                              }
-                              style={{
-                                width: 140,
-                                marginBottom: 8,
-                                display: 'block'
-                              }}
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') confirm();
-                              }}
-                            />
-                            <Space>
-                              <button
-                                onClick={() => confirm()}
-                                style={{
-                                  color: '#1677ff',
-                                  border: 'none',
-                                  background: 'none',
-                                  cursor: 'pointer'
-                                }}
-                                type="button"
-                              >
-                                搜索
-                              </button>
-                              <button
-                                onClick={() => clearFilters && clearFilters()}
-                                style={{
-                                  color: '#999',
-                                  border: 'none',
-                                  background: 'none',
-                                  cursor: 'pointer'
-                                }}
-                                type="button"
-                              >
-                                重置
-                              </button>
-                            </Space>
-                          </div>
-                        ),
-                        filterIcon: (filtered) => (
-                          <span
-                            style={{ color: filtered ? '#1677ff' : undefined }}
-                          >
-                            🔍
-                          </span>
-                        ),
-                        onFilter: (value, record) =>
-                          String(record.schoolname)
-                            .toLowerCase()
-                            .includes(String(value).toLowerCase())
-                      },
-                      {
-                        title: '专业组',
-                        dataIndex: 'majorid',
-                        align: 'center',
-                        width: 100
-                      },
-                      {
-                        title: '投档最低分',
-                        dataIndex: 'minscore',
-                        align: 'center',
-                        width: 120,
-                        sorter: (a, b) => a.minscore - b.minscore,
-                        defaultSortOrder: 'descend'
-                      },
-                      {
-                        title: '投档最低排位',
-                        dataIndex: 'minrank',
-                        align: 'center',
-                        width: 220,
-                        render: (text: string) => text || '-'
-                      },
-                      {
-                        title: '计划数',
-                        dataIndex: 'plannum',
-                        align: 'center',
-                        width: 220,
-                        render: (text: string) => text || '-'
-                      },
-                      {
-                        title: '投档人数',
-                        dataIndex: 'actualnum',
-                        align: 'center',
-                        width: 220,
-                        render: (text: string) => text || '-'
+                  {/* 切换年份时整体loading骨架 */}
+                  <Spin spinning={loadingMajorData} tip="数据加载中...">
+                    <Table<ScoreMajorTableItem>
+                      rowKey={(row: ScoreMajorTableItem): string =>
+                        `${row.schoolid}-${row.majorid}`
                       }
-                    ]}
-                    dataSource={
-                      (typeof score === 'number' && !isNaN(score)
-                        ? matchedMajor2024[majorTab]
-                            .filter(
-                              (item) =>
-                                (!majorSearch.schoolid ||
-                                  String(item.schoolid).includes(
-                                    majorSearch.schoolid
-                                  )) &&
-                                (!majorSearch.schoolname ||
-                                  item.schoolname.includes(
-                                    majorSearch.schoolname
-                                  ))
+                      columns={[
+                        {
+                          title: '院校代码',
+                          dataIndex: 'schoolid',
+                          align: 'center',
+                          width: 100,
+                          sorter: (a, b) =>
+                            Number(a.schoolid) - Number(b.schoolid),
+                          filterDropdown: ({
+                            setSelectedKeys,
+                            selectedKeys,
+                            confirm,
+                            clearFilters
+                          }) => (
+                            <div style={{ padding: 8 }}>
+                              <InputNumber
+                                placeholder="搜索院校代码"
+                                value={
+                                  selectedKeys[0] !== undefined &&
+                                  selectedKeys[0] !== null
+                                    ? Number(String(selectedKeys[0]))
+                                    : undefined
+                                }
+                                onChange={(
+                                  v: number | string | bigint | null | undefined
+                                ) => {
+                                  if (
+                                    v === undefined ||
+                                    v === null ||
+                                    Number.isNaN(v)
+                                  ) {
+                                    setSelectedKeys([]);
+                                  } else {
+                                    const val =
+                                      typeof v === 'bigint' ? v.toString() : v;
+                                    setSelectedKeys([String(val)]);
+                                  }
+                                }}
+                                style={{
+                                  width: 120,
+                                  marginBottom: 8,
+                                  display: 'block'
+                                }}
+                                onPressEnter={() => confirm()}
+                              />
+                              <Space>
+                                <button
+                                  onClick={() => confirm()}
+                                  style={{
+                                    color: '#1677ff',
+                                    border: 'none',
+                                    background: 'none',
+                                    cursor: 'pointer'
+                                  }}
+                                  type="button"
+                                >
+                                  搜索
+                                </button>
+                                <button
+                                  onClick={() => clearFilters && clearFilters()}
+                                  style={{
+                                    color: '#999',
+                                    border: 'none',
+                                    background: 'none',
+                                    cursor: 'pointer'
+                                  }}
+                                  type="button"
+                                >
+                                  重置
+                                </button>
+                              </Space>
+                            </div>
+                          ),
+                          filterIcon: (filtered) => (
+                            <span
+                              style={{ color: filtered ? '#1677ff' : undefined }}
+                            >
+                              🔍
+                            </span>
+                          ),
+                          onFilter: (value, record) =>
+                            String(record.schoolid).includes(
+                              typeof value === 'bigint'
+                                ? value.toString()
+                                : String(value)
                             )
-                            .sort((a, b) => b.minscore - a.minscore)
-                            .map((item) => ({
-                              ...item,
-                              schoolid: String(item.schoolid),
-                              majorid: String(item.majorid)
-                            }))
-                        : flattenMajor(scoreMajorData[majorTab])
-                            .filter(
-                              (item) =>
-                                (!majorSearch.schoolid ||
-                                  String(item.schoolid).includes(
-                                    majorSearch.schoolid
-                                  )) &&
-                                (!majorSearch.schoolname ||
-                                  item.schoolname.includes(
-                                    majorSearch.schoolname
-                                  ))
-                            )
-                            .sort((a, b) => b.minscore - a.minscore)
-                            .map((item) => ({
-                              ...item,
-                              schoolid: String(item.schoolid),
-                              majorid: String(item.majorid)
-                            }))) as ScoreMajorTableItem[]
-                    }
-                    pagination={false}
-                    scroll={{ x: 800, y: 520 }}
-                    bordered
-                    locale={{
-                      emptyText: hasMatched ? '暂无可报考院校' : '暂无数据'
-                    }}
-                    size="middle"
-                    style={{ background: '#fff', borderRadius: 8 }}
-                  />
+                        },
+                        {
+                          title: '院校名称',
+                          dataIndex: 'schoolname',
+                          align: 'center',
+                          width: 180,
+                          render: (text: string) => (
+                            <span style={{ fontWeight: 500 }}>{text}</span>
+                          ),
+                          filterDropdown: ({
+                            setSelectedKeys,
+                            selectedKeys,
+                            confirm,
+                            clearFilters
+                          }) => (
+                            <div style={{ padding: 8 }}>
+                              <input
+                                placeholder="搜索院校名称"
+                                value={
+                                  selectedKeys[0] !== undefined &&
+                                  selectedKeys[0] !== null
+                                    ? String(selectedKeys[0])
+                                    : ''
+                                }
+                                onChange={(e) =>
+                                  setSelectedKeys(
+                                    e.target.value ? [e.target.value] : []
+                                  )
+                                }
+                                style={{
+                                  width: 140,
+                                  marginBottom: 8,
+                                  display: 'block'
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') confirm();
+                                }}
+                              />
+                              <Space>
+                                <button
+                                  onClick={() => confirm()}
+                                  style={{
+                                    color: '#1677ff',
+                                    border: 'none',
+                                    background: 'none',
+                                    cursor: 'pointer'
+                                  }}
+                                  type="button"
+                                >
+                                  搜索
+                                </button>
+                                <button
+                                  onClick={() => clearFilters && clearFilters()}
+                                  style={{
+                                    color: '#999',
+                                    border: 'none',
+                                    background: 'none',
+                                    cursor: 'pointer'
+                                  }}
+                                  type="button"
+                                >
+                                  重置
+                                </button>
+                              </Space>
+                            </div>
+                          ),
+                          filterIcon: (filtered) => (
+                            <span
+                              style={{ color: filtered ? '#1677ff' : undefined }}
+                            >
+                              🔍
+                            </span>
+                          ),
+                          onFilter: (value, record) =>
+                            String(record.schoolname)
+                              .toLowerCase()
+                              .includes(String(value).toLowerCase())
+                        },
+                        {
+                          title: '专业组',
+                          dataIndex: 'majorid',
+                          align: 'center',
+                          width: 100
+                        },
+                        {
+                          title: '投档最低分',
+                          dataIndex: 'minscore',
+                          align: 'center',
+                          width: 120,
+                          sorter: (a, b) => a.minscore - b.minscore,
+                          defaultSortOrder: 'descend'
+                        },
+                        {
+                          title: '投档最低排位',
+                          dataIndex: 'minrank',
+                          align: 'center',
+                          width: 220,
+                          render: (text: string) => text || '-'
+                        },
+                        {
+                          title: '计划数',
+                          dataIndex: 'plannum',
+                          align: 'center',
+                          width: 220,
+                          render: (text: string) => text || '-'
+                        },
+                        {
+                          title: '投档人数',
+                          dataIndex: 'actualnum',
+                          align: 'center',
+                          width: 220,
+                          render: (text: string) => text || '-'
+                        }
+                      ]}
+                      dataSource={
+                        !scoreMajorDataDynamic
+                          ? []
+                          : (typeof score === 'number' && !isNaN(score)
+                              ? matchedMajorDynamic[majorTab]
+                                  .filter(
+                                    (item) =>
+                                      (!majorSearch.schoolid ||
+                                        String(item.schoolid).includes(
+                                          majorSearch.schoolid
+                                        )) &&
+                                      (!majorSearch.schoolname ||
+                                        item.schoolname.includes(
+                                          majorSearch.schoolname
+                                        ))
+                                  )
+                                  .sort((a, b) => b.minscore - a.minscore)
+                                  .map((item) => ({
+                                    ...item,
+                                    schoolid: String(item.schoolid),
+                                    majorid: String(item.majorid)
+                                  }))
+                              : flattenMajor(scoreMajorDataDynamic[majorTab])
+                                  .filter(
+                                    (item) =>
+                                      (!majorSearch.schoolid ||
+                                        String(item.schoolid).includes(
+                                          majorSearch.schoolid
+                                        )) &&
+                                      (!majorSearch.schoolname ||
+                                        item.schoolname.includes(
+                                          majorSearch.schoolname
+                                        ))
+                                  )
+                                  .sort((a, b) => b.minscore - a.minscore)
+                                  .map((item) => ({
+                                    ...item,
+                                    schoolid: String(item.schoolid),
+                                    majorid: String(item.majorid)
+                                  }))) as ScoreMajorTableItem[]
+                      }
+                      loading={false}
+                      pagination={false}
+                      scroll={{ x: 800, y: 520 }}
+                      bordered
+                      locale={{
+                        emptyText: loadingMajorData
+                          ? '加载中...'
+                          : hasMatched
+                          ? '暂无可报考院校'
+                          : '暂无数据'
+                      }}
+                      size="middle"
+                      style={{ background: '#fff', borderRadius: 8 }}
+                    />
+                  </Spin>
                   <div style={{ fontSize: 12, color: '#999', marginTop: 8 }}>
                     数据来源：
                     <a
-                      href="https://eea.gd.gov.cn/ptgk/content/post_4458330.html"
+                      href={
+                        yearTab === '2022'
+                          ? 'https://eea.gd.gov.cn/ptgk/content/post_3989642.html'
+                          : yearTab === '2023'
+                          ? 'https://eea.gd.gov.cn/ptgk/content/post_4458330.html'
+                          : 'https://eea.gd.gov.cn/ptgk/content/post_4458330.html'
+                      }
                       target="_blank"
                     >
-                      2024年广东省普通高考本科批次正式投档
+                      {yearTab}年广东省普通高考本科批次正式投档
                     </a>
-                    
                     仅供参考
                   </div>
                 </div>
