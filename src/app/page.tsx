@@ -309,7 +309,7 @@ export default function HomePage() {
             textShadow: '0 2px 4px rgba(0,0,0,0.2)'
           }}
         >
-          广东高考2021-2025年录取最低分数线/2025年广东高考分数段统计
+          广东高考信息查询
         </Typography.Title>
         <Typography.Paragraph
           style={{
@@ -321,23 +321,7 @@ export default function HomePage() {
         >
           输入分数，匹配科类，查看历年分数线走势
         </Typography.Paragraph>
-        <Typography.Paragraph
-          style={{
-            textAlign: 'center',
-            color: 'rgba(255,255,255,0.75)',
-            marginTop: 4,
-            fontSize: 14
-          }}
-        >
-          <a
-            href="https://eea.gd.gov.cn/ptgk/content/post_4733327.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ color: 'rgba(255,255,255,0.9)' }}
-          >
-            2025年数据来源
-          </a>
-        </Typography.Paragraph>
+        
       </div>
       <Layout.Content
         style={{ width: '98vw', margin: '0 auto', padding: '0 12px 24px' }}
@@ -354,8 +338,8 @@ export default function HomePage() {
             activeKey={mainTab}
             onChange={(k) => setMainTab(k as 'main' | 'major2024')}
             items={[
-              { key: 'main', label: '分数线匹配' },
-              { key: 'major2024', label: '2022-2024本科普通批专业组投档线' }
+              { key: 'main', label: '分数线科目匹配' },
+              { key: 'major2024', label: '2022-2024年本科普通批专业组投档线' }
             ]}
             tabBarGutter={32}
           />
