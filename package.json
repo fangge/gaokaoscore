@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "static": "STATIC_ASSET_PREFIX=xxxx next build",
     "start": "next start"
   },
   "dependencies": {
