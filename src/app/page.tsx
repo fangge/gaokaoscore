@@ -311,7 +311,7 @@ export default function HomePage() {
         </Typography.Paragraph>
       </div>
       <Layout.Content
-        style={{ width: '90vw', margin: '0 auto', padding: '0 24px 24px' }}
+        style={{ width: '98vw', margin: '0 auto', padding: '0 12px 24px' }}
       >
         {/* 新增主tab：分数线/2024本科专业组 */}
         <Card
