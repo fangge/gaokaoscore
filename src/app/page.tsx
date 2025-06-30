@@ -30,9 +30,16 @@ type GaokaoItem = {
   category: string;
   lines: Line;
 };
+type DistributionsItem = {
+  type: '本科' | '专科';
+  category: string;
+  scoreData: { score: number; count: number; cumulative: number }[];
+};
 
 const years: Year[] = ['2021', '2022', '2023', '2024', '2025'];
 const allData: GaokaoItem[] = gaokaoData as GaokaoItem[];
+  const distrubutionsData: DistributionsItem[] =
+    scoreDistributions as DistributionsItem[];
 
 const ScoreChart = dynamic(() => import('../components/ScoreChart'), {
   ssr: false
@@ -42,11 +49,23 @@ const ScoreDistributionChart = dynamic(
   { ssr: false }
 );
 
+/**
+ * 根据院校类型获取对应的专业类别列表
+ * @param type 院校类型，可选值为'本科'或'专科'
+ * @returns 去重后的专业类别数组
+ */
 const getCategories = (type: '本科' | '专科') =>
   Array.from(
     new Set(allData.filter((d) => d.type === type).map((d) => d.category))
   );
 
+/**
+ * 根据分数匹配符合条件的院校类别
+ *
+ * @param score - 考生分数
+ * @returns 返回匹配的院校类别数组，包含类型(本科/专科)、类别名称及分差
+ *          结果按类型(本科优先)和分差(从小到大)排序
+ */
 const matchCategory = (
   score: number
 ): { type: '本科' | '专科'; category: string; difference: number }[] => {
@@ -76,6 +95,20 @@ const matchCategory = (
     });
 };
 
+/**
+ * 广东高考分数线查询页面主组件
+ *
+ * 提供以下功能：
+ * 1. 本科/专科分数线切换
+ * 2. 分数输入与科类匹配
+ * 3. 历年分数线走势图展示
+ * 4. 分数分布图展示
+ * 5. 匹配结果展示（包含排名信息）
+ *
+ * 数据来源：广东省教育考试院
+ *
+ * @returns 包含完整高考分数线查询功能的React组件
+ */
 export default function HomePage() {
   const [tab, setTab] = useState<'本科' | '专科'>('本科');
   const [score, setScore] = useState<number | null>(null);
@@ -88,6 +121,12 @@ export default function HomePage() {
     useState<string | null>(null);
   const resultCardRef = React.useRef<HTMLDivElement>(null);
 
+  // 当前tab下所有分布数据
+  const filteredDistributions = useMemo(
+    () => distrubutionsData.filter((d) => d.type === tab),
+    [tab, distrubutionsData]
+  );
+
   const categories = useMemo(() => ['全部', ...getCategories(tab)], [tab]);
   const filteredData = useMemo(
     () =>
@@ -99,32 +138,38 @@ export default function HomePage() {
     [tab, selectedCategory]
   );
 
-  // Find the score distribution data for the selected category
+  // 当前tab下，选中科类的分布数据
   const distributionData = useMemo(() => {
     if (!selectedDistributionCategory) return null;
-
-    const categoryData = scoreDistributions.find(
-      (d) => d.category === selectedDistributionCategory
+    const categoryData = distrubutionsData.find(
+      (d) =>
+        d.category === selectedDistributionCategory &&
+        d.type === tab
     );
     return categoryData ? categoryData.scoreData : null;
-  }, [selectedDistributionCategory]);
+  }, [selectedDistributionCategory, tab, distrubutionsData]);
 
-  // Update selected distribution category when a match is found
   useEffect(() => {
     if (matchedResults.length > 0) {
-      // Prioritize 普通类(历史) or 普通类(物理) if matched
+      // 优先选当前tab下的普通类(历史)或普通类(物理)
       const priorityCategory = matchedResults.find(
-        (r) => r.category === '普通类(历史)' || r.category === '普通类(物理)'
+        (r) =>
+          (r.category === '普通类(历史)' || r.category === '普通类(物理)') &&
+          r.type === tab
       );
+      // 只选当前tab下的第一个匹配
+      const firstTabMatch = matchedResults.find((r) => r.type === tab);
 
       if (priorityCategory) {
         setSelectedDistributionCategory(priorityCategory.category);
+      } else if (firstTabMatch) {
+        setSelectedDistributionCategory(firstTabMatch.category);
       } else {
-        // Otherwise use the first match
+        // fallback: 选第一个匹配
         setSelectedDistributionCategory(matchedResults[0].category);
       }
     }
-  }, [matchedResults]);
+  }, [matchedResults, tab]);
 
   const handleMatch = () => {
     if (typeof score !== 'number' || isNaN(score)) {
@@ -302,7 +347,7 @@ export default function HomePage() {
                   value={selectedDistributionCategory}
                   onChange={setSelectedDistributionCategory}
                   style={{ width: 180 }}
-                  options={scoreDistributions.map((d, index) => ({
+                  options={filteredDistributions.map((d, index) => ({
                     value: d.category,
                     label: `${index + 1}. ${d.category}`
                   }))}
@@ -338,7 +383,7 @@ export default function HomePage() {
               <Result
                 status="success"
                 icon={<CheckCircleTwoTone twoToneColor={token.colorSuccess} />}
-                title="本科和专科可报考科类"
+                title={`${tab}可报考科类`}
                 subTitle={
                   <div style={{ marginTop: 16 }}>
                     <Typography.Text strong style={{ fontSize: 16 }}>
@@ -347,162 +392,83 @@ export default function HomePage() {
                     <Typography.Paragraph
                       style={{ marginTop: 8, color: token.colorTextSecondary }}
                     >
-                      以下是您可以报考的本科和专科科类，无论您当前选择的是哪个标签页
+                      以下是您可以报考的{tab}科类
                     </Typography.Paragraph>
                     <Divider style={{ margin: '12px 0' }} />
-
-                    {/* 本科匹配结果 */}
-                    {groupedResults['本科'].length > 0 && (
-                      <div style={{ marginBottom: 16 }}>
-                        <Typography.Title
-                          level={5}
-                          style={{
-                            color: token.colorPrimary,
-                            marginBottom: 12,
-                            backgroundColor: 'rgba(24, 144, 255, 0.1)',
-                            padding: '8px 12px',
-                            borderRadius: '4px'
-                          }}
-                        >
-                          本科可报考科类 ({groupedResults['本科'].length}个)
-                        </Typography.Title>
-                        <ul
-                          style={{
-                            textAlign: 'left',
-                            padding: 0,
-                            listStyle: 'none'
-                          }}
-                        >
-                          {groupedResults['本科'].map((m) => (
-                            <li
-                              key={`本科-${m.category}`}
-                              style={{ margin: '8px 0', fontSize: 16 }}
-                            >
-                              <Space>
-                                <span>{m.category}</span>
-                                <Tag color="success">高出{m.difference}分</Tag>
-                                {/* 排名信息 */}
-                                {(() => {
-                                  const dist = scoreDistributions.find(
-                                    (d) => d.category === m.category
+                    {groupedResults[tab].length > 0 ? (
+                      <ul
+                        style={{
+                          textAlign: 'left',
+                          padding: 0,
+                          listStyle: 'none'
+                        }}
+                      >
+                        {groupedResults[tab].map((m) => (
+                          <li
+                            key={`${tab}-${m.category}`}
+                            style={{ margin: '8px 0', fontSize: 16 }}
+                          >
+                            <Space>
+                              <span>{m.category}</span>
+                              <Tag color={tab === '本科' ? 'success' : 'purple'}>
+                                高出{m.difference}分
+                              </Tag>
+                              {/* 排名信息 */}
+                              {(() => {
+                                const dist = distrubutionsData.find(
+                                  (d) =>
+                                    d.category === m.category &&
+                                    d.type === m.type
+                                );
+                                if (!dist) {
+                                  return (
+                                    <Tag
+                                      color="orange"
+                                      style={{ fontWeight: 500 }}
+                                    >
+                                      暂无排名数据
+                                    </Tag>
                                   );
-                                  if (!dist) {
+                                }
+                                if (typeof score === 'number') {
+                                  const sorted = [...dist.scoreData].sort(
+                                    (a, b) => b.score - a.score
+                                  );
+                                  const total =
+                                    sorted.length > 0
+                                      ? sorted[sorted.length - 1].cumulative
+                                      : 0;
+                                  let found = sorted.find(
+                                    (d) => d.score <= score
+                                  );
+                                  if (!found && sorted.length > 0)
+                                    found = sorted[sorted.length - 1];
+                                  if (found) {
+                                    const percentile = (
+                                      (found.cumulative / total) *
+                                      100
+                                    ).toFixed(2);
                                     return (
-                                      <Tag color="orange" style={{ fontWeight: 500 }}>
-                                        暂无排名数据
+                                      <Tag
+                                        color="blue"
+                                        style={{ fontWeight: 500 }}
+                                      >
+                                        排名: {found.cumulative} / {total}
+                                        （超越{percentile}%考生）
                                       </Tag>
                                     );
                                   }
-                                  if (typeof score === 'number') {
-                                    // 找到分数≤score的最大项
-                                    const sorted = [...dist.scoreData].sort(
-                                      (a, b) => b.score - a.score
-                                    );
-                                    const total =
-                                      sorted.length > 0
-                                        ? sorted[sorted.length - 1].cumulative
-                                        : 0;
-                                    let found = sorted.find(
-                                      (d) => d.score <= score
-                                    );
-                                    if (!found && sorted.length > 0)
-                                      found = sorted[sorted.length - 1];
-                                    if (found) {
-                                      const percentile = (
-                                        (found.cumulative / total) *
-                                        100
-                                      ).toFixed(2);
-                                      return (
-                                        <Tag
-                                          color="blue"
-                                          style={{ fontWeight: 500 }}
-                                        >
-                                          排名: {found.cumulative} / {total}
-                                          （超越{percentile}%考生）
-                                        </Tag>
-                                      );
-                                    }
-                                  }
-                                  return null;
-                                })()}
-                              </Space>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* 专科匹配结果 */}
-                    {groupedResults['专科'].length > 0 && (
-                      <div>
-                        <Typography.Title
-                          level={5}
-                          style={{
-                            color: '#722ed1',
-                            marginBottom: 12,
-                            backgroundColor: 'rgba(114, 46, 209, 0.1)',
-                            padding: '8px 12px',
-                            borderRadius: '4px'
-                          }}
-                        >
-                          专科可报考科类 ({groupedResults['专科'].length}个)
-                        </Typography.Title>
-                        <ul
-                          style={{
-                            textAlign: 'left',
-                            padding: 0,
-                            listStyle: 'none'
-                          }}
-                        >
-                          {groupedResults['专科'].map((m) => (
-                            <li
-                              key={`专科-${m.category}`}
-                              style={{ margin: '8px 0', fontSize: 16 }}
-                            >
-                              <Space>
-                                <span>{m.category}</span>
-                                <Tag color="purple">高出{m.difference}分</Tag>
-                                {/* 排名信息 */}
-                                {(() => {
-                                  const dist = scoreDistributions.find(
-                                    (d) => d.category === m.category
-                                  );
-                                  if (dist && typeof score === 'number') {
-                                    const sorted = [...dist.scoreData].sort(
-                                      (a, b) => b.score - a.score
-                                    );
-                                    const total =
-                                      sorted.length > 0
-                                        ? sorted[sorted.length - 1].cumulative
-                                        : 0;
-                                    let found = sorted.find(
-                                      (d) => d.score <= score
-                                    );
-                                    if (!found && sorted.length > 0)
-                                      found = sorted[sorted.length - 1];
-                                    if (found) {
-                                      const percentile = (
-                                        (found.cumulative / total) *
-                                        100
-                                      ).toFixed(2);
-                                      return (
-                                        <Tag
-                                          color="blue"
-                                          style={{ fontWeight: 500 }}
-                                        >
-                                          排名: {found.cumulative} / {total}
-                                          （超越{percentile}%考生）
-                                        </Tag>
-                                      );
-                                    }
-                                  }
-                                  return null;
-                                })()}
-                              </Space>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                                }
+                                return null;
+                              })()}
+                            </Space>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <Typography.Text type="warning">
+                        暂无可报考科类
+                      </Typography.Text>
                     )}
                   </div>
                 }
