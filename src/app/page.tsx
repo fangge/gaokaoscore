@@ -222,7 +222,7 @@ export default function HomePage() {
             textShadow: '0 2px 4px rgba(0,0,0,0.2)'
           }}
         >
-          广东高考2021-2025年录取最低分数线
+          广东高考2021-2025年录取最低分数线/2025年广东高考分数段统计
         </Typography.Title>
         <Typography.Paragraph
           style={{
