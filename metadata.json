@@ -1,0 +1,6 @@
+{
+  "name": "广东高考本专科投档线查询与择校分析系统",
+  "description": "提供广东2023-2025年本科及专科普通类（物理/历史）省内院校投档线、最低位次查询，基于冲稳保算法的智能志愿推荐，及多维度可视化趋势分析系统。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
