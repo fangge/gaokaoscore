@@ -4,6 +4,8 @@
 
 在线访问：<https://gaokaoscore.mrfangge.com>
 
+> 本项目已支持 PWA（渐进式 Web 应用），可在手机/桌面「添加到主屏幕」后像原生 App 一样离线查询历年投档数据。
+
 ---
 
 ## 项目简介
@@ -31,6 +33,12 @@
 - **投档位次波动幅度排行榜**：筛选 2023 vs 2025 年位次震荡最剧烈的 10 所省内本科院校，帮助识别「断档」「小年」等机会点。
 - **投档最低分密集度分布**：以 20 分一档呈现省内高校供给数量分布，直观展现各成绩段的竞争密集带。
 - **宏观格局研判**：结合公办 / 民办投档分区间速览与数据完整率校验，给出省内本科投档格局的整体研判结论。
+
+### 4. PWA 渐进式 Web 应用
+- **可安装**：支持在手机/桌面浏览器「添加到主屏幕」，安装后以独立窗口启动，无浏览器地址栏。
+- **离线可用**：首次访问后核心资源（HTML/CSS/JS/数据）由 Service Worker 缓存，断网仍可查询历年投档数据。
+- **自动更新**：发布新版本时，已打开的页面会在右下角弹窗提示「发现新版本」，点击「立即更新」即可刷新至最新版。
+- **Google Fonts 缓存**：字体资源单独走 CacheFirst 策略，二次访问加载更快。
 
 ---
 
@@ -60,6 +68,7 @@
 | 图表 | Recharts |
 | 动画 | Motion |
 | 图标 | lucide-react |
+| PWA | vite-plugin-pwa + Workbox |
 
 ---
 
@@ -89,9 +98,14 @@ pnpm preview
 
 # 清理构建产物
 pnpm clean
+
+# 重新生成 PWA 图标（修改 public/icon.svg 后执行）
+pnpm generate-icons
 ```
 
 开发服务器默认监听 `http://localhost:3000`。
+
+> **关于 PWA**：Service Worker 仅在生产构建（`pnpm build` / `pnpm preview`）中生效，开发模式（`pnpm dev`）默认不注册，便于热更新调试。
 
 ---
 
@@ -99,17 +113,29 @@ pnpm clean
 
 ```
 gaokaoscore/
-├── index.html              # 入口 HTML
+├── index.html              # 入口 HTML（含 PWA meta 标签）
 ├── CNAME                   # 自定义域名（GitHub Pages）
-├── vite.config.ts          # Vite 配置（React + Tailwind 插件）
+├── vite.config.ts          # Vite 配置（React + Tailwind + PWA 插件）
 ├── tsconfig.json           # TypeScript 配置
 ├── package.json            # 依赖与脚本
+├── scripts/
+│   └── generate-pwa-icons.mjs  # 从 SVG 生成各尺寸 PWA 图标
+├── public/
+│   ├── icon.svg            # PWA 主图标（SVG 矢量源）
+│   ├── favicon.svg         # 浏览器标签图标
+│   ├── pwa-192x192.png     # PWA 图标（192）
+│   ├── pwa-512x512.png     # PWA 图标（512）
+│   ├── maskable-icon-512x512.png  # 适配性图标
+│   └── apple-touch-icon.png      # iOS 主屏图标
 └── src/
     ├── main.tsx            # 应用入口
-    ├── App.tsx             # 主组件（含三大功能模块）
+    ├── App.tsx             # 主组件（含三大功能模块 + PWA 提示）
     ├── data.ts             # 广东省 2023-2025 投档数据集
     ├── types.ts            # 类型定义（Subject / SchoolNature / UniversityData）
-    └── index.css           # 全局样式
+    ├── vite-env.d.ts       # PWA 虚拟模块类型声明
+    ├── index.css           # 全局样式
+    └── components/
+        └── PWAUpdatePrompt.tsx  # PWA 更新/离线就绪提示组件
 ```
 
 ---

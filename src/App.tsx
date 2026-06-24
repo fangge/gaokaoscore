@@ -53,6 +53,7 @@ import {
   juniorDanceData
 } from './data';
 import { UniversityData, Subject, SchoolNature } from './types';
+import PWAUpdatePrompt from './components/PWAUpdatePrompt';
 
 export default function App() {
   // Core user states
@@ -1505,6 +1506,9 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* PWA 更新提示 */}
+      <PWAUpdatePrompt />
     </div>
   );
 }
