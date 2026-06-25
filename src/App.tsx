@@ -641,7 +641,7 @@ export default function App() {
                         placeholder="请输入全省位次..."
                         className="w-full bg-white/5 border border-white/20 focus:border-blue-500/80 rounded-xl py-2 px-3 text-lg font-bold text-blue-400 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/40 shadow-inner backdrop-blur-xl transition-all"
                         min="1"
-                        max="350000"
+                        pattern="[0-9]*"
                       />
                       <span className="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">名</span>
                     </div>
