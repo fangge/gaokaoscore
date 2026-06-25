@@ -11,6 +11,8 @@ pnpm-debug.log*
 build/
 .cache/
 dist/
+scripts
+imgdata
 
 # Env
 .env

@@ -52,7 +52,8 @@ import {
   juniorActingData,
   juniorDanceData
 } from './data';
-import { UniversityData, Subject, SchoolNature } from './types';
+import { UniversityData, Subject, SchoolNature, MajorGroupData } from './types';
+import groupData from './groupData.json';
 import PWAUpdatePrompt from './components/PWAUpdatePrompt';
 
 export default function App() {
@@ -72,8 +73,19 @@ export default function App() {
   // Interactive elements
   const [selectedSchool, setSelectedSchool] = useState<UniversityData | null>(null);
   const [comparedSchools, setComparedSchools] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<'recommend' | 'compare' | 'macro'>('recommend');
+  const [activeTab, setActiveTab] = useState<'recommend' | 'compare' | 'macro' | 'group'>('group');
   const [showHelp, setShowHelp] = useState(false);
+
+  // 专业组数据 Tab 独立筛选状态
+  const [groupLevel, setGroupLevel] = useState<'本科' | '专科'>('本科');
+  const [groupSubject, setGroupSubject] = useState<'历史' | '物理'>('物理');
+  const [groupSearch, setGroupSearch] = useState('');
+  const [groupSortBy, setGroupSortBy] = useState<'rankAsc' | 'rankDesc' | 'scoreDesc' | 'scoreAsc' | 'name'>('rankAsc');
+  // 专业组 Tab 独立的排位/分数筛选
+  const [groupInputMode, setGroupInputMode] = useState<'rank' | 'score'>('rank');
+  const [groupRankInput, setGroupRankInput] = useState<string>('50000');
+  const [groupScoreInput, setGroupScoreInput] = useState<string>('500');
+  const [groupEligibleOnly, setGroupEligibleOnly] = useState<boolean>(false);
 
   // Get current dataset
   const currentDataset = useMemo(() => {
@@ -370,6 +382,42 @@ export default function App() {
       .slice(0, 10);
   }, [currentDataset]);
 
+  // 专业组数据：筛选 + 排序（源自 data.xlsx 2025 专业组数据）
+  const GROUP_DISPLAY_LIMIT = 200;
+  const filteredGroupData = useMemo(() => {
+    const q = groupSearch.trim().toLowerCase();
+    // 可达专业组筛选：投档分 ≤ 我的分数 或 最低位次 ≥ 我的排位（与推荐 Tab 一致的可达判定）
+    const eligScore = parseInt(groupScoreInput);
+    const eligRank = parseInt(groupRankInput);
+    const hasEligScore = !isNaN(eligScore);
+    const hasEligRank = !isNaN(eligRank);
+    return (groupData as MajorGroupData[])
+      .filter(g => g.level === groupLevel && g.subject === groupSubject)
+      .filter(g => {
+        if (!q) return true;
+        return (
+          g.school.toLowerCase().includes(q) ||
+          g.schoolGroupCode.includes(q) ||
+          g.groupCode.includes(q) ||
+          g.majorNames.toLowerCase().includes(q)
+        );
+      })
+      .filter(g => {
+        if (!groupEligibleOnly) return true;
+        const byScore = hasEligScore ? g.minScore <= eligScore : false;
+        const byRank = hasEligRank ? g.minRank >= eligRank : false;
+        return byScore || byRank;
+      })
+      .sort((a, b) => {
+        if (groupSortBy === 'name') return a.school.localeCompare(b.school, 'zh');
+        if (groupSortBy === 'rankAsc') return a.minRank - b.minRank;
+        if (groupSortBy === 'rankDesc') return b.minRank - a.minRank;
+        if (groupSortBy === 'scoreDesc') return b.minScore - a.minScore;
+        if (groupSortBy === 'scoreAsc') return a.minScore - b.minScore;
+        return 0;
+      });
+  }, [groupLevel, groupSubject, groupSearch, groupSortBy, groupEligibleOnly, groupScoreInput, groupRankInput]);
+
   return (
     <div className="bg-[#020617] text-slate-100 font-sans antialiased relative min-h-screen overflow-x-hidden selection:bg-blue-500/30 selection:text-white" id="main_root">
 
@@ -464,7 +512,8 @@ export default function App() {
 
       <main className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-6 relative z-10" id="app_main">
 
-        {/* Top Control Panel Grid */}
+        {/* Top Control Panel Grid - 仅关联「智能择校推荐与查询」Tab */}
+        {activeTab === 'recommend' && (
         <section className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl p-6 flex flex-col gap-6" id="control_panel">
           <div className="flex flex-col lg:flex-row gap-6 items-stretch justify-between">
 
@@ -719,9 +768,21 @@ export default function App() {
             </div>
           </div>
         </section>
+        )}
 
         {/* Navigation Tabs */}
         <div className="flex flex-wrap gap-1 bg-white/5 backdrop-blur-xl p-1.5 rounded-2xl border border-white/10 shadow-xl relative z-10" id="navigation_tabs">
+          <button
+            onClick={() => setActiveTab('group')}
+            className={`flex-1 min-w-[120px] py-3 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${activeTab === 'group'
+                ? 'bg-white/10 border border-white/15 text-white shadow-lg shadow-white/5'
+                : 'text-slate-300 hover:bg-white/5 hover:text-white'
+              }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            2025专业组录取数据
+          </button>
+
           <button
             onClick={() => setActiveTab('recommend')}
             className={`flex-1 min-w-[120px] py-3 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${activeTab === 'recommend'
@@ -1483,6 +1544,223 @@ export default function App() {
                   </div>
                 </div>
 
+              </div>
+
+            </div>
+          )}
+
+          {/* TAB 4: 2025 院校专业组录取数据 */}
+          {activeTab === 'group' && (
+            <div className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 flex flex-col gap-6 shadow-2xl" id="tab_group">
+
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                  <h3 className="text-lg font-bold text-white">
+                    2025 院校专业组录取数据查询
+                  </h3>
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    源自 data.xlsx 专业组数据，提取各院校专业组录取最低分与最低位次，并列出组内所含专业名称。同一专业组内所有专业共享该组投档门槛。
+                  </p>
+                </div>
+              </div>
+
+              {/* Filters */}
+              <div className="flex flex-col md:flex-row flex-wrap gap-4 items-center justify-between">
+
+                <div className="flex flex-wrap items-center gap-2">
+                  {/* 本科 / 专科 */}
+                  <div className="grid grid-cols-2 p-1 bg-black/20 rounded-xl border border-white/5">
+                    {(['本科', '专科'] as const).map(lv => (
+                      <button
+                        key={lv}
+                        onClick={() => setGroupLevel(lv)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${groupLevel === lv
+                          ? 'bg-white/10 text-white border border-white/10'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                          }`}
+                      >
+                        {lv}
+                      </button>
+                    ))}
+                  </div>
+                  {/* 科类 历史 / 物理 */}
+                  <div className="grid grid-cols-2 p-1 bg-black/20 rounded-xl border border-white/5">
+                    {(['物理', '历史'] as const).map(sub => (
+                      <button
+                        key={sub}
+                        onClick={() => setGroupSubject(sub)}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${groupSubject === sub
+                          ? 'bg-white/10 text-white border border-white/10'
+                          : 'text-slate-400 hover:text-white hover:bg-white/5'
+                          }`}
+                      >
+                        {sub}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 搜索 */}
+                <div className="w-full md:w-80 relative">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                  <input
+                    type="text"
+                    value={groupSearch}
+                    onChange={(e) => setGroupSearch(e.target.value)}
+                    placeholder="搜索院校 / 专业 / 专业组代码..."
+                    className="w-full bg-white/5 border border-white/20 focus:border-blue-500/80 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 text-slate-100 placeholder:text-slate-500 transition-all"
+                  />
+                  {groupSearch && (
+                    <button
+                      onClick={() => setGroupSearch('')}
+                      className="absolute right-3 top-3 text-slate-400 hover:text-white cursor-pointer"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  )}
+                </div>
+
+                {/* 排序 */}
+                <div className="flex items-center gap-1">
+                  <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
+                  <select
+                    value={groupSortBy}
+                    onChange={(e) => setGroupSortBy(e.target.value as any)}
+                    className="bg-white/5 border border-white/20 rounded-xl py-2 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/30 text-slate-200 cursor-pointer hover:border-white/30 transition-all [&_option]:bg-slate-950 [&_option]:text-slate-100"
+                  >
+                    <option value="rankAsc">按最低排位 (升序 - 最好在前)</option>
+                    <option value="rankDesc">按最低排位 (降序 - 最易在前)</option>
+                    <option value="scoreDesc">按最低分 (降序 - 最高在前)</option>
+                    <option value="scoreAsc">按最低分 (升序 - 最低在前)</option>
+                    <option value="name">按院校名称排序</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* 排位 / 分数筛选（专业组 Tab 独立） */}
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row md:items-center gap-4 shadow-md">
+                <div className="flex items-center gap-2">
+                  <Activity className="w-4 h-4 text-indigo-400 animate-pulse" />
+                  <span className="text-xs font-bold text-slate-300">按全省排位 / 投档分筛选</span>
+                </div>
+
+                <div className="flex rounded-xl bg-black/20 border border-white/5 p-1 shrink-0">
+                  <button
+                    onClick={() => setGroupInputMode('rank')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${groupInputMode === 'rank' ? 'bg-white/10 text-white border border-white/10 shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+                  >
+                    全省排位
+                  </button>
+                  <button
+                    onClick={() => setGroupInputMode('score')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${groupInputMode === 'score' ? 'bg-white/10 text-white border border-white/10 shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+                  >
+                    投档分数
+                  </button>
+                </div>
+
+                <div className="flex-1 flex items-center gap-3">
+                  {groupInputMode === 'rank' ? (
+                    <div className="relative w-full md:w-64">
+                      <input
+                        type="number"
+                        value={groupRankInput}
+                        onChange={(e) => setGroupRankInput(e.target.value)}
+                        placeholder="请输入全省位次..."
+                        className="w-full bg-white/5 border border-white/20 focus:border-blue-500/80 rounded-xl py-2 px-3 text-base font-bold text-blue-400 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all"
+                        min="1"
+                        pattern="[0-9]*"
+                      />
+                      <span className="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">名</span>
+                    </div>
+                  ) : (
+                    <div className="relative w-full md:w-64">
+                      <input
+                        type="number"
+                        value={groupScoreInput}
+                        onChange={(e) => setGroupScoreInput(e.target.value)}
+                        placeholder="请输入高考分数..."
+                        className="w-full bg-white/5 border border-white/20 focus:border-blue-500/80 rounded-xl py-2 px-3 text-base font-bold text-blue-400 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all"
+                        min="100"
+                        max="750"
+                      />
+                      <span className="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">分</span>
+                    </div>
+                  )}
+
+                  <label className="flex items-center gap-2 cursor-pointer select-none shrink-0">
+                    <input
+                      type="checkbox"
+                      checked={groupEligibleOnly}
+                      onChange={(e) => setGroupEligibleOnly(e.target.checked)}
+                      className="w-4 h-4 rounded accent-blue-500 cursor-pointer"
+                    />
+                    <span className="text-xs text-slate-300 font-semibold">
+                      仅显示可达专业组
+                    </span>
+                  </label>
+                </div>
+
+                {groupEligibleOnly && (
+                  <span className="text-[11px] text-slate-400 md:text-right">
+                    规则：专业组录取最低分 ≤ 我的分数，或 最低位次 ≥ 我的排位
+                  </span>
+                )}
+              </div>
+
+              {/* 匹配数量提示 */}
+              <div className="text-xs text-slate-400">
+                共匹配 <strong className="text-white">{filteredGroupData.length.toLocaleString()}</strong> 个院校专业组
+                {filteredGroupData.length > GROUP_DISPLAY_LIMIT && (
+                  <>，当前展示前 <strong className="text-white">{GROUP_DISPLAY_LIMIT}</strong> 条（请缩小搜索或调整筛选以查看更多）</>
+                )}
+              </div>
+
+              {/* 专业组数据表 */}
+              <div className="overflow-x-auto rounded-xl border border-white/10">
+                <table className="w-full text-xs text-left border-collapse" id="group_data_table">
+                  <thead>
+                    <tr className="bg-white/5 text-slate-300 font-bold border-b border-white/10">
+                      <th className="p-3 whitespace-nowrap">院校名称</th>
+                      <th className="p-3">专业名称（组内）</th>
+                      <th className="p-3 text-center whitespace-nowrap">专业组代码</th>
+                      <th className="p-3 text-center whitespace-nowrap">院校专业组代码</th>
+                      <th className="p-3 text-center">科类</th>
+                      <th className="p-3 text-center whitespace-nowrap">批次</th>
+                      <th className="p-3 text-center whitespace-nowrap">专业组录取最低分</th>
+                      <th className="p-3 text-center whitespace-nowrap">专业组最低位次</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredGroupData.length === 0 ? (
+                      <tr>
+                        <td colSpan={8} className="p-8 text-center text-slate-400">
+                          未找到匹配的院校专业组，请调整筛选条件或搜索关键词。
+                        </td>
+                      </tr>
+                    ) : (
+                      filteredGroupData.slice(0, GROUP_DISPLAY_LIMIT).map(g => (
+                        <tr key={g.schoolGroupCode} className="border-b border-white/5 hover:bg-white/5 transition-all">
+                          <td className="p-3 font-bold text-white whitespace-nowrap">{g.school}</td>
+                          <td className="p-3 text-slate-300 max-w-md">{g.majorNames}</td>
+                          <td className="p-3 text-center font-mono text-slate-200">{g.groupCode}</td>
+                          <td className="p-3 text-center font-mono text-slate-200">{g.schoolGroupCode}</td>
+                          <td className="p-3 text-center">
+                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold border ${g.subject === '物理'
+                              ? 'bg-blue-500/20 text-blue-300 border-blue-500/30'
+                              : 'bg-orange-500/20 text-orange-300 border-orange-500/30'
+                              }`}>
+                              {g.subject}
+                            </span>
+                          </td>
+                          <td className="p-3 text-center text-slate-300 whitespace-nowrap">{g.batch}</td>
+                          <td className="p-3 text-center font-bold text-blue-400 bg-blue-500/5">{g.minScore}</td>
+                          <td className="p-3 text-center font-semibold text-slate-200 bg-blue-500/5">{g.minRank.toLocaleString()}</td>
+                        </tr>
+                      ))
+                    )}
+                  </tbody>
+                </table>
               </div>
 
             </div>
