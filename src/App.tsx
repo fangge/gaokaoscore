@@ -397,7 +397,7 @@ export default function App() {
                   </span>
                 </div>
                 <h1 className="text-2xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-400 mt-1">
-                  广东高考{level}投档位次查询与择校分析系统
+                  广东高考投档位次查询与择校分析系统
                 </h1>
                 <p className="text-sm text-slate-400 mt-0.5 max-w-2xl">
                   收录 2023 - 2025 年省内公办、民办及合作办学{level}段完整投档数据。集成多维度对比及宏观数据演变态势。

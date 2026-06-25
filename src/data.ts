@@ -471,21 +471,12 @@ export const historyData: UniversityData[] = [
     }
   },
   {
-    name: '广东东软学院',
-    nature: '民办',
-    history: {
-      2023: { score: 444, rank: 85226 },
-      2024: { score: 452, rank: 74152 },
-      2025: { score: 480, rank: 75816 }
-    }
-  },
-  {
     name: '广东白云学院',
     nature: '民办',
     history: {
       2023: { score: 457, rank: 73203 },
       2024: { score: 452, rank: 74221 },
-      2025: { score: 477, rank: 78693 }
+      2025: { score: 480, rank: 78693 }
     }
   },
   {
@@ -511,7 +502,7 @@ export const historyData: UniversityData[] = [
     nature: '民办',
     history: {
       2023: { score: 477, rank: 55979 },
-      2024: { score: 428, rank: 92636 },
+      2024: { score: 428, rank: 96236 },
       2025: { score: 464, rank: 91184 }
     }
   },
@@ -529,7 +520,7 @@ export const historyData: UniversityData[] = [
     nature: '民办',
     history: {
       2023: { score: 433, rank: 96998 },
-      2024: { score: 428, rank: 92657 },
+      2024: { score: 428, rank: 96257 },
       2025: { score: 464, rank: 91596 }
     }
   },
@@ -538,7 +529,7 @@ export const historyData: UniversityData[] = [
     nature: '民办',
     history: {
       2023: { score: 448, rank: 80869 },
-      2024: { score: 428, rank: 92662 },
+      2024: { score: 428, rank: 96262 },
       2025: { score: 464, rank: 91600 }
     }
   },
@@ -547,7 +538,7 @@ export const historyData: UniversityData[] = [
     nature: '民办',
     history: {
       2023: { score: 433, rank: 96985 },
-      2024: { score: 428, rank: 92651 },
+      2024: { score: 428, rank: 96251 },
       2025: { score: 464, rank: 91604 }
     }
   },
@@ -556,7 +547,7 @@ export const historyData: UniversityData[] = [
     nature: '民办',
     history: {
       2023: { score: 433, rank: 96025 },
-      2024: { score: 428, rank: 92622 },
+      2024: { score: 428, rank: 96229 },
       2025: { score: 464, rank: 91622 }
     }
   },
@@ -574,7 +565,7 @@ export const historyData: UniversityData[] = [
     nature: '民办',
     history: {
       2023: { score: 436, rank: 93237 },
-      2024: { score: 428, rank: 92649 },
+      2024: { score: 428, rank: 96249 },
       2025: { score: 464, rank: 91636 }
     }
   },
@@ -583,7 +574,7 @@ export const historyData: UniversityData[] = [
     nature: '民办',
     history: {
       2023: { score: 433, rank: 96997 },
-      2024: { score: 428, rank: 92608 },
+      2024: { score: 428, rank: 96208 },
       2025: { score: 464, rank: 91638 }
     }
   },
@@ -592,7 +583,7 @@ export const historyData: UniversityData[] = [
     nature: '民办',
     history: {
       2023: { score: 433, rank: 97001 },
-      2024: { score: 428, rank: 92625 },
+      2024: { score: 428, rank: 96265 },
       2025: { score: 464, rank: 91641 }
     }
   },
@@ -601,7 +592,7 @@ export const historyData: UniversityData[] = [
     nature: '民办',
     history: {
       2023: { score: 453, rank: 76505 },
-      2024: { score: 428, rank: 91651 },
+      2024: { score: 428, rank: 96151 },
       2025: { score: 464, rank: 91648 }
     }
   },
@@ -629,7 +620,7 @@ export const historyData: UniversityData[] = [
     history: {
       2023: { score: null, rank: null },
       2024: { score: 498, rank: 40424 },
-      2025: { score: null, rank: null }
+      2025: { score: null, rank: null },
     }
   },
   {
@@ -638,12 +629,20 @@ export const historyData: UniversityData[] = [
     history: {
       2023: { score: 540, rank: 19154 },
       2024: { score: 463, rank: 65272 },
-      2025: { score: null, rank: null }
+      2025: { score: null, rank: null },
     }
-  }
+  },
+  {
+    name: '韩山师范学院',
+    nature: '公办',
+    history: {
+      2023: { score: 439, rank: 90034 },
+      2024: { score: 437, rank: 87172 },
+      2025: { score: null, rank: null },
+    }
+  },
 ];
 
-// Guangdong 2023-2025 Undergraduate Regular (Physics) In-Province Admission Data
 export const physicsData: UniversityData[] = [
   {
     name: '哈尔滨工业大学（深圳）',
@@ -965,7 +964,7 @@ export const physicsData: UniversityData[] = [
     nature: '公办',
     history: {
       2023: { score: 525, rank: 106434 },
-      2024: { score: 525, rank: 108580 },
+      2024: { score: 525, rank: 105850 },
       2025: { score: 526, rank: 119185 }
     }
   },
@@ -988,7 +987,7 @@ export const physicsData: UniversityData[] = [
     }
   },
   {
-    name: '广州职业大学',
+    name: '广州职业技术大学',
     nature: '公办',
     history: {
       2023: { score: null, rank: null },
@@ -1312,7 +1311,7 @@ export const physicsData: UniversityData[] = [
     }
   },
   {
-    name: '广州华商学院',
+    name: '广州华立学院',
     nature: '民办',
     history: {
       2023: { score: 446, rank: 224073 },
@@ -1348,14 +1347,14 @@ export const physicsData: UniversityData[] = [
     }
   },
   {
-    name: '广州华立学院',
+    name: '广州华商学院',
     nature: '民办',
     history: {
       2023: { score: 458, rank: 206010 },
       2024: { score: 442, rank: 252920 },
       2025: { score: 436, rank: 276586 }
     }
-  }
+  },
 ];
 
 export const juniorHistoryData: UniversityData[] = [
@@ -1369,7 +1368,7 @@ export const juniorHistoryData: UniversityData[] = [
     }
   },
   {
-    name: '肇庆医学院(专科)',
+    name: '肇庆医学院',
     nature: '公办',
     history: {
       2023: { score: 464, rank: 66402 },
@@ -1426,7 +1425,7 @@ export const juniorHistoryData: UniversityData[] = [
     name: '深圳城市职业学院',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 444, rank: 81116 },
       2025: { score: 469, rank: 86086 }
     }
@@ -1453,8 +1452,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广东江门中医药职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 421, rank: 109457 },
+      2024: { score: 400, rank: 123379 },
       2025: { score: 461, rank: 94630 }
     }
   },
@@ -1471,8 +1470,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '东莞职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 418, rank: 112942 },
+      2024: { score: 398, rank: 124863 },
       2025: { score: 457, rank: 98227 }
     }
   },
@@ -1480,8 +1479,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广东科贸职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 415, rank: 115590 },
+      2024: { score: 401, rank: 121675 },
       2025: { score: 454, rank: 101090 }
     }
   },
@@ -1489,8 +1488,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '深圳信息职业技术大学',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 374, rank: 162768 },
+      2024: { score: 414, rank: 108930 },
       2025: { score: 454, rank: 101501 }
     }
   },
@@ -1498,8 +1497,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广东食品药品职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 410, rank: 121844 },
+      2024: { score: 408, rank: 115347 },
       2025: { score: 449, rank: 107515 }
     }
   },
@@ -1507,8 +1506,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广东水利电力职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 409, rank: 122174 },
+      2024: { score: 403, rank: 120644 },
       2025: { score: 448, rank: 107999 }
     }
   },
@@ -1516,8 +1515,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '佛山职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 378, rank: 159084 },
+      2024: { score: 387, rank: 136256 },
       2025: { score: 446, rank: 110413 }
     }
   },
@@ -1525,8 +1524,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广东职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 380, rank: 156480 },
+      2024: { score: 392, rank: 131548 },
       2025: { score: 445, rank: 111829 }
     }
   },
@@ -1534,8 +1533,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广东云浮中医药职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 395, rank: 138484 },
+      2024: { score: 394, rank: 128969 },
       2025: { score: 444, rank: 112615 }
     }
   },
@@ -1543,8 +1542,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广东机电职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 385, rank: 150438 },
+      2024: { score: 396, rank: 127115 },
       2025: { score: 442, rank: 114990 }
     }
   },
@@ -1552,8 +1551,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广州体育职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 393, rank: 140747 },
+      2024: { score: 397, rank: 126335 },
       2025: { score: 441, rank: 115130 }
     }
   },
@@ -1561,8 +1560,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '惠州卫生职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 416, rank: 115320 },
+      2024: { score: 397, rank: 126301 },
       2025: { score: 440, rank: 116734 }
     }
   },
@@ -1570,8 +1569,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广东建设职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 393, rank: 140747 },
+      2024: { score: 392, rank: 131856 },
       2025: { score: 439, rank: 118129 }
     }
   },
@@ -1579,8 +1578,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广东科学技术职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 381, rank: 155631 },
+      2024: { score: 387, rank: 136621 },
       2025: { score: 438, rank: 118265 }
     }
   },
@@ -1588,8 +1587,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '中山火炬职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 379, rank: 157171 },
+      2024: { score: 393, rank: 130749 },
       2025: { score: 438, rank: 118489 }
     }
   },
@@ -1597,8 +1596,8 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广东行政职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 396, rank: 137646 },
+      2024: { score: 392, rank: 131756 },
       2025: { score: 436, rank: 121106 }
     }
   },
@@ -1606,25 +1605,673 @@ export const juniorHistoryData: UniversityData[] = [
     name: '广东邮电职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 401, rank: 132321 },
+      2024: { score: 394, rank: 129492 },
       2025: { score: 434, rank: 122866 }
     }
   },
   {
-    name: '珠海科技学院(专科)',
+    name: '广州科技贸易职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 383, rank: 153301 },
+      2024: { score: 387, rank: 136434 },
+      2025: { score: 431, rank: 126746 }
+    }
+  },
+  {
+    name: '广东理工职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 390, rank: 144773 },
+      2024: { score: 382, rank: 141477 },
+      2025: { score: 431, rank: 127023 }
+    }
+  },
+  {
+    name: '广州幼儿师范高等专科学校',
+    nature: '公办',
+    history: {
+      2023: { score: 398, rank: 134999 },
+      2024: { score: 388, rank: 135139 },
+      2025: { score: 429, rank: 129155 }
+    }
+  },
+  {
+    name: '中山职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 391, rank: 143220 },
+      2024: { score: 388, rank: 135897 },
+      2025: { score: 428, rank: 129963 }
+    }
+  },
+  {
+    name: '广东环境保护工程职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 390, rank: 145088 },
+      2024: { score: 385, rank: 139053 },
+      2025: { score: 427, rank: 131029 }
+    }
+  },
+  {
+    name: '广东生态工程职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 388, rank: 146957 },
+      2024: { score: 377, rank: 147488 },
+      2025: { score: 426, rank: 132053 }
+    }
+  },
+  {
+    name: '广东省外语艺术职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 279, rank: 258315 },
+      2024: { score: 364, rank: 161051 },
+      2025: { score: 426, rank: 132175 }
+    }
+  },
+  {
+    name: '广东工程职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 378, rank: 158322 },
+      2024: { score: 376, rank: 148322 },
+      2025: { score: 425, rank: 132794 }
+    }
+  },
+  {
+    name: '广东女子职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 372, rank: 165506 },
+      2024: { score: 350, rank: 175642 },
+      2025: { score: 425, rank: 132952 }
+    }
+  },
+  {
+    name: '广东体育职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 389, rank: 146315 },
+      2024: { score: 389, rank: 134189 },
+      2025: { score: 425, rank: 133441 }
+    }
+  },
+  {
+    name: '广东司法警官职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 394, rank: 140289 },
+      2024: { score: 384, rank: 139799 },
+      2025: { score: 424, rank: 134592 }
+    }
+  },
+  {
+    name: '广东潮州卫生健康职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 400, rank: 133481 },
+      2024: { score: 384, rank: 139986 },
+      2025: { score: 424, rank: 134791 }
+    }
+  },
+  {
+    name: '清远职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 366, rank: 172368 },
+      2024: { score: 376, rank: 148297 },
+      2025: { score: 423, rank: 135129 }
+    }
+  },
+  {
+    name: '河源职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 311, rank: 232368 },
+      2024: { score: 373, rank: 153171 },
+      2025: { score: 423, rank: 135907 }
+    }
+  },
+  {
+    name: '广东南华工商职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 392, rank: 142105 },
+      2024: { score: 395, rank: 128626 },
+      2025: { score: 420, rank: 138665 }
+    }
+  },
+  {
+    name: '江门职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 377, rank: 160016 },
+      2024: { score: 372, rank: 153022 },
+      2025: { score: 420, rank: 138949 }
+    }
+  },
+  {
+    name: '惠州工程职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 391, rank: 143825 },
+      2024: { score: 383, rank: 141414 },
+      2025: { score: 418, rank: 140559 }
+    }
+  },
+  {
+    name: '广东交通职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 420, rank: 110218 },
+      2024: { score: 397, rank: 125839 },
+      2025: { score: 417, rank: 141681 }
+    }
+  },
+  {
+    name: '广东财贸职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 363, rank: 175743 },
+      2024: { score: 373, rank: 151304 },
+      2025: { score: 417, rank: 142480 }
+    }
+  },
+  {
+    name: '惠州城市职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: null, rank: null },
+      2024: { score: 357, rank: 168540 },
+      2025: { score: 416, rank: 143193 }
+    }
+  },
+  {
+    name: '广东汕头幼儿师范高等专科学校',
+    nature: '公办',
+    history: {
+      2023: { score: 377, rank: 159899 },
+      2024: { score: 333, rank: 193099 },
+      2025: { score: 414, rank: 145757 }
+    }
+  },
+  {
+    name: '揭阳职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 374, rank: 163257 },
+      2024: { score: 375, rank: 149484 },
+      2025: { score: 413, rank: 146000 }
+    }
+  },
+  {
+    name: '珠海城市职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 364, rank: 175448 },
+      2024: { score: 359, rank: 166628 },
+      2025: { score: 413, rank: 146335 }
+    }
+  },
+  {
+    name: '广东文艺职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 387, rank: 147886 },
+      2024: { score: 356, rank: 169322 },
+      2025: { score: 412, rank: 147092 }
+    }
+  },
+  {
+    name: '汕头职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 379, rank: 1568758 },
+      2024: { score: 369, rank: 155597 },
+      2025: { score: 412, rank: 147492 }
+    }
+  },
+  {
+    name: '广东农工商职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 399, rank: 134181 },
+      2024: { score: 406, rank: 116947 },
+      2025: { score: 412, rank: 147503 }
+    }
+  },
+  {
+    name: '广东工程职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 393, rank: 140869 },
+      2024: { score: 364, rank: 161002 },
+      2025: { score: 411, rank: 149261 }
+    }
+  },
+  {
+    name: '广东松山职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 378, rank: 158644 },
+      2024: { score: 368, rank: 156366 },
+      2025: { score: 410, rank: 149913 }
+    }
+  },
+  {
+    name: '阳江职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 353, rank: 187989 },
+      2024: { score: 362, rank: 163590 },
+      2025: { score: 410, rank: 149955 }
+    }
+  },
+  {
+    name: '广东梅州职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 379, rank: 157171 },
+      2024: { score: 349, rank: 177426 },
+      2025: { score: 410, rank: 150129 }
+    }
+  },
+  {
+    name: '广东东软学院',
     nature: '民办',
     history: {
-      2023: { score: 485, rank: 49936 },
-      2024: { score: 487, rank: 47648 },
-      2025: { score: 513, rank: 48067 }
+      2023: { score: 305, rank: 238199 },
+      2024: { score: 357, rank: 168426 },
+      2025: { score: 409, rank: 151324 }
     }
-  }
+  },
+  {
+    name: '茂名职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 369, rank: 168795 },
+      2024: { score: 362, rank: 162630 },
+      2025: { score: 408, rank: 152207 }
+    }
+  },
+  {
+    name: '广东江门幼儿师范高等专科学校',
+    nature: '公办',
+    history: {
+      2023: { score: 355, rank: 185087 },
+      2024: { score: 368, rank: 156288 },
+      2025: { score: 407, rank: 153265 }
+    }
+  },
+  {
+    name: '广州商学院',
+    nature: '民办',
+    history: {
+      2023: { score: 351, rank: 189919 },
+      2024: { score: 353, rank: 173066 },
+      2025: { score: 403, rank: 157599 }
+    }
+  },
+  {
+    name: '罗定职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 369, rank: 169270 },
+      2024: { score: 368, rank: 156309 },
+      2025: { score: 401, rank: 159815 }
+    }
+  },
+  {
+    name: '广东茂名幼儿师范专科学校',
+    nature: '公办',
+    history: {
+      2023: { score: 365, rank: 174109 },
+      2024: { score: 352, rank: 173450 },
+      2025: { score: 401, rank: 159845 }
+    }
+  },
+  {
+    name: '广东艺术职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 388, rank: 147217 },
+      2024: { score: 297, rank: 226507 },
+      2025: { score: 401, rank: 160005 }
+    }
+  },
+  {
+    name: '广东茂名农林科技职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 376, rank: 161519 },
+      2024: { score: 356, rank: 169919 },
+      2025: { score: 400, rank: 161442 }
+    }
+  },
+  {
+    name: '汕尾职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 378, rank: 158299 },
+      2024: { score: 344, rank: 182312 },
+      2025: { score: 400, rank: 161790 }
+    }
+  },
+  {
+    name: '湛江幼儿师范专科学校',
+    nature: '公办',
+    history: {
+      2023: { score: 384, rank: 151165 },
+      2024: { score: 330, rank: 196944 },
+      2025: { score: 399, rank: 162881 }
+    }
+  },
+  {
+    name: '广东茂名健康职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 404, rank: 128187 },
+      2024: { score: 265, rank: 248416 },
+      2025: { score: 398, rank: 163023 }
+    }
+  },
+  {
+    name: '广州科技职业技术大学',
+    nature: '民办',
+    history: {
+      2023: { score: 384, rank: 151165 },
+      2024: { score: 370, rank: 154924 },
+      2025: { score: 398, rank: 163817 }
+    }
+  },
+  {
+    name: '广东新安职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 374, rank: 163173 },
+      2024: { score: 334, rank: 192352 },
+      2025: { score: 392, rank: 170936 }
+    }
+  },
+  {
+    name: '广州工商学院',
+    nature: '民办',
+    history: {
+      2023: { score: 371, rank: 167438 },
+      2024: { score: 351, rank: 175040 },
+      2025: { score: 382, rank: 181434 }
+    }
+  },
+  {
+    name: '广州现代信息工程职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 341, rank: 202081 },
+      2024: { score: 337, rank: 189429 },
+      2025: { score: 380, rank: 183516 }
+    }
+  },
+  {
+    name: '私立华联学院',
+    nature: '民办',
+    history: {
+      2023: { score: 373, rank: 164093 },
+      2024: { score: 321, rank: 205012 },
+      2025: { score: 377, rank: 186832 }
+    }
+  },
+  {
+    name: '广东理工学院',
+    nature: '民办',
+    history: {
+      2023: { score: 373, rank: 164019 },
+      2024: { score: 362, rank: 162966 },
+      2025: { score: 373, rank: 191641 }
+    }
+  },
+  {
+    name: '惠州经济职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 333, rank: 210031 },
+      2024: { score: 314, rank: 211689 },
+      2025: { score: 362, rank: 202855 }
+    }
+  },
+  {
+    name: '广东信息工程职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 351, rank: 189660 },
+      2024: { score: 315, rank: 211272 },
+      2025: { score: 360, rank: 205919 }
+    }
+  },
+  {
+    name: '广州松田职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 313, rank: 230318 },
+      2024: { score: 314, rank: 211694 },
+      2025: { score: 354, rank: 211939 }
+    }
+  },
+  {
+    name: '珠海艺术职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 342, rank: 201014 },
+      2024: { score: 303, rank: 221291 },
+      2025: { score: 352, rank: 213792 }
+    }
+  },
+  {
+    name: '潮汕职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 350, rank: 191721 },
+      2024: { score: 273, rank: 243975 },
+      2025: { score: 343, rank: 222652 }
+    }
+  },
+  {
+    name: '广州康大职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 342, rank: 200560 },
+      2024: { score: 339, rank: 187049 },
+      2025: { score: 341, rank: 224842 }
+    }
+  },
+  {
+    name: '广州珠江职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 307, rank: 235721 },
+      2024: { score: 291, rank: 230794 },
+      2025: { score: 337, rank: 228385 }
+    }
+  },
+  {
+    name: '广州华立科技职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 382, rank: 211138 },
+      2024: { score: 275, rank: 242580 },
+      2025: { score: 321, rank: 242680 }
+    }
+  },
+  {
+    name: '广东岭南职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 354, rank: 186249 },
+      2024: { score: 237, rank: 260108 },
+      2025: { score: 316, rank: 246557 }
+    }
+  },
+  {
+    name: '广州城建职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 376, rank: 160549 },
+      2024: { score: 283, rank: 237207 },
+      2025: { score: 315, rank: 246749 }
+    }
+  },
+  {
+    name: '广州华南商贸职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 301, rank: 241393 },
+      2024: { score: 305, rank: 220105 },
+      2025: { score: 295, rank: 260539 }
+    }
+  },
+  {
+    name: '广州南洋理工职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 341, rank: 210123 },
+      2024: { score: 309, rank: 216061 },
+      2025: { score: 291, rank: 262854 }
+    }
+  },
+  {
+    name: '广州华夏职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 325, rank: 219022 },
+      2024: { score: 271, rank: 244969 },
+      2025: { score: 286, rank: 266168 }
+    }
+  },
+  {
+    name: '广东创新科技职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 307, rank: 236071 },
+      2024: { score: 286, rank: 235178 },
+      2025: { score: 280, rank: 268918 }
+    }
+  },
+  {
+    name: '广东碧桂园职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 267, rank: 265341 },
+      2024: { score: 298, rank: 225879 },
+      2025: { score: 227, rank: 285736 }
+    }
+  },
+  {
+    name: '广东肇庆航空职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 282, rank: 256216 },
+      2024: { score: 285, rank: 235668 },
+      2025: { score: 218, rank: 287057 }
+    }
+  },
+  {
+    name: '广东工商职业技术大学',
+    nature: '民办',
+    history: {
+      2023: { score: 373, rank: 164638 },
+      2024: { score: 298, rank: 226052 },
+      2025: { score: 215, rank: 287392 }
+    }
+  },
+  {
+    name: '广州华商职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 325, rank: 218763 },
+      2024: { score: 298, rank: 225460 },
+      2025: { score: 215, rank: 287407 }
+    }
+  },
+  {
+    name: '广州涉外经济职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 267, rank: 2187286 },
+      2024: { score: 276, rank: 241686 },
+      2025: { score: 215, rank: 287408 }
+    }
+  },
+  {
+    name: '湛江科技学院',
+    nature: '民办',
+    history: {
+      2023: { score: 332, rank: 210778 },
+      2024: { score: 286, rank: 234907 },
+      2025: { score: 215, rank: 287446 }
+    }
+  },
+  {
+    name: '广东南方职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 307, rank: 236092 },
+      2024: { score: 305, rank: 219755 },
+      2025: { score: 215, rank: 287453 }
+    }
+  },
+  {
+    name: '广东亚视演艺职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 309, rank: 233934 },
+      2024: { score: 309, rank: 216587 },
+      2025: { score: 215, rank: 287466 }
+    }
+  },
+  {
+    name: '广东东华职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 299, rank: 243043 },
+      2024: { score: 284, rank: 236095 },
+      2025: { score: 215, rank: 287476 }
+    }
+  },
+  {
+    name: '广东酒店管理职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 274, rank: 261190 },
+      2024: { score: 278, rank: 240452 },
+      2025: { score: 215, rank: 287499 }
+    }
+  },
+  {
+    name: '广东文理职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 290, rank: 249788 },
+      2024: { score: 277, rank: 241404 },
+      2025: { score: 215, rank: 287501 }
+    }
+  },
+  {
+    name: '韩山师范学院',
+    nature: '公办',
+    history: {
+      2023: { score: 439, rank: 90034 },
+      2024: { score: 437, rank: 87172 },
+      2025: { score: null, rank: null },
+    }
+  },
 ];
 
 export const juniorPhysicsData: UniversityData[] = [
   {
-    name: '韶关学院(专科)',
+    name: '韶关学院',
     nature: '公办',
     history: {
       2023: { score: 452, rank: 216053 },
@@ -1636,8 +2283,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '深圳城市职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: null, rank: null },
+      2024: { score: 460, rank: 220835 },
       2025: { score: 466, rank: 226628 }
     }
   },
@@ -1672,7 +2319,7 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广州职业技术大学',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: 431, rank: 247222 },
       2024: { score: 447, rank: 244039 },
       2025: { score: 437, rank: 273749 }
     }
@@ -1750,7 +2397,7 @@ export const juniorPhysicsData: UniversityData[] = [
     }
   },
   {
-    name: '肇庆医学院(专科)',
+    name: '肇庆医学院',
     nature: '公办',
     history: {
       2023: { score: 465, rank: 194692 },
@@ -1771,8 +2418,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '中山职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 403, rank: 285795 },
+      2024: { score: 406, rank: 311133 },
       2025: { score: 400, rank: 324737 }
     }
   },
@@ -1780,8 +2427,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '中山火炬职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 358, rank: 335947 },
+      2024: { score: 394, rank: 327502 },
       2025: { score: 399, rank: 325767 }
     }
   },
@@ -1789,8 +2436,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广东职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 369, rank: 325549 },
+      2024: { score: 400, rank: 318347 },
       2025: { score: 398, rank: 326624 }
     }
   },
@@ -1798,8 +2445,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广东司法警官职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 404, rank: 284661 },
+      2024: { score: 400, rank: 319371 },
       2025: { score: 395, rank: 330860 }
     }
   },
@@ -1807,8 +2454,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广东云浮中医药职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 394, rank: 296991 },
+      2024: { score: 399, rank: 321058 },
       2025: { score: 394, rank: 331781 }
     }
   },
@@ -1816,8 +2463,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广东理工职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 401, rank: 289116 },
+      2024: { score: 400, rank: 318637 },
       2025: { score: 392, rank: 333853 }
     }
   },
@@ -1825,17 +2472,26 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广东食品药品职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 399, rank: 291831 },
+      2024: { score: 388, rank: 334194 },
       2025: { score: 391, rank: 334729 }
+    }
+  },
+  {
+    name: '珠海城市职业技术学院（市内户籍）',
+    nature: '公办',
+    history: {
+      2023: { score: 380, rank: 314066 },
+      2024: { score: 384, rank: 340020 },
+      2025: { score: 389, rank: 337504 }
     }
   },
   {
     name: '广东江门中医药职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 425, rank: 255922 },
+      2024: { score: 358, rank: 367714 },
       2025: { score: 387, rank: 339183 }
     }
   },
@@ -1843,8 +2499,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广东行政职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 405, rank: 282931 },
+      2024: { score: 382, rank: 341478 },
       2025: { score: 383, rank: 343364 }
     }
   },
@@ -1852,8 +2508,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广东科学技术职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 414, rank: 271400 },
+      2024: { score: 349, rank: 376776 },
       2025: { score: 383, rank: 343641 }
     }
   },
@@ -1861,8 +2517,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广州体育职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 365, rank: 329431 },
+      2024: { score: 391, rank: 331348 },
       2025: { score: 382, rank: 344131 }
     }
   },
@@ -1870,8 +2526,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '惠州卫生职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 426, rank: 255019 },
+      2024: { score: 353, rank: 373031 },
       2025: { score: 382, rank: 344603 }
     }
   },
@@ -1879,35 +2535,224 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广东建设职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 379, rank: 314412 },
+      2024: { score: 397, rank: 322990 },
       2025: { score: 381, rank: 345021 }
+    }
+  },
+  {
+    name: '广东工程职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 363, rank: 331285 },
+      2024: { score: 388, rank: 334938 },
+      2025: { score: 381, rank: 345507 }
     }
   },
   {
     name: '广东潮州卫生健康职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 417, rank: 287186 },
+      2024: { score: 406, rank: 310842 },
       2025: { score: 381, rank: 345852 }
+    }
+  },
+  {
+    name: '广州科技职业技术大学',
+    nature: '民办',
+    history: {
+      2023: { score: 397, rank: 293784 },
+      2024: { score: 368, rank: 357902 },
+      2025: { score: 380, rank: 346792 }
+    }
+  },
+  {
+    name: '惠州工程职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 380, rank: 313180 },
+      2024: { score: 372, rank: 353032 },
+      2025: { score: 379, rank: 347155 }
+    }
+  },
+  {
+    name: '广东水利电力职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 415, rank: 269888 },
+      2024: { score: 415, rank: 296547 },
+      2025: { score: 379, rank: 347811 }
+    }
+  },
+  {
+    name: '广东邮电职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 402, rank: 287765 },
+      2024: { score: 393, rank: 328279 },
+      2025: { score: 378, rank: 348617 }
+    }
+  },
+  {
+    name: '广东环境保护工程职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 375, rank: 319291 },
+      2024: { score: 380, rank: 344540 },
+      2025: { score: 377, rank: 349842 }
+    }
+  },
+  {
+    name: '广东生态工程职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 381, rank: 312902 },
+      2024: { score: 369, rank: 357015 },
+      2025: { score: 375, rank: 351069 }
+    }
+  },
+  {
+    name: '广东省外语艺术职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 250, rank: 398860 },
+      2024: { score: 376, rank: 349233 },
+      2025: { score: 374, rank: 352438 }
+    }
+  },
+  {
+    name: '江门职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 384, rank: 308982 },
+      2024: { score: 382, rank: 341870 },
+      2025: { score: 374, rank: 352940 }
+    }
+  },
+  {
+    name: '清远职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 367, rank: 327479 },
+      2024: { score: 371, rank: 354877 },
+      2025: { score: 373, rank: 353886 }
+    }
+  },
+  {
+    name: '广东东软学院',
+    nature: '民办',
+    history: {
+      2023: { score: 362, rank: 332252 },
+      2024: { score: 383, rank: 340436 },
+      2025: { score: 372, rank: 354011 }
+    }
+  },
+  {
+    name: '广东艺术职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 404, rank: 285411 },
+      2024: { score: 350, rank: 375200 },
+      2025: { score: 372, rank: 354440 }
+    }
+  },
+  {
+    name: '广东女子职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 354, rank: 339644 },
+      2024: { score: 354, rank: 371407 },
+      2025: { score: 370, rank: 356365 }
+    }
+  },
+  {
+    name: '广州商学院',
+    nature: '民办',
+    history: {
+      2023: { score: 354, rank: 339351 },
+      2024: { score: 381, rank: 342960 },
+      2025: { score: 368, rank: 357715 }
+    }
+  },
+  {
+    name: '广东梅州职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 392, rank: 299915 },
+      2024: { score: 348, rank: 377050 },
+      2025: { score: 366, rank: 360388 }
+    }
+  },
+  {
+    name: '揭阳职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 366, rank: 327830 },
+      2024: { score: 378, rank: 346600 },
+      2025: { score: 365, rank: 360641 }
+    }
+  },
+  {
+    name: '罗定职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 372, rank: 322012 },
+      2024: { score: 376, rank: 348640 },
+      2025: { score: 365, rank: 360952 }
+    }
+  },
+  {
+    name: '惠州城市职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 385, rank: 307802 },
+      2024: { score: 370, rank: 355719 },
+      2025: { score: 365, rank: 361060 }
+    }
+  },
+  {
+    name: '广东汕头幼儿师范高等专科学校',
+    nature: '公办',
+    history: {
+      2023: { score: 395, rank: 296537 },
+      2024: { score: 335, rank: 388685 },
+      2025: { score: 364, rank: 361311 }
+    }
+  },
+  {
+    name: '汕头职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 378, rank: 315888 },
+      2024: { score: 376, rank: 349173 },
+      2025: { score: 364, rank: 362094 }
     }
   },
   {
     name: '广东财贸职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 363, rank: 331411 },
+      2024: { score: 373, rank: 352591 },
       2025: { score: 363, rank: 362169 }
+    }
+  },
+  {
+    name: '广东科贸职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 357, rank: 336846 },
+      2024: { score: 389, rank: 333847 },
+      2025: { score: 363, rank: 362509 }
     }
   },
   {
     name: '茂名职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 369, rank: 327830 },
+      2024: { score: 374, rank: 351493 },
       2025: { score: 363, rank: 362531 }
     }
   },
@@ -1915,8 +2760,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广东茂名农林科技职业学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 381, rank: 312545 },
+      2024: { score: 371, rank: 353918 },
       2025: { score: 362, rank: 363459 }
     }
   },
@@ -1924,8 +2769,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '湛江幼儿师范专科学校',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 374, rank: 319656 },
+      2024: { score: 353, rank: 372548 },
       2025: { score: 362, rank: 363852 }
     }
   },
@@ -1933,8 +2778,8 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广东农工商职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 384, rank: 308959 },
+      2024: { score: 382, rank: 341651 },
       2025: { score: 361, rank: 364157 }
     }
   },
@@ -1942,47 +2787,389 @@ export const juniorPhysicsData: UniversityData[] = [
     name: '广东交通职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 381, rank: 312335 },
+      2024: { score: 400, rank: 319535 },
       2025: { score: 361, rank: 364401 }
+    }
+  },
+  {
+    name: '广东体育职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 392, rank: 299342 },
+      2024: { score: 395, rank: 325207 },
+      2025: { score: 360, rank: 365428 }
+    }
+  },
+  {
+    name: '阳江职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 350, rank: 343074 },
+      2024: { score: 373, rank: 352622 },
+      2025: { score: 359, rank: 366410 }
+    }
+  },
+  {
+    name: '广东松山职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 390, rank: 302496 },
+      2024: { score: 371, rank: 354709 },
+      2025: { score: 358, rank: 366839 }
+    }
+  },
+  {
+    name: '广东文艺职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 390, rank: 301846 },
+      2024: { score: 355, rank: 370855 },
+      2025: { score: 358, rank: 366857 }
+    }
+  },
+  {
+    name: '广东新安职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 387, rank: 306128 },
+      2024: { score: 338, rank: 386170 },
+      2025: { score: 357, rank: 368184 }
+    }
+  },
+  {
+    name: '广东南华工商职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 405, rank: 283362 },
+      2024: { score: 369, rank: 356142 },
+      2025: { score: 357, rank: 368223 }
+    }
+  },
+  {
+    name: '广东茂名健康职业学院',
+    nature: '公办',
+    history: {
+      2023: { score: 409, rank: 278418 },
+      2024: { score: 339, rank: 385597 },
+      2025: { score: 356, rank: 368875 }
+    }
+  },
+  {
+    name: '广东工程职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 409, rank: 278995 },
+      2024: { score: 389, rank: 333256 },
+      2025: { score: 355, rank: 369809 }
+    }
+  },
+  {
+    name: '河源职业技术学院',
+    nature: '公办',
+    history: {
+      2023: { score: 353, rank: 340110 },
+      2024: { score: 385, rank: 338705 },
+      2025: { score: 354, rank: 370703 }
     }
   },
   {
     name: '顺德职业技术大学',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 352, rank: 341177 },
+      2024: { score: 430, rank: 273735 },
       2025: { score: 353, rank: 371254 }
+    }
+  },
+  {
+    name: '广东茂名幼儿师范专科学校',
+    nature: '公办',
+    history: {
+      2023: { score: 306, rank: 373607 },
+      2024: { score: 363, rank: 362441 },
+      2025: { score: 353, rank: 371343 }
+    }
+  },
+  {
+    name: '广东江门幼儿师范高等专科学校',
+    nature: '公办',
+    history: {
+      2023: { score: 335, rank: 354420 },
+      2024: { score: 380, rank: 344818 },
+      2025: { score: 351, rank: 373166 }
+    }
+  },
+  {
+    name: '广州现代信息工程职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 350, rank: 342635 },
+      2024: { score: 358, rank: 368071 },
+      2025: { score: 349, rank: 374829 }
+    }
+  },
+  {
+    name: '广州工商学院',
+    nature: '民办',
+    history: {
+      2023: { score: 385, rank: 308282 },
+      2024: { score: 371, rank: 353882 },
+      2025: { score: 346, rank: 376625 }
+    }
+  },
+  {
+    name: '珠海艺术职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 340, rank: 350577 },
+      2024: { score: 343, rank: 382247 },
+      2025: { score: 337, rank: 383198 }
     }
   },
   {
     name: '汕尾职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 369, rank: 325415 },
+      2024: { score: 367, rank: 358230 },
       2025: { score: 336, rank: 384608 }
     }
   },
   {
-    name: '珠海科技学院(专科)',
+    name: '广东工商职业技术大学',
     nature: '民办',
     history: {
-      2023: { score: 490, rank: 157492 },
-      2024: { score: 492, rank: 161791 },
-      2025: { score: 358, rank: 370000 }
+      2023: { score: 350, rank: 342883 },
+      2024: { score: 355, rank: 370398 },
+      2025: { score: 333, rank: 386185 }
     }
   },
   {
-    name: '广东理工学院(专科)',
+    name: '广东理工学院',
     nature: '民办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: 397, rank: 293362 },
+      2024: { score: 392, rank: 329374 },
       2025: { score: 329, rank: 389312 }
     }
-  }
+  },
+  {
+    name: '广东信息工程职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 367, rank: 327201 },
+      2024: { score: 314, rank: 404996 },
+      2025: { score: 326, rank: 391524 }
+    }
+  },
+  {
+    name: '私立华联学院',
+    nature: '民办',
+    history: {
+      2023: { score: 380, rank: 313211 },
+      2024: { score: 276, rank: 427760 },
+      2025: { score: 324, rank: 392832 }
+    }
+  },
+  {
+    name: '广州松田职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 326, rank: 361213 },
+      2024: { score: 328, rank: 394689 },
+      2025: { score: 320, rank: 394830 }
+    }
+  },
+  {
+    name: '惠州经济职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 328, rank: 359942 },
+      2024: { score: 297, rank: 415943 },
+      2025: { score: 320, rank: 395244 }
+    }
+  },
+  {
+    name: '湛江科技学院',
+    nature: '民办',
+    history: {
+      2023: { score: 331, rank: 357510 },
+      2024: { score: 305, rank: 411078 },
+      2025: { score: 310, rank: 401225 }
+    }
+  },
+  {
+    name: '广州珠江职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 328, rank: 360129 },
+      2024: { score: 313, rank: 405272 },
+      2025: { score: 287, rank: 414010 }
+    }
+  },
+  {
+    name: '潮汕职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 354, rank: 338970 },
+      2024: { score: 271, rank: 430177 },
+      2025: { score: 282, rank: 416250 }
+    }
+  },
+  {
+    name: '广东岭南职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 351, rank: 342152 },
+      2024: { score: 252, rank: 438290 },
+      2025: { score: 263, rank: 424467 }
+    }
+  },
+  {
+    name: '广州华立科技职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 335, rank: 354713 },
+      2024: { score: 274, rank: 428749 },
+      2025: { score: 262, rank: 424881 }
+    }
+  },
+  {
+    name: '广州南洋理工职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 353, rank: 340444 },
+      2024: { score: 333, rank: 390272 },
+      2025: { score: 206, rank: 436785 }
+    }
+  },
+  {
+    name: '广州涉外经济职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 184, rank: 408324 },
+      2024: { score: 291, rank: 419462 },
+      2025: { score: 206, rank: 436808 }
+    }
+  },
+  {
+    name: '广州东华职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 319, rank: 366095 },
+      2024: { score: 293, rank: 418090 },
+      2025: { score: 206, rank: 436835 }
+    }
+  },
+  {
+    name: '广州康大职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 363, rank: 330522 },
+      2024: { score: 366, rank: 360149 },
+      2025: { score: 202, rank: 437119 }
+    }
+  },
+  {
+    name: '广州华商职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 330, rank: 358062 },
+      2024: { score: 294, rank: 417595 },
+      2025: { score: 200, rank: 437173 }
+    }
+  },
+  {
+    name: '广州城建职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 390, rank: 301797 },
+      2024: { score: 305, rank: 410970 },
+      2025: { score: 201, rank: 437225 }
+    }
+  },
+  {
+    name: '广东南方职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 300, rank: 377354 },
+      2024: { score: 313, rank: 405581 },
+      2025: { score: 201, rank: 437230 }
+    }
+  },
+  {
+    name: '广东酒店管理职业技术学院',
+    nature: '民办',
+    history: {
+      2023: { score: 222, rank: 405099 },
+      2024: { score: 279, rank: 426223 },
+      2025: { score: 201, rank: 437232 }
+    }
+  },
+  {
+    name: '广州华南商贸职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 301, rank: 376603 },
+      2024: { score: 315, rank: 404260 },
+      2025: { score: 200, rank: 437300 }
+    }
+  },
+  {
+    name: '广东亚视演艺职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 305, rank: 374391 },
+      2024: { score: 310, rank: 407397 },
+      2025: { score: 200, rank: 437320 }
+    }
+  },
+  {
+    name: '广东文理职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 287, rank: 384003 },
+      2024: { score: 285, rank: 422846 },
+      2025: { score: 200, rank: 437341 }
+    }
+  },
+  {
+    name: '广东肇庆航空职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 252, rank: 398014 },
+      2024: { score: 315, rank: 403977 },
+      2025: { score: 200, rank: 437342 }
+    }
+  },
+  {
+    name: '广东创新科技职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 300, rank: 377261 },
+      2024: { score: 296, rank: 416716 },
+      2025: { score: 200, rank: 437343 }
+    }
+  },
+  {
+    name: '广东华夏职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 332, rank: 356636 },
+      2024: { score: 276, rank: 427439 },
+      2025: { score: 200, rank: 437344 }
+    }
+  },
+  {
+    name: '广东碧桂园职业学院',
+    nature: '民办',
+    history: {
+      2023: { score: 213, rank: 406249 },
+      2024: { score: 302, rank: 412438 },
+      2025: { score: 200, rank: 437350 }
+    }
+  },
 ];
 
 // Guangdong 2023-2025 Undergraduate Sports In-Province Admission Data
@@ -2018,7 +3205,7 @@ export const sportsData: UniversityData[] = [
     name: '汕头大学',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 585, rank: 608 },
       2025: { score: 595, rank: 566 }
     }
@@ -2045,8 +3232,8 @@ export const sportsData: UniversityData[] = [
     name: '广东财经大学',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: null, rank: null },
+      2024: { score: null, rank: null },
       2025: { score: 565, rank: 1920 }
     }
   },
@@ -2127,7 +3314,7 @@ export const sportsData: UniversityData[] = [
     nature: '公办',
     history: {
       2023: { score: 511, rank: 5080 },
-      2024: null,
+      2024: { score: null, rank: null },
       2025: { score: 527, rank: 5229 }
     }
   },
@@ -2220,7 +3407,7 @@ export const artData: UniversityData[] = [
     name: '北京师范大学（珠海校区）',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 576, rank: 132 },
       2025: { score: 598, rank: 89 }
     }
@@ -2283,7 +3470,7 @@ export const artData: UniversityData[] = [
     name: '深圳技术大学',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 507, rank: 3460 },
       2025: { score: 518, rank: 3288 }
     }
@@ -2346,7 +3533,7 @@ export const artData: UniversityData[] = [
     name: '深圳北理莫斯科大学',
     nature: '合作办学',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 497, rank: 4779 },
       2025: { score: 502, rank: 5309 }
     }
@@ -2391,7 +3578,7 @@ export const artData: UniversityData[] = [
     name: '广东轻工职业技术大学',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 480, rank: 7787 },
       2025: { score: 489, rank: 7542 }
     }
@@ -2409,8 +3596,8 @@ export const artData: UniversityData[] = [
     name: '顺德职业技术大学',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: null, rank: null },
+      2024: { score: null, rank: null },
       2025: { score: 483, rank: 8650 }
     }
   },
@@ -2463,8 +3650,8 @@ export const artData: UniversityData[] = [
     name: '珠海科技学院',
     nature: '民办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: null, rank: null },
+      2024: { score: null, rank: null },
       2025: { score: 472, rank: 10952 }
     }
   },
@@ -2539,7 +3726,7 @@ export const musicData: UniversityData[] = [
     name: '暨南大学',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 541, rank: 194 },
       2025: { score: 538, rank: 323 }
     }
@@ -2813,7 +4000,7 @@ export const danceData: UniversityData[] = [
     name: '深圳北理莫斯科大学',
     nature: '合作办学',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 466, rank: 668 },
       2025: { score: 484, rank: 676 }
     }
@@ -2831,8 +4018,8 @@ export const danceData: UniversityData[] = [
     name: '广东第二师范学院',
     nature: '公办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: null, rank: null },
+      2024: { score: null, rank: null },
       2025: { score: 481, rank: 729 }
     }
   },
@@ -2921,7 +4108,7 @@ export const danceData: UniversityData[] = [
     name: '华南农业大学珠江学院',
     nature: '民办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 400, rank: 2165 },
       2025: { score: 408, rank: 2104 }
     }
@@ -2934,7 +4121,7 @@ export const actingData: UniversityData[] = [
     name: '暨南大学',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 555, rank: 25 },
       2025: { score: 561, rank: 23 }
     }
@@ -2943,7 +4130,7 @@ export const actingData: UniversityData[] = [
     name: '深圳大学',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 524, rank: 64 },
       2025: { score: 548, rank: 58 }
     }
@@ -2952,7 +4139,7 @@ export const actingData: UniversityData[] = [
     name: '华南农业大学',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 518, rank: 66 },
       2025: { score: 524, rank: 63 }
     }
@@ -2961,7 +4148,7 @@ export const actingData: UniversityData[] = [
     name: '广东工业大学',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 514, rank: 79 },
       2025: { score: 518, rank: 79 }
     }
@@ -2970,7 +4157,7 @@ export const actingData: UniversityData[] = [
     name: '惠州学院',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 495, rank: 135 },
       2025: { score: 503, rank: 137 }
     }
@@ -2979,7 +4166,7 @@ export const actingData: UniversityData[] = [
     name: '广州体育学院',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 495, rank: 273 },
       2025: { score: 511, rank: 104 }
     }
@@ -2988,7 +4175,7 @@ export const actingData: UniversityData[] = [
     name: '广东海洋大学',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 509, rank: 145 },
       2025: { score: 507, rank: 124 }
     }
@@ -2997,7 +4184,7 @@ export const actingData: UniversityData[] = [
     name: '广州理工学院',
     nature: '民办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 438, rank: 379 },
       2025: { score: 475, rank: 289 }
     }
@@ -3006,7 +4193,7 @@ export const actingData: UniversityData[] = [
     name: '广东白云学院',
     nature: '民办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 463, rank: 885 },
       2025: { score: 442, rank: 503 }
     }
@@ -3015,8 +4202,8 @@ export const actingData: UniversityData[] = [
     name: '东莞城市学院',
     nature: '民办',
     history: {
-      2023: null,
-      2024: null,
+      2023: { score: null, rank: null },
+      2024: { score: null, rank: null },
       2025: { score: 475, rank: 1027 }
     }
   },
@@ -3024,7 +4211,7 @@ export const actingData: UniversityData[] = [
     name: '华南农业大学珠江学院',
     nature: '民办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 439, rank: 2089 },
       2025: { score: 473, rank: 1082 }
     }
@@ -3064,7 +4251,7 @@ export const juniorSportsData: UniversityData[] = [
     name: '深圳信息职业技术大学',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 444, rank: 15355 },
       2025: { score: 511, rank: 7057 }
     }
@@ -3266,7 +4453,7 @@ export const juniorArtData: UniversityData[] = [
     name: '深圳城市职业学院',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 404, rank: 25670 },
       2025: { score: 421, rank: 21777 }
     }
@@ -3598,7 +4785,7 @@ export const juniorDanceData: UniversityData[] = [
     name: '汕头职业技术学院',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 339, rank: 2718 },
       2025: { score: 391, rank: 2273 }
     }
@@ -3607,7 +4794,7 @@ export const juniorDanceData: UniversityData[] = [
     name: '湛江幼儿师范专科学校',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 316, rank: 2757 },
       2025: { score: 384, rank: 2343 }
     }
@@ -3634,7 +4821,7 @@ export const juniorDanceData: UniversityData[] = [
     name: '广东碧桂园职业学院',
     nature: '民办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 383, rank: 2416 },
       2025: { score: 339, rank: 2485 }
     }
@@ -3674,7 +4861,7 @@ export const juniorActingData: UniversityData[] = [
     name: '广东文艺职业学院',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 431, rank: 1848 },
       2025: { score: 457, rank: 1476 }
     }
@@ -3683,7 +4870,7 @@ export const juniorActingData: UniversityData[] = [
     name: '广东艺术职业学院',
     nature: '公办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 424, rank: 2106 },
       2025: { score: 455, rank: 1503 }
     }
@@ -3692,7 +4879,7 @@ export const juniorActingData: UniversityData[] = [
     name: '广东亚视演艺职业学院',
     nature: '民办',
     history: {
-      2023: null,
+      2023: { score: null, rank: null },
       2024: { score: 410, rank: 2540 },
       2025: { score: 451, rank: 1628 }
     }
