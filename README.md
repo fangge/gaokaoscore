@@ -34,7 +34,21 @@
 - **投档最低分密集度分布**：以 20 分一档呈现省内高校供给数量分布，直观展现各成绩段的竞争密集带。
 - **宏观格局研判**：结合公办 / 民办投档分区间速览与数据完整率校验，给出省内本科投档格局的整体研判结论。
 
-### 4. PWA 渐进式 Web 应用
+### 4. 2025 院校专业组录取数据查询
+- **数据来源**：解析 `imgdata/data.xlsx` 中 2025 年专业组数据，提取每个专业对应的「院校专业组录取最低分」「专业组最低位次」「专业组录取人数」。
+- **展示字段**：院校名称、专业全称、专业组代码、院校专业组代码、批次、专业组录取最低分、专业组最低位次、专业组录取人数。
+- **按科类分别加载**：历史与物理数据拆分为独立 JSON 文件（`groupData-history.json` / `groupData-physics.json`），切换科类时按需加载，避免一次性加载全部数据。
+- **筛选与展示规则**：
+  - 默认仅展示当前科类前 **20** 条记录；
+  - 用户输入搜索关键词（院校 / 专业 / 专业组代码）、全省排位或投档分数后，直接展示全部匹配结果；
+  - 排位/分数筛选规则：专业组录取最低分 ≤ 我的分数，或 最低位次 ≥ 我的排位。
+- **性能优化**（应对 3.4 万+ 条专业记录）：
+  - **虚拟列表**：基于 `react-virtualized` 仅渲染屏幕可见的 DOM 节点，避免全量渲染卡顿；
+  - **Web Worker 离线计算**：筛选、排序逻辑放入独立 Worker 线程执行，不阻塞主线程渲染与交互；
+  - **搜索防抖**：输入框搜索延迟 300ms 触发，减少无效数据遍历；
+  - **IndexedDB 本地缓存**：数据首次加载后写入浏览器 IndexedDB，二次访问优先读取本地缓存，秒开免重新解析。
+
+### 5. PWA 渐进式 Web 应用
 - **可安装**：支持在手机/桌面浏览器「添加到主屏幕」，安装后以独立窗口启动，无浏览器地址栏。
 - **离线可用**：首次访问后核心资源（HTML/CSS/JS/数据）由 Service Worker 缓存，断网仍可查询历年投档数据。
 - **自动更新**：发布新版本时，已打开的页面会在右下角弹窗提示「发现新版本」，点击「立即更新」即可刷新至最新版。
@@ -68,6 +82,9 @@
 | 图表 | Recharts |
 | 动画 | Motion |
 | 图标 | lucide-react |
+| 虚拟列表 | react-virtualized |
+| 离线计算 | Web Worker（Vite `?worker`） |
+| 本地缓存 | IndexedDB |
 | PWA | vite-plugin-pwa + Workbox |
 
 ---
@@ -101,6 +118,9 @@ pnpm clean
 
 # 重新生成 PWA 图标（修改 public/icon.svg 后执行）
 pnpm generate-icons
+
+# 重新生成专业组数据 JSON（修改 imgdata/data.xlsx 后执行）
+node scripts/gen-group-data.mjs
 ```
 
 开发服务器默认监听 `http://localhost:3000`。
@@ -118,21 +138,28 @@ gaokaoscore/
 ├── vite.config.ts          # Vite 配置（React + Tailwind + PWA 插件）
 ├── tsconfig.json           # TypeScript 配置
 ├── package.json            # 依赖与脚本
+├── imgdata/
+│   └── data.xlsx           # 原始招生数据（专业组/专业录取数据源）
 ├── scripts/
-│   └── generate-pwa-icons.mjs  # 从 SVG 生成各尺寸 PWA 图标
+│   ├── generate-pwa-icons.mjs  # 从 SVG 生成各尺寸 PWA 图标
+│   └── gen-group-data.mjs      # 解析 data.xlsx 生成专业组 JSON（历史/物理）
 ├── public/
 │   ├── icon.svg            # PWA 主图标（SVG 矢量源）
 │   ├── favicon.svg         # 浏览器标签图标
 │   ├── pwa-192x192.png     # PWA 图标（192）
 │   ├── pwa-512x512.png     # PWA 图标（512）
 │   ├── maskable-icon-512x512.png  # 适配性图标
-│   └── apple-touch-icon.png      # iOS 主屏图标
+│   ├── apple-touch-icon.png      # iOS 主屏图标
+│   ├── groupData-history.json    # 2025 历史专业组数据（由脚本生成）
+│   └── groupData-physics.json    # 2025 物理专业组数据（由脚本生成）
 └── src/
     ├── main.tsx            # 应用入口
-    ├── App.tsx             # 主组件（含三大功能模块 + PWA 提示）
+    ├── App.tsx             # 主组件（含四大功能模块 + PWA 提示）
     ├── data.ts             # 广东省 2023-2025 投档数据集
-    ├── types.ts            # 类型定义（Subject / SchoolNature / UniversityData）
-    ├── vite-env.d.ts       # PWA 虚拟模块类型声明
+    ├── types.ts            # 类型定义（UniversityData / MajorGroupData 等）
+    ├── groupDb.ts          # IndexedDB 封装（专业组数据本地缓存）
+    ├── groupFilter.worker.ts  # Web Worker（专业组筛选/排序离线计算）
+    ├── vite-env.d.ts       # PWA + Worker 虚拟模块类型声明
     ├── index.css           # 全局样式
     └── components/
         └── PWAUpdatePrompt.tsx  # PWA 更新/离线就绪提示组件
