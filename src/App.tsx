@@ -417,6 +417,8 @@ export default function App() {
   // 专业组数据：筛选 + 排序交由 Web Worker 离线计算，避免阻塞主线程渲染与交互
   const GROUP_DEFAULT_LIMIT = 20;
   const [filteredGroupData, setFilteredGroupData] = useState<MajorGroupData[]>([]);
+  // 点击被截断的院校/专业单元格时弹出气泡，展示完整文本
+  const [cellPopover, setCellPopover] = useState<{ x: number; y: number; text: string } | null>(null);
   // 单例 Worker（组件生命周期内复用）
   const workerRef = React.useRef<Worker | null>(null);
   if (!workerRef.current && typeof Worker !== 'undefined') {
@@ -445,6 +447,22 @@ export default function App() {
   useEffect(() => {
     return () => { workerRef.current?.terminate(); workerRef.current = null; };
   }, []);
+
+  // 点击气泡外部或列表滚动时关闭气泡
+  useEffect(() => {
+    if (!cellPopover) return;
+    const onDown = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('[data-cell-popover]')) setCellPopover(null);
+    };
+    const close = () => setCellPopover(null);
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('scroll', close, true); // capture：捕获虚拟列表内部滚动
+    return () => {
+      document.removeEventListener('mousedown', onDown);
+      document.removeEventListener('scroll', close, true);
+    };
+  }, [cellPopover]);
 
   return (
     <div className="bg-[#020617] text-slate-100 font-sans antialiased relative min-h-screen selection:bg-blue-500/30 selection:text-white" id="main_root">
@@ -1711,8 +1729,30 @@ export default function App() {
                                 style={props.style}
                                 className="grid grid-cols-[1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 items-center border-b border-white/5 hover:bg-white/5 transition-all text-[11px] px-3"
                               >
-                                <span className="font-bold text-white truncate" title={g.school}>{g.school}</span>
-                                <span className="text-slate-300 truncate" title={g.majorName}>{g.majorName}</span>
+                                <span
+                                  className="font-bold text-white truncate cursor-pointer hover:text-blue-300 transition-colors"
+                                  title={g.school}
+                                  onClick={(e) => {
+                                    const el = e.currentTarget as HTMLElement;
+                                    if (el.scrollWidth <= el.clientWidth) return; // 未截断不弹
+                                    const rect = el.getBoundingClientRect();
+                                    setCellPopover({ x: rect.left, y: rect.bottom + 6, text: g.school });
+                                  }}
+                                >
+                                  {g.school}
+                                </span>
+                                <span
+                                  className="text-slate-300 truncate cursor-pointer hover:text-blue-300 transition-colors"
+                                  title={g.majorName}
+                                  onClick={(e) => {
+                                    const el = e.currentTarget as HTMLElement;
+                                    if (el.scrollWidth <= el.clientWidth) return; // 未截断不弹
+                                    const rect = el.getBoundingClientRect();
+                                    setCellPopover({ x: rect.left, y: rect.bottom + 6, text: g.majorName });
+                                  }}
+                                >
+                                  {g.majorName}
+                                </span>
                                 <span className="text-center font-mono text-slate-200">{g.groupCode}</span>
                                 <span className="text-center font-mono text-slate-200">{g.schoolGroupCode}</span>
                                 <span className="text-center text-slate-300 truncate" title={g.batch}>{g.batch}</span>
@@ -1793,6 +1833,27 @@ export default function App() {
         </div>
       </footer>
 
+
+      {/* 截断单元格完整内容气泡 */}
+      <AnimatePresence>
+        {cellPopover && (
+          <motion.div
+            data-cell-popover
+            initial={{ opacity: 0, y: -4, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -4, scale: 0.96 }}
+            transition={{ duration: 0.14 }}
+            className="fixed z-[60] max-w-[280px] bg-slate-900/95 backdrop-blur-xl border border-white/15 rounded-xl px-3 py-2 text-[11px] leading-relaxed text-slate-100 shadow-2xl"
+            style={{
+              left: Math.min(cellPopover.x, Math.max(8, window.innerWidth - 290)),
+              top: cellPopover.y + 90 > window.innerHeight ? cellPopover.y - 90 : cellPopover.y,
+            }}
+            onClick={() => setCellPopover(null)}
+          >
+            {cellPopover.text}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* PWA 更新提示 */}
       <PWAUpdatePrompt />
