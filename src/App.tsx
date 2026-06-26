@@ -18,7 +18,8 @@ import {
   Minus,
   RefreshCw,
   Info,
-  Compass
+  Compass,
+  ExternalLink
 } from 'lucide-react';
 import {
   ResponsiveContainer,
@@ -1861,7 +1862,7 @@ export default function App() {
                                   {g.school}
                                 </span>
                                 <span
-                                  className="text-slate-300 truncate cursor-pointer hover:text-blue-300 transition-colors"
+                                  className="text-slate-300 truncate cursor-pointer hover:text-blue-300 transition-colors flex items-center gap-1"
                                   title={g.majorName}
                                   onClick={(e) => {
                                     const el = e.currentTarget as HTMLElement;
@@ -1871,7 +1872,20 @@ export default function App() {
                                   }}
                                 >
                                   {g.majorName}
+                                  {g.schoolUrl && (
+                                  <a
+                                    href={g.schoolUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    title="查看招生章程"
+                                    onClick={(e) => e.stopPropagation()}
+                                    className="inline-flex items-center justify-center shrink-0 text-slate-400 hover:text-blue-400 transition-colors"
+                                  >
+                                    <ExternalLink className="w-3.5 h-3.5" />
+                                  </a>
+                                )}
                                 </span>
+                                
                                 <span className="text-center font-mono text-slate-200">{g.groupCode}</span>
                                 <span className="text-center font-mono text-slate-200">{g.schoolGroupCode}</span>
                                 <span className="text-center text-slate-300 truncate" title={g.batch}>{g.batch}</span>

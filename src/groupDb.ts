@@ -6,7 +6,7 @@ const DB_NAME = 'gaokao-group-db';
 const DB_VERSION = 2;
 const STORE_NAME = 'groupData';
 // 数据版本：与数据内容绑定，版本不匹配时缓存失效（强制重新加载）
-const DATA_VERSION = 2;
+const DATA_VERSION = 3;
 
 function openDB(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
