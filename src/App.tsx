@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   GraduationCap,
   Search,
@@ -36,6 +36,7 @@ import {
   Cell
 } from 'recharts';
 import { motion, AnimatePresence } from 'motion/react';
+import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import {
   historyData,
   physicsData,
@@ -53,16 +54,17 @@ import {
   juniorDanceData
 } from './data';
 import { UniversityData, Subject, SchoolNature, MajorGroupData } from './types';
-import groupData from './groupData.json';
 import PWAUpdatePrompt from './components/PWAUpdatePrompt';
+import { getCachedGroupData, setCachedGroupData } from './groupDb';
+import GroupFilterWorker from './groupFilter.worker?worker';
 
 export default function App() {
   // Core user states
   const [level, setLevel] = useState<'本科' | '专科'>('本科');
   const [subject, setSubject] = useState<Subject>('physics');
   const [inputMode, setInputMode] = useState<'rank' | 'score'>('rank');
-  const [userRankInput, setUserRankInput] = useState<string>('50000');
-  const [userScoreInput, setUserScoreInput] = useState<string>('550');
+  const [userRankInput, setUserRankInput] = useState<string>('');
+  const [userScoreInput, setUserScoreInput] = useState<string>('');
   const [selectedYear, setSelectedYear] = useState<2023 | 2024 | 2025>(2025);
 
   // Filters
@@ -83,9 +85,39 @@ export default function App() {
   const [groupSortBy, setGroupSortBy] = useState<'rankAsc' | 'rankDesc' | 'scoreDesc' | 'scoreAsc' | 'name'>('rankAsc');
   // 专业组 Tab 独立的排位/分数筛选
   const [groupInputMode, setGroupInputMode] = useState<'rank' | 'score'>('rank');
-  const [groupRankInput, setGroupRankInput] = useState<string>('50000');
-  const [groupScoreInput, setGroupScoreInput] = useState<string>('500');
-  const [groupEligibleOnly, setGroupEligibleOnly] = useState<boolean>(false);
+  const [groupRankInput, setGroupRankInput] = useState<string>('');
+  const [groupScoreInput, setGroupScoreInput] = useState<string>('');
+  // 搜索防抖：groupSearch 为即时值（受控输入），debouncedGroupSearch 为实际参与筛选的值
+  const [debouncedGroupSearch, setDebouncedGroupSearch] = useState<string>('');
+  useEffect(() => {
+    const t = setTimeout(() => setDebouncedGroupSearch(groupSearch), 300);
+    return () => clearTimeout(t);
+  }, [groupSearch]);
+
+  // 专业组大数据集：按科类分别加载，优先读取 IndexedDB 缓存，未命中再加载 JSON 并回写缓存
+  const [groupData, setGroupData] = useState<MajorGroupData[] | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    setGroupData(null);
+    (async () => {
+      // 1. 优先尝试 IndexedDB 缓存
+      const cached = await getCachedGroupData(groupSubject);
+      if (cancelled) return;
+      if (cached && cached.length > 0) {
+        setGroupData(cached);
+        return;
+      }
+      // 2. 未命中则动态加载 JSON
+      const file = groupSubject === '历史' ? './groupData-history.json' : './groupData-physics.json';
+      const m = await import(file);
+      if (cancelled) return;
+      const arr = m.default as MajorGroupData[];
+      setGroupData(arr);
+      // 3. 回写 IndexedDB 缓存（不阻塞）
+      setCachedGroupData(groupSubject, arr);
+    })();
+    return () => { cancelled = true; };
+  }, [groupSubject]);
 
   // Get current dataset
   const currentDataset = useMemo(() => {
@@ -158,10 +190,10 @@ export default function App() {
   const estimatedRank = useMemo(() => {
     if (inputMode === 'rank') {
       const parsed = parseInt(userRankInput);
-      return isNaN(parsed) ? 50000 : parsed;
+      return isNaN(parsed) ? 0 : parsed;
     } else {
       const score = parseInt(userScoreInput);
-      if (isNaN(score)) return 50000;
+      if (isNaN(score)) return 0;
 
       // Interpolate rank based on current year's data points
       const validPoints = currentDataset
@@ -382,44 +414,40 @@ export default function App() {
       .slice(0, 10);
   }, [currentDataset]);
 
-  // 专业组数据：筛选 + 排序（源自 data.xlsx 2025 专业组数据）
-  const GROUP_DISPLAY_LIMIT = 200;
-  const filteredGroupData = useMemo(() => {
-    const q = groupSearch.trim().toLowerCase();
-    // 可达专业组筛选：投档分 ≤ 我的分数 或 最低位次 ≥ 我的排位（与推荐 Tab 一致的可达判定）
-    const eligScore = parseInt(groupScoreInput);
-    const eligRank = parseInt(groupRankInput);
-    const hasEligScore = !isNaN(eligScore);
-    const hasEligRank = !isNaN(eligRank);
-    return (groupData as MajorGroupData[])
-      .filter(g => g.level === groupLevel && g.subject === groupSubject)
-      .filter(g => {
-        if (!q) return true;
-        return (
-          g.school.toLowerCase().includes(q) ||
-          g.schoolGroupCode.includes(q) ||
-          g.groupCode.includes(q) ||
-          g.majorNames.toLowerCase().includes(q)
-        );
-      })
-      .filter(g => {
-        if (!groupEligibleOnly) return true;
-        const byScore = hasEligScore ? g.minScore <= eligScore : false;
-        const byRank = hasEligRank ? g.minRank >= eligRank : false;
-        return byScore || byRank;
-      })
-      .sort((a, b) => {
-        if (groupSortBy === 'name') return a.school.localeCompare(b.school, 'zh');
-        if (groupSortBy === 'rankAsc') return a.minRank - b.minRank;
-        if (groupSortBy === 'rankDesc') return b.minRank - a.minRank;
-        if (groupSortBy === 'scoreDesc') return b.minScore - a.minScore;
-        if (groupSortBy === 'scoreAsc') return a.minScore - b.minScore;
-        return 0;
-      });
-  }, [groupLevel, groupSubject, groupSearch, groupSortBy, groupEligibleOnly, groupScoreInput, groupRankInput]);
+  // 专业组数据：筛选 + 排序交由 Web Worker 离线计算，避免阻塞主线程渲染与交互
+  const GROUP_DEFAULT_LIMIT = 20;
+  const [filteredGroupData, setFilteredGroupData] = useState<MajorGroupData[]>([]);
+  // 单例 Worker（组件生命周期内复用）
+  const workerRef = React.useRef<Worker | null>(null);
+  if (!workerRef.current && typeof Worker !== 'undefined') {
+    workerRef.current = new GroupFilterWorker();
+  }
+  useEffect(() => {
+    const worker = workerRef.current;
+    if (!worker || !groupData) {
+      setFilteredGroupData([]);
+      return;
+    }
+    const handler = (e: MessageEvent<MajorGroupData[]>) => setFilteredGroupData(e.data);
+    worker.addEventListener('message', handler);
+    worker.postMessage({
+      data: groupData,
+      level: groupLevel,
+      search: debouncedGroupSearch,
+      sortBy: groupSortBy,
+      scoreInput: groupScoreInput,
+      rankInput: groupRankInput,
+      defaultLimit: GROUP_DEFAULT_LIMIT,
+    });
+    return () => worker.removeEventListener('message', handler);
+  }, [groupData, groupLevel, debouncedGroupSearch, groupSortBy, groupScoreInput, groupRankInput]);
+  // 组件卸载时终止 Worker
+  useEffect(() => {
+    return () => { workerRef.current?.terminate(); workerRef.current = null; };
+  }, []);
 
   return (
-    <div className="bg-[#020617] text-slate-100 font-sans antialiased relative min-h-screen overflow-x-hidden selection:bg-blue-500/30 selection:text-white" id="main_root">
+    <div className="bg-[#020617] text-slate-100 font-sans antialiased relative min-h-screen selection:bg-blue-500/30 selection:text-white" id="main_root">
 
       {/* Animated Glowing Ambient Blobs */}
       <div className="absolute -top-24 -left-24 w-96 h-96 bg-blue-600/30 rounded-full blur-[100px] pointer-events-none" />
@@ -1559,7 +1587,7 @@ export default function App() {
                     2025 院校专业组录取数据查询
                   </h3>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    源自 data.xlsx 专业组数据，提取各院校专业组录取最低分与最低位次，并列出组内所含专业名称。同一专业组内所有专业共享该组投档门槛。
+                    源自 data.xlsx 专业组数据，提取每个专业对应的院校专业组录取人数、录取最低分与最低位次。每个专业单独展示。
                   </p>
                 </div>
               </div>
@@ -1687,80 +1715,66 @@ export default function App() {
                       <span className="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">分</span>
                     </div>
                   )}
-
-                  <label className="flex items-center gap-2 cursor-pointer select-none shrink-0">
-                    <input
-                      type="checkbox"
-                      checked={groupEligibleOnly}
-                      onChange={(e) => setGroupEligibleOnly(e.target.checked)}
-                      className="w-4 h-4 rounded accent-blue-500 cursor-pointer"
-                    />
-                    <span className="text-xs text-slate-300 font-semibold">
-                      仅显示可达专业组
-                    </span>
-                  </label>
                 </div>
 
-                {groupEligibleOnly && (
-                  <span className="text-[11px] text-slate-400 md:text-right">
-                    规则：专业组录取最低分 ≤ 我的分数，或 最低位次 ≥ 我的排位
-                  </span>
-                )}
+                <span className="text-[11px] text-slate-400 md:text-right">
+                  输入后直接筛选：专业组录取最低分 ≤ 我的分数，或 最低位次 ≥ 我的排位
+                </span>
               </div>
 
-              {/* 匹配数量提示 */}
-              <div className="text-xs text-slate-400">
-                共匹配 <strong className="text-white">{filteredGroupData.length.toLocaleString()}</strong> 个院校专业组
-                {filteredGroupData.length > GROUP_DISPLAY_LIMIT && (
-                  <>，当前展示前 <strong className="text-white">{GROUP_DISPLAY_LIMIT}</strong> 条（请缩小搜索或调整筛选以查看更多）</>
-                )}
-              </div>
+              {/* 专业组数据表：react-virtualized 虚拟列表，仅渲染可见 DOM 节点 */}
+              <div className="rounded-xl border border-white/10 overflow-hidden">
+                {/* 表头（固定不滚动） */}
+                <div className="grid grid-cols-[1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 bg-white/5 text-slate-300 font-bold border-b border-white/10 text-[11px] px-3 py-2">
+                  <span className="whitespace-nowrap">院校名称</span>
+                  <span>专业名称</span>
+                  <span className="text-center whitespace-nowrap">专业组代码</span>
+                  <span className="text-center whitespace-nowrap">院校专业组代码</span>
+                  <span className="text-center whitespace-nowrap">批次</span>
+                  <span className="text-center whitespace-nowrap">专业组录取最低分</span>
+                  <span className="text-center whitespace-nowrap">专业组最低位次</span>
+                  <span className="text-center whitespace-nowrap">录取人数</span>
+                </div>
 
-              {/* 专业组数据表 */}
-              <div className="overflow-x-auto rounded-xl border border-white/10">
-                <table className="w-full text-xs text-left border-collapse" id="group_data_table">
-                  <thead>
-                    <tr className="bg-white/5 text-slate-300 font-bold border-b border-white/10">
-                      <th className="p-3 whitespace-nowrap">院校名称</th>
-                      <th className="p-3">专业名称（组内）</th>
-                      <th className="p-3 text-center whitespace-nowrap">专业组代码</th>
-                      <th className="p-3 text-center whitespace-nowrap">院校专业组代码</th>
-                      <th className="p-3 text-center">科类</th>
-                      <th className="p-3 text-center whitespace-nowrap">批次</th>
-                      <th className="p-3 text-center whitespace-nowrap">专业组录取最低分</th>
-                      <th className="p-3 text-center whitespace-nowrap">专业组最低位次</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {filteredGroupData.length === 0 ? (
-                      <tr>
-                        <td colSpan={8} className="p-8 text-center text-slate-400">
-                          未找到匹配的院校专业组，请调整筛选条件或搜索关键词。
-                        </td>
-                      </tr>
-                    ) : (
-                      filteredGroupData.slice(0, GROUP_DISPLAY_LIMIT).map(g => (
-                        <tr key={g.schoolGroupCode} className="border-b border-white/5 hover:bg-white/5 transition-all">
-                          <td className="p-3 font-bold text-white whitespace-nowrap">{g.school}</td>
-                          <td className="p-3 text-slate-300 max-w-md">{g.majorNames}</td>
-                          <td className="p-3 text-center font-mono text-slate-200">{g.groupCode}</td>
-                          <td className="p-3 text-center font-mono text-slate-200">{g.schoolGroupCode}</td>
-                          <td className="p-3 text-center">
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold border ${g.subject === '物理'
-                              ? 'bg-blue-500/20 text-blue-300 border-blue-500/30'
-                              : 'bg-orange-500/20 text-orange-300 border-orange-500/30'
-                              }`}>
-                              {g.subject}
-                            </span>
-                          </td>
-                          <td className="p-3 text-center text-slate-300 whitespace-nowrap">{g.batch}</td>
-                          <td className="p-3 text-center font-bold text-blue-400 bg-blue-500/5">{g.minScore}</td>
-                          <td className="p-3 text-center font-semibold text-slate-200 bg-blue-500/5">{g.minRank.toLocaleString()}</td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                {/* 虚拟列表主体 */}
+                {!groupData ? (
+                  <div className="p-8 text-center text-slate-400 text-xs">正在加载专业组数据，请稍候…</div>
+                ) : filteredGroupData.length === 0 ? (
+                  <div className="p-8 text-center text-slate-400 text-xs">未找到匹配的院校专业组，请调整筛选条件或搜索关键词。</div>
+                ) : (
+                  <div style={{ height: 600 }}>
+                    <AutoSizer>
+                      {({ width, height }) => (
+                        <List
+                          width={width}
+                          height={height}
+                          rowCount={filteredGroupData.length}
+                          rowHeight={52}
+                          rowRenderer={(props: ListRowProps) => {
+                            const g = filteredGroupData[props.index];
+                            return (
+                              <div
+                                key={props.key}
+                                style={props.style}
+                                className="grid grid-cols-[1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 items-center border-b border-white/5 hover:bg-white/5 transition-all text-[11px] px-3"
+                              >
+                                <span className="font-bold text-white truncate" title={g.school}>{g.school}</span>
+                                <span className="text-slate-300 truncate" title={g.majorName}>{g.majorName}</span>
+                                <span className="text-center font-mono text-slate-200">{g.groupCode}</span>
+                                <span className="text-center font-mono text-slate-200">{g.schoolGroupCode}</span>
+                                <span className="text-center text-slate-300 truncate" title={g.batch}>{g.batch}</span>
+                                <span className="text-center font-bold text-blue-400 bg-blue-500/5">{g.minScore}</span>
+                                <span className="text-center font-semibold text-slate-200 bg-blue-500/5">{g.minRank.toLocaleString()}</span>
+                                <span className="text-center font-mono text-emerald-300">{g.admissionCount}</span>
+                              </div>
+                            );
+                          }}
+                          overscanRowCount={10}
+                        />
+                      )}
+                    </AutoSizer>
+                  </div>
+                )}
               </div>
 
             </div>

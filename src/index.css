@@ -5,3 +5,11 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
+
+/* 防止横向溢出产生横向滚动条
+   用 clip 而非 hidden：hidden 会把 overflow-y 从 visible 强制变为 auto，
+   导致 html 和 body 各产生一个纵向滚动条（双滚动条问题）；
+   clip 不会改变 overflow-y 的计算值 */
+html, body {
+  overflow-x: clip;
+}
