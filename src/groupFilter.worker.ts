@@ -1,5 +1,5 @@
 /// <reference lib="webworker" />
-// 专业组数据筛选 Web Worker：离线计算，避免阻塞主线程渲染与交互
+// 专业录取数据筛选 Web Worker：离线计算，避免阻塞主线程渲染与交互
 import type { MajorGroupData } from './types';
 
 // 筛选请求参数

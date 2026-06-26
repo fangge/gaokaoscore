@@ -519,7 +519,7 @@ export default function App() {
               }`}
           >
             <BookOpen className="w-4 h-4" />
-            2025专业组录取数据
+            2025专业录取数据
           </button>
 
           <button
@@ -1555,10 +1555,10 @@ export default function App() {
               <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
                   <h3 className="text-lg font-bold text-white">
-                    2025 院校专业组录取数据查询
+                    2025 院校专业录取数据查询
                   </h3>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    提取每个专业对应的院校专业组录取人数、录取最低分与最低位次。每个专业单独展示。
+                    提取每个专业对应的专业录取人数、录取最低分与最低位次。每个专业单独展示。
                   </p>
                 </div>
               </div>
@@ -1689,7 +1689,7 @@ export default function App() {
                 </div>
 
                 <span className="text-[11px] text-slate-400 md:text-right">
-                  输入后直接筛选：专业组录取最低分 ≤ 我的分数，或 最低位次 ≥ 我的排位
+                  输入后直接筛选：专业录取最低分 ≤ 我的分数，或 最低位次 ≥ 我的排位
                 </span>
               </div>
 
@@ -1702,14 +1702,14 @@ export default function App() {
                   <span className="text-center whitespace-nowrap">专业组代码</span>
                   <span className="text-center whitespace-nowrap">院校专业组代码</span>
                   <span className="text-center whitespace-nowrap">批次</span>
-                  <span className="text-center whitespace-nowrap">专业组录取最低分</span>
-                  <span className="text-center whitespace-nowrap">专业组最低位次</span>
+                  <span className="text-center whitespace-nowrap">专业录取最低分</span>
+                  <span className="text-center whitespace-nowrap">专业最低位次</span>
                   <span className="text-center whitespace-nowrap">录取人数</span>
                 </div>
 
                 
                 {!groupData ? (
-                  <div className="p-8 text-center text-slate-400 text-xs">正在加载专业组数据，请稍候…</div>
+                  <div className="p-8 text-center text-slate-400 text-xs">正在加载专业录取数据，请稍候…</div>
                 ) : filteredGroupData.length === 0 ? (
                   <div className="p-8 text-center text-slate-400 text-xs">未找到匹配的院校专业组，请调整筛选条件或搜索关键词。</div>
                 ) : (

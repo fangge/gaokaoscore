@@ -16,7 +16,7 @@ export interface UniversityData {
   };
 }
 
-// 2025 院校专业组录取数据（源自 imgdata/data.xlsx 专业组数据，每个专业单独一条记录）
+// 2025 专业录取数据（源自 imgdata/data.xlsx 2025年专业录取数据，每个专业单独一条记录）
 export interface MajorGroupData {
   school: string;            // 院校名称
   majorName: string;         // 专业全称
@@ -26,7 +26,7 @@ export interface MajorGroupData {
   subject: string;           // 科类（历史/物理）
   batch: string;             // 批次
   level: string;             // 本科/专科
-  admissionCount: number;    // 专业组录取人数
-  minScore: number;          // 专业组录取最低分
-  minRank: number;           // 专业组最低位次
+  admissionCount: number;    // 专业录取人数
+  minScore: number;          // 专业录取最低分
+  minRank: number;           // 专业最低位次
 }
