@@ -107,11 +107,11 @@ export default function App() {
         setGroupData(cached);
         return;
       }
-      // 2. 未命中则动态加载 JSON
-      const file = groupSubject === '历史' ? './groupData-history.json' : './groupData-physics.json';
-      const m = await import(file);
+      // 2. 未命中则通过 fetch 加载 public 目录下的静态 JSON
+      const file = groupSubject === '历史' ? '/groupData-history.json' : '/groupData-physics.json';
+      const res = await fetch(file);
       if (cancelled) return;
-      const arr = m.default as MajorGroupData[];
+      const arr = (await res.json()) as MajorGroupData[];
       setGroupData(arr);
       // 3. 回写 IndexedDB 缓存（不阻塞）
       setCachedGroupData(groupSubject, arr);
