@@ -1707,7 +1707,7 @@ export default function App() {
                   <span className="text-center whitespace-nowrap">录取人数</span>
                 </div>
 
-                {/* 虚拟列表主体 */}
+                
                 {!groupData ? (
                   <div className="p-8 text-center text-slate-400 text-xs">正在加载专业组数据，请稍候…</div>
                 ) : filteredGroupData.length === 0 ? (
