@@ -29,6 +29,8 @@ export interface MajorGroupData {
   subject: string;           // 科类（历史/物理）
   batch: string;             // 批次
   level: string;             // 本科/专科
+  province: string;          // 所在省
+  city: string;              // 城市
   admissionCount: number;    // 专业录取人数
   minScore: number;          // 专业录取最低分
   minRank: number;           // 专业最低位次

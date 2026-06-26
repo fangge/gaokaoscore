@@ -13,6 +13,8 @@ export interface GroupFilterParams {
   rankInput: string;      // 全省排位输入
   defaultLimit: number;   // 无筛选时的默认展示条数
   tierFilter: 'all' | '冲' | '稳' | '保';
+  province: string;       // 所在省筛选（空字符串表示不限）
+  city: string;           // 城市筛选（空字符串表示不限）
 }
 
 // 由投档分估算全省排位（与主面板估算逻辑保持一致）
@@ -42,13 +44,13 @@ function estimateRankFromScore(data: MajorGroupData[], score: number): number {
 }
 
 self.onmessage = (e: MessageEvent<GroupFilterParams>) => {
-  const { data, level, search, sortBy, scoreInput, rankInput, defaultLimit, tierFilter } = e.data;
+  const { data, level, search, sortBy, scoreInput, rankInput, defaultLimit, tierFilter, province, city } = e.data;
   const q = search.trim().toLowerCase();
   const eligScore = parseInt(scoreInput);
   const eligRank = parseInt(rankInput);
   const hasEligScore = !isNaN(eligScore);
   const hasEligRank = !isNaN(eligRank);
-  // 是否存在主动筛选条件：搜索词、或填写了排位/分数
+  // 是否存在主动筛选条件：搜索词、填写了排位/分数、或省/市非默认
   const hasActiveFilter = q !== '' || hasEligScore || hasEligRank;
 
   // 计算用于"冲稳保"梯队划分的等效排位
@@ -64,6 +66,14 @@ self.onmessage = (e: MessageEvent<GroupFilterParams>) => {
   // 预构建小写搜索字段以加速 includes（避免每行重复 toLowerCase）
   const result = data
     .filter(g => g.level === level)
+    .filter(g => {
+      if (!province) return true;
+      return g.province === province;
+    })
+    .filter(g => {
+      if (!city) return true;
+      return g.city === city;
+    })
     .filter(g => {
       if (!q) return true;
       return (
