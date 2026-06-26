@@ -1,6 +1,9 @@
 export type Subject = 'history' | 'physics' | 'sports' | 'art' | 'music' | 'acting' | 'dance';
 export type SchoolNature = '公办' | '民办' | '合作办学';
 
+// 志愿填报梯队：冲（搏一搏）/ 稳（主力）/ 保（双保险）
+export type AdmissionTier = '冲' | '稳' | '保';
+
 export interface YearData {
   score: number | null;
   rank: number | null;
@@ -26,7 +29,8 @@ export interface MajorGroupData {
   subject: string;           // 科类（历史/物理）
   batch: string;             // 批次
   level: string;             // 本科/专科
-  admissionCount: number;    // 专业录取人数
-  minScore: number;          // 专业录取最低分
-  minRank: number;           // 专业最低位次
+  admissionCount: number;    // 专业组录取人数
+  minScore: number;          // 专业组录取最低分
+  minRank: number;           // 专业组最低位次
+  tier?: AdmissionTier | null; // 冲/稳/保 梯队（筛选时由 Worker 计算注入）
 }
