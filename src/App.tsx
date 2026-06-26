@@ -53,7 +53,8 @@ import {
   juniorActingData,
   juniorDanceData
 } from './data';
-import { UniversityData, Subject, SchoolNature, MajorGroupData } from './types';
+import { UniversityData, Subject, SchoolNature, MajorGroupData, AdmissionTier } from './types';
+import { classifyTier, tierMeta, tierOrder } from './tierUtils';
 import PWAUpdatePrompt from './components/PWAUpdatePrompt';
 import { getCachedGroupData, setCachedGroupData } from './groupDb';
 import GroupFilterWorker from './groupFilter.worker?worker';
@@ -71,6 +72,8 @@ export default function App() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedNatures, setSelectedNatures] = useState<SchoolNature[]>(['公办', '民办', '合作办学']);
   const [sortBy, setSortBy] = useState<'rankAsc' | 'rankDesc' | 'scoreDesc' | 'scoreAsc' | 'name'>('rankAsc');
+  // 冲/稳/保 梯队筛选
+  const [selectedTier, setSelectedTier] = useState<'all' | AdmissionTier>('all');
 
   // Interactive elements
   const [selectedSchool, setSelectedSchool] = useState<UniversityData | null>(null);
@@ -87,6 +90,8 @@ export default function App() {
   const [groupInputMode, setGroupInputMode] = useState<'rank' | 'score'>('rank');
   const [groupRankInput, setGroupRankInput] = useState<string>('');
   const [groupScoreInput, setGroupScoreInput] = useState<string>('');
+  // 专业组 Tab 独立的冲/稳/保 梯队筛选
+  const [groupTier, setGroupTier] = useState<'all' | AdmissionTier>('all');
   // 搜索防抖：groupSearch 为即时值（受控输入），debouncedGroupSearch 为实际参与筛选的值
   const [debouncedGroupSearch, setDebouncedGroupSearch] = useState<string>('');
   useEffect(() => {
@@ -294,8 +299,8 @@ export default function App() {
     }
   };
 
-  // Processed and filtered data for table / search
-  const processedData = useMemo(() => {
+  // 基础筛选数据：按名称、办学性质、分数/排位筛选，并附加冲/稳/保梯队（不含梯队筛选本身）
+  const baseFilteredData = useMemo(() => {
     return currentDataset
       .filter(univ => {
         // Name Search
@@ -303,18 +308,26 @@ export default function App() {
         // Nature filter
         const matchesNature = selectedNatures.includes(univ.nature);
 
-        // Year requirement filter: "小于等于当前分数或者排位"
-        // Since smaller rank number is better (harder), "小于等于当前排位" means minRank >= estimatedRank
-        // For score, "小于等于当前分数" means minScore <= estimatedScore
         const minRank = univ.history[selectedYear]?.rank;
         const minScore = univ.history[selectedYear]?.score;
         if (minRank === null || minRank === undefined || minScore === null || minScore === undefined) {
           return false;
         }
 
-        const matchesScoreOrRank = minScore <= estimatedScore || minRank >= estimatedRank;
+        // 扩展至"冲"区间：纳入往年录取位次比当前高 5%-15% 的院校（minRank >= 排位 * 0.85）
+        const matchesScoreOrRank = minScore <= estimatedScore || minRank >= estimatedRank * 0.85;
         return matchesSearch && matchesNature && matchesScoreOrRank;
       })
+      .map(univ => ({
+        ...univ,
+        tier: classifyTier(univ.history[selectedYear]?.rank, estimatedRank),
+      }));
+  }, [currentDataset, searchQuery, selectedNatures, selectedYear, estimatedRank, estimatedScore]);
+
+  // Processed and filtered data for table / search（在基础筛选之上叠加梯队筛选与排序）
+  const processedData = useMemo(() => {
+    return baseFilteredData
+      .filter(item => selectedTier === 'all' || item.tier === selectedTier)
       .sort((a, b) => {
         const valA = a.history[selectedYear];
         const valB = b.history[selectedYear];
@@ -335,14 +348,19 @@ export default function App() {
         if (sortBy === 'scoreAsc') return scoreA - scoreB;
         return 0;
       });
-  }, [currentDataset, searchQuery, selectedNatures, sortBy, selectedYear, estimatedRank, estimatedScore]);
+  }, [baseFilteredData, selectedTier, sortBy, selectedYear]);
 
-  // Micro statistics calculation
+  // Micro statistics calculation（基于基础筛选数据，反映完整冲/稳/保分布）
   const stats = useMemo(() => {
-    const totalCount = processedData.length;
+    const totalCount = baseFilteredData.length;
 
-    const natureCounts = processedData.reduce((acc, curr) => {
+    const natureCounts = baseFilteredData.reduce((acc, curr) => {
       acc[curr.nature] = (acc[curr.nature] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+
+    const tierCounts = baseFilteredData.reduce((acc, curr) => {
+      if (curr.tier) acc[curr.tier] = (acc[curr.tier] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
@@ -351,8 +369,11 @@ export default function App() {
       publicCount: natureCounts['公办'] || 0,
       privateCount: natureCounts['民办'] || 0,
       jointCount: natureCounts['合作办学'] || 0,
+      chongCount: tierCounts['冲'] || 0,
+      wenCount: tierCounts['稳'] || 0,
+      baoCount: tierCounts['保'] || 0,
     };
-  }, [processedData]);
+  }, [baseFilteredData]);
 
   // Comparison data compilation for charts
   const comparisonChartData = useMemo(() => {
@@ -440,9 +461,10 @@ export default function App() {
       scoreInput: groupScoreInput,
       rankInput: groupRankInput,
       defaultLimit: GROUP_DEFAULT_LIMIT,
+      tierFilter: groupTier,
     });
     return () => worker.removeEventListener('message', handler);
-  }, [groupData, groupLevel, debouncedGroupSearch, groupSortBy, groupScoreInput, groupRankInput]);
+  }, [groupData, groupLevel, debouncedGroupSearch, groupSortBy, groupScoreInput, groupRankInput, groupTier]);
   // 组件卸载时终止 Worker
   useEffect(() => {
     return () => { workerRef.current?.terminate(); workerRef.current = null; };
@@ -821,6 +843,49 @@ export default function App() {
               </div>
             </div>
           </div>
+
+          {/* 冲/稳/保 梯队分布与填报策略指引（点击卡片可按梯队筛选） */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3 bg-black/20 rounded-2xl p-4 border border-white/5">
+            {tierOrder.map(t => {
+              const meta = tierMeta[t];
+              const count = t === '冲' ? stats.chongCount : t === '稳' ? stats.wenCount : stats.baoCount;
+              const isActive = selectedTier === t;
+              return (
+                <button
+                  key={t}
+                  onClick={() => setSelectedTier(isActive ? 'all' : t)}
+                  className={`text-left bg-white/5 border-l-4 rounded-xl p-3 shadow-md transition-all cursor-pointer ${isActive ? `${meta.borderClass} ring-1 ring-white/20 bg-white/10` : `${meta.borderClass} border border-white/10 hover:bg-white/10`}`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="flex items-center gap-1.5 text-xs font-bold text-slate-300">
+                      <span className={`w-2 h-2 rounded-full ${meta.dotClass}`} />
+                      {meta.label}的院校
+                    </span>
+                    <div className="flex items-baseline gap-1">
+                      <span className={`text-lg font-extrabold ${meta.countClass}`}>{count}</span>
+                      <span className="text-[10px] text-slate-400">所</span>
+                    </div>
+                  </div>
+                  <p className="text-[10px] text-slate-400 leading-relaxed">{meta.desc}</p>
+                  <p className="text-[10px] text-slate-500 mt-1">建议占总志愿：{meta.proportion}</p>
+                </button>
+              );
+            })}
+          </div>
+          {selectedTier !== 'all' && (
+            <div className="flex items-center justify-between bg-blue-500/10 border border-blue-500/20 rounded-xl px-4 py-2">
+              <span className="text-xs text-blue-200">
+                当前仅展示「{selectedTier}」梯队院校，点击上方对应卡片可恢复全部展示
+              </span>
+              <button
+                onClick={() => setSelectedTier('all')}
+                className="text-xs font-semibold text-blue-300 hover:text-white cursor-pointer flex items-center gap-1"
+              >
+                <X className="w-3 h-3" />
+                清除梯队筛选
+              </button>
+            </div>
+          )}
         </section>
         )}
 
@@ -954,6 +1019,11 @@ export default function App() {
                                     }`}>
                                     {univ.nature}
                                   </span>
+                                  {univ.tier && (
+                                    <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${tierMeta[univ.tier].badgeClass}`}>
+                                      {univ.tier}
+                                    </span>
+                                  )}
                                 </div>
 
                                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-xs text-slate-400 font-mono">
@@ -1015,6 +1085,14 @@ export default function App() {
                             <span className="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">
                               {selectedSchool.nature}
                             </span>
+                            {(() => {
+                              const t = classifyTier(selectedSchool.history[selectedYear]?.rank, estimatedRank);
+                              return t ? (
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${tierMeta[t].badgeClass}`}>
+                                  {t}
+                                </span>
+                              ) : null;
+                            })()}
                             <span className="text-xs text-slate-400 font-semibold font-mono">3年数据深度研判</span>
                           </div>
                           <h4 className="font-extrabold text-white text-lg mt-1">
@@ -1689,14 +1767,50 @@ export default function App() {
                 </div>
 
                 <span className="text-[11px] text-slate-400 md:text-right">
-                  输入后直接筛选：专业组录取最低分 ≤ 我的分数，或 最低位次 ≥ 我的排位
+                  输入后自动划分冲/稳/保梯队：录取最低分 ≤ 我的分数，或 最低位次 ≥ 我的排位 × 0.85
                 </span>
+              </div>
+
+              {/* 冲/稳/保 梯队筛选（输入排位或分数后生效） */}
+              <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row md:items-center gap-4 shadow-md">
+                <div className="flex items-center gap-2 shrink-0">
+                  <Compass className="w-4 h-4 text-indigo-400" />
+                  <span className="text-xs font-bold text-slate-300">志愿梯队筛选</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-1 bg-black/20 p-1 rounded-xl border border-white/5 shrink-0">
+                  <button
+                    onClick={() => setGroupTier('all')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${groupTier === 'all' ? 'bg-white/10 text-white border border-white/10 shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+                  >
+                    全部
+                  </button>
+                  {tierOrder.map(t => (
+                    <button
+                      key={t}
+                      onClick={() => setGroupTier(groupTier === t ? 'all' : t)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all flex items-center gap-1 ${groupTier === t ? 'bg-white/10 text-white border border-white/10 shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+                    >
+                      <span className={`w-1.5 h-1.5 rounded-full ${tierMeta[t].dotClass}`} />
+                      {t}
+                    </button>
+                  ))}
+                </div>
+                <div className="flex flex-wrap gap-x-4 gap-y-1 text-[10px] text-slate-400">
+                  {tierOrder.map(t => (
+                    <span key={t} className="flex items-center gap-1">
+                      <span className={`w-1.5 h-1.5 rounded-full ${tierMeta[t].dotClass}`} />
+                      <strong className={tierMeta[t].countClass}>{t}</strong>
+                      <span>：{tierMeta[t].proportion}</span>
+                    </span>
+                  ))}
+                </div>
               </div>
 
               {/* 专业组数据表：react-virtualized 虚拟列表，仅渲染可见 DOM 节点 */}
               <div className="rounded-xl border border-white/10 overflow-hidden">
                 {/* 表头（固定不滚动） */}
-                <div className="grid grid-cols-[1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 bg-white/5 text-slate-300 font-bold border-b border-white/10 text-[11px] px-3 py-2">
+                <div className="grid grid-cols-[0.5fr_1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 bg-white/5 text-slate-300 font-bold border-b border-white/10 text-[11px] px-3 py-2">
+                  <span className="text-center whitespace-nowrap">梯队</span>
                   <span className="whitespace-nowrap">院校名称</span>
                   <span>专业名称</span>
                   <span className="text-center whitespace-nowrap">专业组代码</span>
@@ -1727,8 +1841,13 @@ export default function App() {
                               <div
                                 key={props.key}
                                 style={props.style}
-                                className="grid grid-cols-[1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 items-center border-b border-white/5 hover:bg-white/5 transition-all text-[11px] px-3"
+                                className="grid grid-cols-[0.5fr_1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 items-center border-b border-white/5 hover:bg-white/5 transition-all text-[11px] px-3"
                               >
+                                <span className="text-center">
+                                  {g.tier ? (
+                                    <span className={`text-[9px] px-1 py-0.5 rounded font-bold ${tierMeta[g.tier].badgeClass}`}>{g.tier}</span>
+                                  ) : <span className="text-slate-600">—</span>}
+                                </span>
                                 <span
                                   className="font-bold text-white truncate cursor-pointer hover:text-blue-300 transition-colors"
                                   title={g.school}
