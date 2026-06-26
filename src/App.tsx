@@ -1540,7 +1540,7 @@ export default function App() {
                     2025 院校专业组录取数据查询
                   </h3>
                   <p className="text-xs text-slate-400 mt-0.5">
-                    源自 data.xlsx 专业组数据，提取每个专业对应的院校专业组录取人数、录取最低分与最低位次。每个专业单独展示。
+                    提取每个专业对应的院校专业组录取人数、录取最低分与最低位次。每个专业单独展示。
                   </p>
                 </div>
               </div>
@@ -1736,6 +1736,62 @@ export default function App() {
         </div>
 
       </main>
+
+      {/* 免责声明 */}
+      <footer className="max-w-7xl mx-auto px-4 pb-8 relative z-10">
+        <div className="bg-amber-500/[0.04] backdrop-blur-2xl border border-amber-500/20 rounded-3xl p-6 shadow-2xl">
+          <div className="flex items-center gap-2 mb-4">
+            <AlertCircle className="w-5 h-5 text-amber-400" />
+            <h3 className="text-base font-bold text-amber-300 tracking-tight">
+              免责声明
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex flex-col gap-1.5">
+              <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-amber-400" />
+                志愿填报是考生自己的事
+              </span>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                本工具提供的数据、分析和建议仅供决策参考，不构成专业志愿填报指导意见。
+              </p>
+            </div>
+
+            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex flex-col gap-1.5">
+              <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-amber-400" />
+                数据已尽力但不敢保证
+              </span>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                数据库来自各省教育考试院官方投档线，经多轮联网交叉验证，但录取数据每年变化，最终以各省教育考试院官网和学校官方招生网公布的当年数据为准。
+              </p>
+            </div>
+
+            <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 flex flex-col gap-1.5">
+              <span className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
+                <span className="w-1 h-1 rounded-full bg-amber-400" />
+                开发者不承担任何责任
+              </span>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                使用本工具产生的任何志愿填报决策及其后果，由考生和家长自行承担。开发者不对因使用或依赖本工具信息而导致的任何损失负责。
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 bg-amber-500/[0.06] border border-amber-500/25 rounded-2xl p-4 flex items-start gap-3">
+            <HelpCircle className="w-4 h-4 text-amber-400 shrink-0 mt-0.5" />
+            <div>
+              <span className="text-xs font-bold text-amber-300 block mb-0.5">
+                不要盲信任何工具
+              </span>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                包括本工具在内，所有 AI 志愿填报辅助工具都只能作为参考。填报前请咨询学校老师、招生办等专业渠道。
+              </p>
+            </div>
+          </div>
+        </div>
+      </footer>
 
 
       {/* PWA 更新提示 */}
