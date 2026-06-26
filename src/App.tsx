@@ -147,43 +147,43 @@ export default function App() {
   }, [level, subject]);
 
   // Synchronize initial input on level/subject changes to prevent out-of-bound errors
-  React.useEffect(() => {
-    if (level === 'undergraduate' || level === '本科') {
-      if (inputMode === 'rank') {
-        if (subject === 'physics') setUserRankInput('60000');
-        else if (subject === 'history') setUserRankInput('20000');
-        else if (subject === 'sports') setUserRankInput('2000');
-        else if (subject === 'art') setUserRankInput('5000');
-        else if (subject === 'music') setUserRankInput('2000');
-        else if (subject === 'acting') setUserRankInput('200');
-        else if (subject === 'dance') setUserRankInput('500');
-      } else {
-        if (subject === 'sports') setUserScoreInput('550');
-        else if (subject === 'art') setUserScoreInput('500');
-        else if (subject === 'music') setUserScoreInput('480');
-        else if (subject === 'acting') setUserScoreInput('500');
-        else if (subject === 'dance') setUserScoreInput('480');
-        else setUserScoreInput('560');
-      }
-    } else {
-      if (inputMode === 'rank') {
-        if (subject === 'physics') setUserRankInput('280000');
-        else if (subject === 'history') setUserRankInput('90000');
-        else if (subject === 'sports') setUserRankInput('10000');
-        else if (subject === 'art') setUserRankInput('25000');
-        else if (subject === 'music') setUserRankInput('6000');
-        else if (subject === 'acting') setUserRankInput('1500');
-        else if (subject === 'dance') setUserRankInput('2000');
-      } else {
-        if (subject === 'sports') setUserScoreInput('480');
-        else if (subject === 'art') setUserScoreInput('380');
-        else if (subject === 'music') setUserScoreInput('380');
-        else if (subject === 'acting') setUserScoreInput('430');
-        else if (subject === 'dance') setUserScoreInput('380');
-        else setUserScoreInput('430');
-      }
-    }
-  }, [level, subject, inputMode]);
+  // React.useEffect(() => {
+  //   if (level === 'undergraduate' || level === '本科') {
+  //     if (inputMode === 'rank') {
+  //       if (subject === 'physics') setUserRankInput('60000');
+  //       else if (subject === 'history') setUserRankInput('20000');
+  //       else if (subject === 'sports') setUserRankInput('2000');
+  //       else if (subject === 'art') setUserRankInput('5000');
+  //       else if (subject === 'music') setUserRankInput('2000');
+  //       else if (subject === 'acting') setUserRankInput('200');
+  //       else if (subject === 'dance') setUserRankInput('500');
+  //     } else {
+  //       if (subject === 'sports') setUserScoreInput('550');
+  //       else if (subject === 'art') setUserScoreInput('500');
+  //       else if (subject === 'music') setUserScoreInput('480');
+  //       else if (subject === 'acting') setUserScoreInput('500');
+  //       else if (subject === 'dance') setUserScoreInput('480');
+  //       else setUserScoreInput('560');
+  //     }
+  //   } else {
+  //     if (inputMode === 'rank') {
+  //       if (subject === 'physics') setUserRankInput('280000');
+  //       else if (subject === 'history') setUserRankInput('90000');
+  //       else if (subject === 'sports') setUserRankInput('10000');
+  //       else if (subject === 'art') setUserRankInput('25000');
+  //       else if (subject === 'music') setUserRankInput('6000');
+  //       else if (subject === 'acting') setUserRankInput('1500');
+  //       else if (subject === 'dance') setUserRankInput('2000');
+  //     } else {
+  //       if (subject === 'sports') setUserScoreInput('480');
+  //       else if (subject === 'art') setUserScoreInput('380');
+  //       else if (subject === 'music') setUserScoreInput('380');
+  //       else if (subject === 'acting') setUserScoreInput('430');
+  //       else if (subject === 'dance') setUserScoreInput('380');
+  //       else setUserScoreInput('430');
+  //     }
+  //   }
+  // }, [level, subject, inputMode]);
 
 
   // Rank / Score Estimator utilities
@@ -481,66 +481,74 @@ export default function App() {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center gap-2 md:self-end">
-              <button
-                onClick={() => setShowHelp(!showHelp)}
-                className="px-3.5 py-2 rounded-xl text-xs font-medium flex items-center gap-1.5 bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 transition-all cursor-pointer shadow-md"
-              >
-                <HelpCircle className="w-4 h-4 text-blue-400" />
-                使用说明及名词解析
-              </button>
-            </div>
+          
           </div>
         </header>
       </div>
 
-      {/* Info Help Overlay Banner */}
-      <AnimatePresence>
-        {showHelp && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="max-w-7xl mx-auto mt-4 px-4 relative z-20"
-            id="help_banner"
-          >
-            <div className="bg-slate-950/70 backdrop-blur-2xl border border-indigo-500/30 rounded-3xl p-6 relative shadow-2xl">
-              <button
-                onClick={() => setShowHelp(false)}
-                className="absolute top-4 right-4 text-slate-400 hover:text-white cursor-pointer p-1.5 hover:bg-white/5 rounded-lg"
-              >
-                <X className="w-5 h-5" />
-              </button>
-              <h3 className="font-bold text-white flex items-center gap-1.5 text-base">
-                <Sparkles className="w-5 h-5 text-indigo-400" />
-                核心推荐策略 (冲稳保) 计算规则与名词解释
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-4 text-xs">
-                <div className="bg-white/5 p-4 rounded-2xl border border-amber-500/20 text-slate-300">
-                  <span className="font-bold text-amber-400 block text-sm mb-1">🔥 冲 (值得一试)</span>
-                  院校录取要求高出用户分数在 50 分以内，或高出排位在 100 名以内。属于极具挑战性但非常值得尝试的冲高位置。
-                </div>
-                <div className="bg-white/5 p-4 rounded-2xl border border-sky-500/20 text-slate-300">
-                  <span className="font-bold text-sky-400 block text-sm mb-1">💎 稳 (稳妥投档)</span>
-                  院校录取要求低于或等于用户当前的排位和分数，但分差小于 50 分且位次差小于 100 名。属于录取把握极高的核心推荐目标。
-                </div>
-                <div className="bg-white/5 p-4 rounded-2xl border border-emerald-500/20 text-slate-300">
-                  <span className="font-bold text-emerald-400 block text-sm mb-1">🛡️ 保 (安全防滑)</span>
-                  院校最低投档线低于用户当前分数达 50 分以上，或录取位次低于用户当前排位 100 名以上。属于万无一失的防滑档保底院校。
-                </div>
-                <div className="bg-white/5 p-4 rounded-2xl border border-indigo-500/20 text-slate-300">
-                  <span className="font-bold text-indigo-400 block text-sm mb-1">⚡ 智能排位换算</span>
-                  系统利用 2023-2025 年省内完整本专科院校的真实成绩与排位对应点，通过<b>高精度插值算法</b>，实现一秒换算任何高考分数的预估全省排位。
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <main className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-6 relative z-10" id="app_main">
 
-        {/* Top Control Panel Grid - 仅关联「智能择校推荐与查询」Tab */}
+       
+
+        {/* Navigation Tabs */}
+        <div className="flex flex-wrap gap-1 bg-white/5 backdrop-blur-xl p-1.5 rounded-2xl border border-white/10 shadow-xl relative z-10" id="navigation_tabs">
+          <button
+            onClick={() => setActiveTab('group')}
+            className={`flex-1 min-w-[120px] py-3 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${activeTab === 'group'
+                ? 'bg-white/10 border border-white/15 text-white shadow-lg shadow-white/5'
+                : 'text-slate-300 hover:bg-white/5 hover:text-white'
+              }`}
+          >
+            <BookOpen className="w-4 h-4" />
+            2025专业组录取数据
+          </button>
+
+          <button
+            onClick={() => setActiveTab('recommend')}
+            className={`flex-1 min-w-[120px] py-3 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${activeTab === 'recommend'
+                ? 'bg-white/10 border border-white/15 text-white shadow-lg shadow-white/5'
+                : 'text-slate-300 hover:bg-white/5 hover:text-white'
+              }`}
+          >
+            <Compass className="w-4 h-4" />
+            择校推荐与查询
+          </button>
+
+          <button
+            onClick={() => setActiveTab('compare')}
+            className={`flex-1 min-w-[120px] py-3 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer relative ${activeTab === 'compare'
+                ? 'bg-white/10 border border-white/15 text-white shadow-lg shadow-white/5'
+                : 'text-slate-300 hover:bg-white/5 hover:text-white'
+              }`}
+          >
+            <SlidersHorizontal className="w-4 h-4" />
+            多校对比分析
+            {comparedSchools.length > 0 && (
+              <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] w-5.5 h-5.5 flex items-center justify-center rounded-full font-bold border-2 border-[#091024]">
+                {comparedSchools.length}
+              </span>
+            )}
+          </button>
+
+          <button
+            onClick={() => setActiveTab('macro')}
+            className={`flex-1 min-w-[120px] py-3 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${activeTab === 'macro'
+                ? 'bg-white/10 border border-white/15 text-white shadow-lg shadow-white/5'
+                : 'text-slate-300 hover:bg-white/5 hover:text-white'
+              }`}
+          >
+            <TrendingUp className="w-4 h-4" />
+            省内院校宏观波动趋势
+          </button>
+        </div>
+
+        
+
+        {/* Active Tab Panel Render */}
+        <div className="transition-all duration-300 relative z-10">
+
+           {/* Top Control Panel Grid - 仅关联「智能择校推荐与查询」Tab */}
         {activeTab === 'recommend' && (
         <section className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl p-6 flex flex-col gap-6" id="control_panel">
           <div className="flex flex-col lg:flex-row gap-6 items-stretch justify-between">
@@ -797,61 +805,6 @@ export default function App() {
           </div>
         </section>
         )}
-
-        {/* Navigation Tabs */}
-        <div className="flex flex-wrap gap-1 bg-white/5 backdrop-blur-xl p-1.5 rounded-2xl border border-white/10 shadow-xl relative z-10" id="navigation_tabs">
-          <button
-            onClick={() => setActiveTab('group')}
-            className={`flex-1 min-w-[120px] py-3 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${activeTab === 'group'
-                ? 'bg-white/10 border border-white/15 text-white shadow-lg shadow-white/5'
-                : 'text-slate-300 hover:bg-white/5 hover:text-white'
-              }`}
-          >
-            <BookOpen className="w-4 h-4" />
-            2025专业组录取数据
-          </button>
-
-          <button
-            onClick={() => setActiveTab('recommend')}
-            className={`flex-1 min-w-[120px] py-3 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${activeTab === 'recommend'
-                ? 'bg-white/10 border border-white/15 text-white shadow-lg shadow-white/5'
-                : 'text-slate-300 hover:bg-white/5 hover:text-white'
-              }`}
-          >
-            <Compass className="w-4 h-4" />
-            智能择校推荐与查询
-          </button>
-
-          <button
-            onClick={() => setActiveTab('compare')}
-            className={`flex-1 min-w-[120px] py-3 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer relative ${activeTab === 'compare'
-                ? 'bg-white/10 border border-white/15 text-white shadow-lg shadow-white/5'
-                : 'text-slate-300 hover:bg-white/5 hover:text-white'
-              }`}
-          >
-            <SlidersHorizontal className="w-4 h-4" />
-            多校对比分析
-            {comparedSchools.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] w-5.5 h-5.5 flex items-center justify-center rounded-full font-bold border-2 border-[#091024]">
-                {comparedSchools.length}
-              </span>
-            )}
-          </button>
-
-          <button
-            onClick={() => setActiveTab('macro')}
-            className={`flex-1 min-w-[120px] py-3 text-sm font-semibold rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer ${activeTab === 'macro'
-                ? 'bg-white/10 border border-white/15 text-white shadow-lg shadow-white/5'
-                : 'text-slate-300 hover:bg-white/5 hover:text-white'
-              }`}
-          >
-            <TrendingUp className="w-4 h-4" />
-            省内院校宏观波动趋势
-          </button>
-        </div>
-
-        {/* Active Tab Panel Render */}
-        <div className="transition-all duration-300 relative z-10">
 
           {/* TAB 1: RECOMMENDATIONS & SEARCH */}
           {activeTab === 'recommend' && (
@@ -1784,20 +1737,6 @@ export default function App() {
 
       </main>
 
-      {/* Page Footer */}
-      <footer className="bg-slate-950/85 text-slate-400 text-xs py-8 mt-12 border-t border-white/10 px-4 backdrop-blur-md relative z-10" id="app_footer">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex flex-col gap-1 items-center md:items-start text-center md:text-left">
-            <span className="text-slate-200 font-bold font-sans">
-              广东省普通高校本科普通类（物理/历史）投档分析系统
-            </span>
-
-          </div>
-          <div className="text-slate-500 text-center md:text-right max-w-sm">
-            数据说明：投档数据仅供参考，具体招生政策和准确录取分数请以官方发布为准。
-          </div>
-        </div>
-      </footer>
 
       {/* PWA 更新提示 */}
       <PWAUpdatePrompt />
