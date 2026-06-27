@@ -164,7 +164,7 @@ export default function App() {
             <SlidersHorizontal className="w-4 h-4" />
             多校对比分析
             {comparedSchools.length > 0 && (
-              <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] w-5.5 h-5.5 flex items-center justify-center rounded-full font-bold border-2 border-[#091024]">
+              <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[0.625rem] w-5.5 h-5.5 flex items-center justify-center rounded-full font-bold border-2 border-[#091024]">
                 {comparedSchools.length}
               </span>
             )}
@@ -236,7 +236,7 @@ export default function App() {
                 <span className="w-1 h-1 rounded-full bg-amber-400" />
                 志愿填报是考生自己的事
               </span>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
+              <p className="text-[0.6875rem] text-slate-400 leading-relaxed">
                 本工具提供的数据、分析和建议仅供决策参考，不构成专业志愿填报指导意见。
               </p>
             </div>
@@ -246,7 +246,7 @@ export default function App() {
                 <span className="w-1 h-1 rounded-full bg-amber-400" />
                 数据已尽力但不敢保证
               </span>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
+              <p className="text-[0.6875rem] text-slate-400 leading-relaxed">
                 数据库来自各省教育考试院官方投档线，经多轮联网交叉验证，但录取数据每年变化，最终以各省教育考试院官网和学校官方招生网公布的当年数据为准。
               </p>
             </div>
@@ -256,7 +256,7 @@ export default function App() {
                 <span className="w-1 h-1 rounded-full bg-amber-400" />
                 开发者不承担任何责任
               </span>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
+              <p className="text-[0.6875rem] text-slate-400 leading-relaxed">
                 使用本工具产生的任何志愿填报决策及其后果，由考生和家长自行承担。开发者不对因使用或依赖本工具信息而导致的任何损失负责。
               </p>
             </div>
@@ -268,7 +268,7 @@ export default function App() {
               <span className="text-xs font-bold text-amber-300 block mb-0.5">
                 不要盲信任何工具
               </span>
-              <p className="text-[11px] text-slate-400 leading-relaxed">
+              <p className="text-[0.6875rem] text-slate-400 leading-relaxed">
                 包括本工具在内，所有 AI 志愿填报辅助工具都只能作为参考。填报前请咨询学校老师、招生办等专业渠道。
               </p>
             </div>

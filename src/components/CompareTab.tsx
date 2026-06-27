@@ -94,7 +94,7 @@ export default function CompareTab({ comparedSchools, currentDataset, onToggleCo
                 >
                   <span className="w-2 h-2 rounded-full bg-blue-500" />
                   <span>{name}</span>
-                  <span className="text-[10px] bg-indigo-500/20 text-indigo-300 px-1 py-0.2 rounded font-medium border border-indigo-500/30">
+                  <span className="text-[0.625rem] bg-indigo-500/20 text-indigo-300 px-1 py-0.2 rounded font-medium border border-indigo-500/30">
                     {univ?.nature}
                   </span>
                   <button
@@ -183,7 +183,7 @@ export default function CompareTab({ comparedSchools, currentDataset, onToggleCo
                   <th className="p-3 text-center border-l border-white/10" colSpan={2}>2024年最低录退</th>
                   <th className="p-3 text-center border-l border-white/10" colSpan={2}>2023年最低录退</th>
                 </tr>
-                <tr className="bg-white/[0.02] text-slate-400 text-[10px] border-b border-white/10">
+                <tr className="bg-white/[0.02] text-slate-400 text-[0.625rem] border-b border-white/10">
                   <th className="p-2" />
                   <th className="p-2" />
                   <th className="p-2 text-center border-l border-white/10 font-semibold">投档分</th>
@@ -202,7 +202,7 @@ export default function CompareTab({ comparedSchools, currentDataset, onToggleCo
                     <tr key={name} className="border-b border-white/10 hover:bg-white/5 transition-all font-mono">
                       <td className="p-3 font-bold text-white font-sans">{name}</td>
                       <td className="p-3 font-sans">
-                        <span className="text-[10px] px-1.5 py-0.5 rounded font-semibold bg-indigo-500/20 text-indigo-300">
+                        <span className="text-[0.625rem] px-1.5 py-0.5 rounded font-semibold bg-indigo-500/20 text-indigo-300">
                           {univ.nature}
                         </span>
                       </td>

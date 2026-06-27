@@ -162,7 +162,7 @@ export default function MacroTab({ currentDataset }: MacroTabProps) {
                   <tr key={item.name} className="border-b border-white/5 hover:bg-white/5 transition-all font-mono">
                     <td className="p-3 font-bold text-white font-sans">{item.name}</td>
                     <td className="p-3 font-sans">
-                      <span className={`text-[9px] px-1.5 py-0.5 rounded font-bold ${item.nature === '公办' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                      <span className={`text-[0.5625rem] px-1.5 py-0.5 rounded font-bold ${item.nature === '公办' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
                         }`}>
                         {item.nature}
                       </span>

@@ -255,7 +255,7 @@ export default function RecommendTab({
           <div className="flex-1 flex flex-col md:flex-row gap-4">
             {/* Level Select Card */}
             <div className="flex-1 min-w-[160px] flex flex-col gap-2">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <label className="text-[0.6875rem] font-bold uppercase tracking-wider text-slate-400">
                 1. 本专科层次选择
               </label>
               <div className="grid grid-cols-2 p-1 bg-black/20 rounded-xl border border-white/5">
@@ -284,7 +284,7 @@ export default function RecommendTab({
 
             {/* Subject Select Card */}
             <div className="flex-2 min-w-[280px] flex flex-col gap-2">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <label className="text-[0.6875rem] font-bold uppercase tracking-wider text-slate-400">
                 2. 选科与专业大类选择
               </label>
               <div className="flex flex-wrap gap-1 p-1 bg-black/20 rounded-xl border border-white/5">
@@ -363,7 +363,7 @@ export default function RecommendTab({
 
             {/* Year Select Card */}
             <div className="flex-1 min-w-[160px] flex flex-col gap-2">
-              <label className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <label className="text-[0.6875rem] font-bold uppercase tracking-wider text-slate-400">
                 3. 投档最低分基准年份
               </label>
               <div className="grid grid-cols-3 p-1 bg-black/20 rounded-xl border border-white/5">
@@ -385,13 +385,13 @@ export default function RecommendTab({
 
           {/* Score & Rank Smart Matcher */}
           <div className="flex-1 bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl p-5 flex flex-col md:flex-row items-center gap-4 shadow-2xl relative">
-            <div className="absolute top-2.5 right-3 flex items-center gap-1 text-[10px] text-indigo-400 font-mono">
+            <div className="absolute top-2.5 right-3 flex items-center gap-1 text-[0.625rem] text-indigo-400 font-mono">
               <Activity className="w-3.5 h-3.5 animate-pulse" />
               双向高精度自动映射
             </div>
 
             <div className="w-full md:w-1/2 flex flex-col gap-1.5">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">
+              <span className="text-[0.6875rem] font-bold text-slate-400 uppercase tracking-wide">
                 4. 输入全省排位或投档分
               </span>
 
@@ -428,7 +428,7 @@ export default function RecommendTab({
                     />
                     <span className="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">名</span>
                   </div>
-                  <div className="text-[11px] text-slate-400 flex items-center gap-1 pl-1 font-sans">
+                  <div className="text-[0.6875rem] text-slate-400 flex items-center gap-1 pl-1 font-sans">
                     <span>预估等值 {selectedYear} 年投档分：</span>
                     <strong className="text-blue-400 text-xs font-mono">{estimatedScore} 分</strong>
                   </div>
@@ -447,7 +447,7 @@ export default function RecommendTab({
                     />
                     <span className="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">分</span>
                   </div>
-                  <div className="text-[11px] text-slate-400 flex items-center gap-1 pl-1 font-sans">
+                  <div className="text-[0.6875rem] text-slate-400 flex items-center gap-1 pl-1 font-sans">
                     <span>预估等值 {selectedYear} 年排位：</span>
                     <strong className="text-blue-400 text-xs font-mono">{estimatedRank.toLocaleString()} 位</strong>
                   </div>
@@ -462,7 +462,7 @@ export default function RecommendTab({
         {/* Quick Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 bg-black/20 rounded-2xl p-4 border border-white/5" id="quick_stats">
           <div className="bg-white/5 border border-white/10 rounded-xl p-3 shadow-md border-l-4 border-l-blue-500">
-            <span className="text-[10px] font-bold text-slate-400 block mb-0.5 uppercase tracking-wide">
+            <span className="text-[0.625rem] font-bold text-slate-400 block mb-0.5 uppercase tracking-wide">
               符合投档条件院校
             </span>
             <div className="flex items-baseline gap-1">
@@ -472,7 +472,7 @@ export default function RecommendTab({
           </div>
 
           <div className="bg-white/5 border border-white/10 rounded-xl p-3 shadow-md border-l-4 border-l-indigo-500">
-            <span className="text-[10px] font-bold text-indigo-400 block mb-0.5 uppercase tracking-wide">
+            <span className="text-[0.625rem] font-bold text-indigo-400 block mb-0.5 uppercase tracking-wide">
               公办性质院校
             </span>
             <div className="flex items-baseline gap-1">
@@ -482,7 +482,7 @@ export default function RecommendTab({
           </div>
 
           <div className="bg-white/5 border border-white/10 rounded-xl p-3 shadow-md border-l-4 border-l-amber-500">
-            <span className="text-[10px] font-bold text-amber-400 block mb-0.5 uppercase tracking-wide">
+            <span className="text-[0.625rem] font-bold text-amber-400 block mb-0.5 uppercase tracking-wide">
               民办性质院校
             </span>
             <div className="flex items-baseline gap-1">
@@ -492,7 +492,7 @@ export default function RecommendTab({
           </div>
 
           <div className="bg-white/5 border border-white/10 rounded-xl p-3 shadow-md border-l-4 border-l-emerald-500">
-            <span className="text-[10px] font-bold text-emerald-400 block mb-0.5 uppercase tracking-wide">
+            <span className="text-[0.625rem] font-bold text-emerald-400 block mb-0.5 uppercase tracking-wide">
               中外/合作办学
             </span>
             <div className="flex items-baseline gap-1">
@@ -521,11 +521,11 @@ export default function RecommendTab({
                   </span>
                   <div className="flex items-baseline gap-1">
                     <span className={`text-lg font-extrabold ${meta.countClass}`}>{count}</span>
-                    <span className="text-[10px] text-slate-400">所</span>
+                    <span className="text-[0.625rem] text-slate-400">所</span>
                   </div>
                 </div>
-                <p className="text-[10px] text-slate-400 leading-relaxed">{meta.desc}</p>
-                <p className="text-[10px] text-slate-500 mt-1">建议占总志愿：{meta.proportion}</p>
+                <p className="text-[0.625rem] text-slate-400 leading-relaxed">{meta.desc}</p>
+                <p className="text-[0.625rem] text-slate-500 mt-1">建议占总志愿：{meta.proportion}</p>
               </button>
             );
           })}
@@ -669,14 +669,14 @@ export default function RecommendTab({
                             <h4 className="font-bold text-white text-base leading-snug">
                               {univ.name}
                             </h4>
-                            <span className={`text-[10px] px-1.5 py-0.5 rounded font-semibold ${univ.nature === '公办' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' :
+                            <span className={`text-[0.625rem] px-1.5 py-0.5 rounded font-semibold ${univ.nature === '公办' ? 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30' :
                                 univ.nature === '民办' ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' :
                                   'bg-white/5 text-slate-300 border border-white/10'
                               }`}>
                               {univ.nature}
                             </span>
                             {univ.tier && (
-                              <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${tierMeta[univ.tier].badgeClass}`}>
+                              <span className={`text-[0.625rem] px-1.5 py-0.5 rounded font-bold ${tierMeta[univ.tier].badgeClass}`}>
                                 {univ.tier}
                               </span>
                             )}
@@ -738,13 +738,13 @@ export default function RecommendTab({
                 <div className="flex items-start justify-between">
                   <div>
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">
+                      <span className="text-[0.625rem] bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-1.5 py-0.5 rounded font-bold">
                         {selectedSchool.nature}
                       </span>
                       {(() => {
                         const t = classifyTier(selectedSchool.history[selectedYear]?.rank, estimatedRank);
                         return t ? (
-                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-bold ${tierMeta[t].badgeClass}`}>
+                          <span className={`text-[0.625rem] px-1.5 py-0.5 rounded font-bold ${tierMeta[t].badgeClass}`}>
                             {t}
                           </span>
                         ) : null;
@@ -881,7 +881,7 @@ export default function RecommendTab({
                           className={`border-b border-white/5 last:border-b-0 ${isCurrentBase ? 'bg-indigo-500/15 font-bold text-white' : 'text-slate-300'
                             }`}
                         >
-                          <td className="py-2">{yr}年 {isCurrentBase && <span className="text-[9px] bg-indigo-500/20 text-indigo-300 px-1 rounded border border-indigo-500/30">基准</span>}</td>
+                          <td className="py-2">{yr}年 {isCurrentBase && <span className="text-[0.5625rem] bg-indigo-500/20 text-indigo-300 px-1 rounded border border-indigo-500/30">基准</span>}</td>
                           <td className="py-2 text-center">{yrData?.score ?? '—'} 分</td>
                           <td className="py-2 text-right">{yrData?.rank ? yrData.rank.toLocaleString() : '—'} 位</td>
                         </tr>

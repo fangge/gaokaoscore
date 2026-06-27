@@ -18,3 +18,11 @@ html, body {
 .p-6 {
     padding: calc(var(--spacing) * 3);
 }
+
+/* PC 端整体放大字号：基准 16px → 26px（约 +10px）
+   所有 rem 单位（含 Tailwind 字号与间距）随之成比例放大 */
+@media (min-width: 768px) {
+  html {
+    font-size: 18px;
+  }
+}
