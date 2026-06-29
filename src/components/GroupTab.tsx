@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Search,
+  Star,
   ArrowUpDown,
   X,
   Activity,
@@ -12,6 +13,7 @@ import { AutoSizer, List, ListRowProps } from 'react-virtualized';
 import type { MajorGroupData, AdmissionTier } from '../types';
 import { tierMeta, tierOrder } from '../tierUtils';
 import { getCachedGroupData, setCachedGroupData } from '../groupDb';
+import FavoritePanel, { loadFavorites, saveFavorites, toggleFavorite } from './FavoritePanel';
 import GroupFilterWorker from '../groupFilter.worker?worker';
 
 type GroupSubject = '历史' | '物理';
@@ -170,6 +172,13 @@ export default function GroupTab() {
       document.removeEventListener('scroll', close, true);
     };
   }, [cellPopover]);
+
+  // ?????localStorage ????
+  const [favorites, setFavorites] = useState<MajorGroupData[]>(() => loadFavorites());
+  useEffect(() => { saveFavorites(favorites); }, [favorites]);
+  const handleToggleFav = (g: MajorGroupData) => {
+    setFavorites((prev) => toggleFavorite(prev, g));
+  };
 
   return (
     <>
@@ -401,7 +410,7 @@ export default function GroupTab() {
         {/* 专业组数据表：react-virtualized 虚拟列表，仅渲染可见 DOM 节点 */}
         <div className="rounded-xl border border-white/10 overflow-hidden">
           {/* 表头（固定不滚动） */}
-          <div className="grid grid-cols-[0.5fr_1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 bg-white/5 text-slate-300 font-bold border-b border-white/10 text-[0.6875rem] px-3 py-2">
+          <div className="grid grid-cols-[0.3fr_0.5fr_1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 bg-white/5 text-slate-300 font-bold border-b border-white/10 text-[0.6875rem] px-3 py-2">
             <span className="text-center whitespace-nowrap">梯队</span>
             <span className="whitespace-nowrap">院校名称</span>
             <span>专业名称</span>
@@ -440,8 +449,26 @@ export default function GroupTab() {
                         <div
                           key={props.key}
                           style={props.style}
-                          className="grid grid-cols-[0.5fr_1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 items-center border-b border-white/5 hover:bg-white/5 transition-all text-[0.6875rem] px-3"
+                          className="grid grid-cols-[0.3fr_0.5fr_1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 items-center border-b border-white/5 hover:bg-white/5 transition-all text-[0.6875rem] px-3"
                         >
+                          <span className="text-center">
+                            {(() => {
+                              const fav = favorites.some(
+                                (f) =>
+                                  f.schoolGroupCode === g.schoolGroupCode &&
+                                  f.majorCode === g.majorCode
+                              );
+                              return (
+                                <button
+                                  onClick={() => handleToggleFav(g)}
+                                  className={`cursor-pointer transition-colors ${fav ? 'text-amber-400 hover:text-amber-300' : 'text-slate-600 hover:text-amber-400'}`}
+                                  title={fav ? '取消收藏' : '收藏'}
+                                >
+                                  <Star className="w-3.5 h-3.5" fill={fav ? 'currentColor' : 'none'} />
+                                </button>
+                              );
+                            })()}
+                          </span>
                           <span className="text-center">
                             {g.tier ? (
                               <span
@@ -529,6 +556,13 @@ export default function GroupTab() {
           )}
         </div>
       </div>
+
+      {/* ???? */}
+      <FavoritePanel
+        favorites={favorites}
+        onRemove={(g) => handleToggleFav(g)}
+        onClear={() => setFavorites([])}
+      />
 
       {/* 截断单元格完整内容气泡 */}
       <AnimatePresence>

@@ -1,5 +1,7 @@
 # 广东高考投档位次查询与择校分析系统
 
+**版本**：v1.2.0
+
 > 收录广东省 2023—2025 年本专科院校真实投档数据，提供分数与排位双向换算、智能择校推荐、多校对比分析及省内宏观波动趋势研判的一体化工具。
 
 在线访问：<https://gaokaoscore.mrfangge.com>
@@ -38,6 +40,7 @@
 - **数据来源**：解析 `imgdata/data.xlsx` 中 2025 年专业录取数据，提取每个专业对应的「专业录取最低分」「专业最低位次」「专业录取人数」（专业级别数据，每个专业不同）。
 - **展示字段**：院校名称、专业全称、专业组代码、院校专业组代码、批次、专业录取最低分、专业最低位次、专业录取人数。
 - **按科类分别加载**：历史与物理数据拆分为独立 JSON 文件（`groupData-history.json` / `groupData-physics.json`），切换科类时按需加载，避免一次性加载全部数据。
+- **收藏与导出**：用户筛选专业组数据后，可点击星标按钮收藏感兴趣的专业组。左侧固定滑出面板集中展示已收藏列表，支持逐条移除、一键清空及一键导出 CSV 文件（BOM UTF-8，Excel 友好）。收藏数据通过 `localStorage` 持久化，刷新不丢失，方便考生反复比对心仪志愿。
 - **筛选与展示规则**：
   - 默认仅展示当前科类前 **20** 条记录；
   - 用户输入搜索关键词（院校 / 专业 / 专业组代码）、全省排位或投档分数后，直接展示全部匹配结果；
@@ -119,8 +122,6 @@ pnpm clean
 # 重新生成 PWA 图标（修改 public/icon.svg 后执行）
 pnpm generate-icons
 
-# 重新生成专业组数据 JSON（修改 imgdata/data.xlsx 后执行）
-node scripts/gen-group-data.mjs
 ```
 
 开发服务器默认监听 `http://localhost:3000`。
@@ -138,11 +139,8 @@ gaokaoscore/
 ├── vite.config.ts          # Vite 配置（React + Tailwind + PWA 插件）
 ├── tsconfig.json           # TypeScript 配置
 ├── package.json            # 依赖与脚本
-├── imgdata/
-│   └── data.xlsx           # 原始招生数据（专业组/专业录取数据源）
 ├── scripts/
 │   ├── generate-pwa-icons.mjs  # 从 SVG 生成各尺寸 PWA 图标
-│   └── gen-group-data.mjs      # 解析 data.xlsx 生成专业录取 JSON（历史/物理）
 ├── public/
 │   ├── icon.svg            # PWA 主图标（SVG 矢量源）
 │   ├── favicon.svg         # 浏览器标签图标
@@ -162,6 +160,7 @@ gaokaoscore/
     ├── vite-env.d.ts       # PWA + Worker 虚拟模块类型声明
     ├── index.css           # 全局样式
     └── components/
+        ??? FavoritePanel.tsx    # ????????????CSV ???
         └── PWAUpdatePrompt.tsx  # PWA 更新/离线就绪提示组件
 ```
 
