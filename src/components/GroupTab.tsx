@@ -411,6 +411,7 @@ export default function GroupTab() {
         <div className="rounded-xl border border-white/10 overflow-hidden">
           {/* 表头（固定不滚动） */}
           <div className="grid grid-cols-[0.3fr_0.5fr_1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 bg-white/5 text-slate-300 font-bold border-b border-white/10 text-[0.6875rem] px-3 py-2">
+            <span className="text-center whitespace-nowrap">收藏</span>
             <span className="text-center whitespace-nowrap">梯队</span>
             <span className="whitespace-nowrap">院校名称</span>
             <span>专业名称</span>
