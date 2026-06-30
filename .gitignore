@@ -40,3 +40,4 @@ coverage/
 *.tgz
 *.lock-wscript
 *.tsbuildinfo
+.codebuddy
