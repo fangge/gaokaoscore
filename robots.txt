@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# 禁止爬取大型数据 JSON（非页面内容，浪费抓取预算）
+Disallow: /groupData-history.json
+Disallow: /groupData-physics.json
+
+Sitemap: https://gaokaoscore.mrfangge.com/sitemap.xml
