@@ -1,28 +1,101 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-sans: -apple-system,BlinkMacSystemFont,Microsoft Yahei,Segoe UI,Helvetica Neue,Helvetica,Tahoma,Arial,Hiragino Sans GB,Heiti SC,WenQuanYi Micro Hei,sans-serif;
-  --font-mono: -apple-system,BlinkMacSystemFont,Microsoft Yahei,Segoe UI,Helvetica Neue,Helvetica,Tahoma,Arial,Hiragino Sans GB,Heiti SC,WenQuanYi Micro Hei,sans-serif;
+  --font-sans: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Inter", system-ui, sans-serif;
+  --font-mono: "SF Mono", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* Apple Design Tokens */
+  --color-primary: #0066cc;
+  --color-primary-focus: #0071e3;
+  --color-primary-dark: #2997ff;
+  --color-ink: #1d1d1f;
+  --color-ink-muted-80: #333333;
+  --color-ink-muted-48: #7a7a7a;
+  --color-body-muted: #86868b;
+  --color-canvas: #ffffff;
+  --color-parchment: #f5f5f7;
+  --color-pearl: #fafafc;
+  --color-tile-1: #1d1d1f;
+  --color-tile-2: #2a2a2c;
+  --color-hairline: #d2d2d7;
+  --color-divider-soft: #e8e8ed;
+
+  /* Radius scale */
+  --radius-sm: 8px;
+  --radius-md: 11px;
+  --radius-lg: 18px;
 }
 
-/* 防止横向溢出产生横向滚动条
-   用 clip 而非 hidden：hidden 会把 overflow-y 从 visible 强制变为 auto，
-   导致 html 和 body 各产生一个纵向滚动条（双滚动条问题）；
-   clip 不会改变 overflow-y 的计算值 */
 html, body {
   overflow-x: clip;
-  background: #020617;
+  background: #f5f5f7;
 }
 
-.p-6 {
-    padding: calc(var(--spacing) * 3);
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.01em;
 }
 
-/* PC 端整体放大字号：基准 16px → 26px（约 +10px）
-   所有 rem 单位（含 Tailwind 字号与间距）随之成比例放大 */
-@media (min-width: 768px) {
-  html {
-    font-size: 18px;
-  }
+/* Apple product shadow — the only shadow in the system */
+.apple-product-shadow {
+  box-shadow: 0 5px 30px 0 rgba(0, 0,0, 0.12);
+}
+
+/* Frosted glass effect for sticky bars */
+.apple-frosted {
+  background: rgba(245, 245, 247, 0.8);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+
+/* Active press micro-interaction */
+.apple-press:active {
+  transform: scale(0.97);
+}
+
+/* Custom scrollbar — thin and unobtrusive */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #d2d2d7;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a6;
+}
+
+/* Number input — remove spinner */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Focus ring — Apple style */
+.apple-focus:focus-visible {
+  outline: 2px solid #0071e3;
+  outline-offset: 2px;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Selection color */
+::selection {
+  background: rgba(0, 102, 204, 0.15);
+  color: #1d1d1f;
 }

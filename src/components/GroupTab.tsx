@@ -4,8 +4,6 @@ import {
   Star,
   ArrowUpDown,
   X,
-  Activity,
-  Compass,
   ExternalLink
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -20,50 +18,34 @@ type GroupSubject = '历史' | '物理';
 type GroupLevel = '本科' | '专科';
 type SortBy = 'rankAsc' | 'rankDesc' | 'scoreDesc' | 'scoreAsc' | 'name';
 
-/**
- * 2025 院校专业录取数据 Tab
- * - 大数据集按科类分别加载，优先 IndexedDB 缓存，未命中再 fetch JSON
- * - 筛选/排序交由 Web Worker 离线计算，避免阻塞主线程
- * - 虚拟列表渲染；点击被截断单元格弹出气泡展示完整文本
- */
 export default function GroupTab() {
-  // 专业组 Tab 独立筛选状态
   const [groupLevel, setGroupLevel] = useState<GroupLevel>('本科');
   const [groupSubject, setGroupSubject] = useState<GroupSubject>('物理');
   const [groupSearch, setGroupSearch] = useState('');
   const [groupSortBy, setGroupSortBy] = useState<SortBy>('rankAsc');
-  // 专业组 Tab 独立的排位/分数筛选
-  const [groupInputMode, setGroupInputMode] = useState<'rank' | 'score'>(
-    'rank'
-  );
+  const [groupInputMode, setGroupInputMode] = useState<'rank' | 'score'>('rank');
   const [groupRankInput, setGroupRankInput] = useState<string>('');
   const [groupScoreInput, setGroupScoreInput] = useState<string>('');
-  // 专业组 Tab 独立的冲/稳/保 梯队筛选
   const [groupTier, setGroupTier] = useState<'all' | AdmissionTier>('all');
-  // 省/市筛选（默认广东省、广州市）
   const [groupProvince, setGroupProvince] = useState<string>('广东');
   const [groupCity, setGroupCity] = useState<string>('广州');
-  // 搜索防抖：groupSearch 为即时值（受控输入），debouncedGroupSearch 为实际参与筛选的值
   const [debouncedGroupSearch, setDebouncedGroupSearch] = useState<string>('');
   useEffect(() => {
     const t = setTimeout(() => setDebouncedGroupSearch(groupSearch), 300);
     return () => clearTimeout(t);
   }, [groupSearch]);
 
-  // 专业组大数据集：按科类分别加载，优先读取 IndexedDB 缓存，未命中再加载 JSON 并回写缓存
   const [groupData, setGroupData] = useState<MajorGroupData[] | null>(null);
   useEffect(() => {
     let cancelled = false;
     setGroupData(null);
     (async () => {
-      // 1. 优先尝试 IndexedDB 缓存
       const cached = await getCachedGroupData(groupSubject);
       if (cancelled) return;
       if (cached && cached.length > 0) {
         setGroupData(cached);
         return;
       }
-      // 2. 未命中则通过 fetch 加载 public 目录下的静态 JSON
       const file =
         groupSubject === '历史'
           ? '/groupData-history.json'
@@ -72,7 +54,6 @@ export default function GroupTab() {
       if (cancelled) return;
       const arr = (await res.json()) as MajorGroupData[];
       setGroupData(arr);
-      // 3. 回写 IndexedDB 缓存（不阻塞）
       setCachedGroupData(groupSubject, arr);
     })();
     return () => {
@@ -80,7 +61,6 @@ export default function GroupTab() {
     };
   }, [groupSubject]);
 
-  // 可选省/市列表（由已加载数据动态生成，须在 groupData 声明之后）
   const provinceOptions = React.useMemo(() => {
     if (!groupData) return ['广东'];
     return Array.from(
@@ -100,18 +80,13 @@ export default function GroupTab() {
     return cities;
   }, [groupData, groupProvince]);
 
-  // 专业组数据：筛选 + 排序交由 Web Worker 离线计算，避免阻塞主线程渲染与交互
   const GROUP_DEFAULT_LIMIT = 20;
-  const [filteredGroupData, setFilteredGroupData] = useState<MajorGroupData[]>(
-    []
-  );
-  // 点击被截断的院校/专业单元格时弹出气泡，展示完整文本
+  const [filteredGroupData, setFilteredGroupData] = useState<MajorGroupData[]>([]);
   const [cellPopover, setCellPopover] = useState<{
     x: number;
     y: number;
     text: string;
   } | null>(null);
-  // 单例 Worker（组件生命周期内复用）
   const workerRef = useRef<Worker | null>(null);
   if (!workerRef.current && typeof Worker !== 'undefined') {
     workerRef.current = new GroupFilterWorker();
@@ -149,7 +124,6 @@ export default function GroupTab() {
     groupProvince,
     groupCity
   ]);
-  // 组件卸载时终止 Worker
   useEffect(() => {
     return () => {
       workerRef.current?.terminate();
@@ -157,7 +131,6 @@ export default function GroupTab() {
     };
   }, []);
 
-  // 点击气泡外部或列表滚动时关闭气泡
   useEffect(() => {
     if (!cellPopover) return;
     const onDown = (e: MouseEvent) => {
@@ -166,276 +139,267 @@ export default function GroupTab() {
     };
     const close = () => setCellPopover(null);
     document.addEventListener('mousedown', onDown);
-    document.addEventListener('scroll', close, true); // capture：捕获虚拟列表内部滚动
+    document.addEventListener('scroll', close, true);
     return () => {
       document.removeEventListener('mousedown', onDown);
       document.removeEventListener('scroll', close, true);
     };
   }, [cellPopover]);
 
-  // ?????localStorage ????
   const [favorites, setFavorites] = useState<MajorGroupData[]>(() => loadFavorites());
   useEffect(() => { saveFavorites(favorites); }, [favorites]);
   const handleToggleFav = (g: MajorGroupData) => {
     setFavorites((prev) => toggleFavorite(prev, g));
   };
 
+  const selectClass = "bg-[#f5f5f7] border border-[#d2d2d7] rounded-[11px] py-1.5 px-3 text-[13px] font-semibold focus:outline-none focus:ring-2 focus:ring-[#0071e3]/30 text-[#1d1d1f] cursor-pointer transition-all [&_option]:bg-white [&_option]:text-[#1d1d1f]";
+
   return (
     <>
       <div
-        className="bg-white/5 backdrop-blur-2xl border border-white/10 rounded-3xl p-6 flex flex-col gap-6 shadow-2xl"
+        className="bg-white rounded-[18px] border border-[#d2d2d7] p-6 md:p-8 flex flex-col gap-6"
         id="tab_group"
       >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
           <div>
-            <h3 className="text-lg font-bold text-white">
-              2025 院校专业录取数据查询
+            <h3 className="text-[24px] font-semibold text-[#1d1d1f] tracking-tight">
+              2025年 院校专业录取数据查询
             </h3>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-[14px] text-[#86868b] mt-1">
               提取每个专业对应的专业录取人数、录取最低分与最低位次。每个专业单独展示。
             </p>
           </div>
         </div>
 
-        {/* Filters */}
-        <div className="flex flex-col md:flex-row flex-wrap gap-4 items-center justify-between">
-          <div className="flex flex-wrap items-center gap-2">
-            {/* 本科 / 专科 */}
-            <div className="grid grid-cols-2 p-1 bg-black/20 rounded-xl border border-white/5">
-              {(['本科', '专科'] as const).map((lv) => (
-                <button
-                  key={lv}
-                  onClick={() => setGroupLevel(lv)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
-                    groupLevel === lv
-                      ? 'bg-white/10 text-white border border-white/10'
-                      : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {lv}
-                </button>
-              ))}
-            </div>
-            {/* 科类 历史 / 物理 */}
-            <div className="grid grid-cols-2 p-1 bg-black/20 rounded-xl border border-white/5">
-              {(['物理', '历史'] as const).map((sub) => (
-                <button
-                  key={sub}
-                  onClick={() => setGroupSubject(sub)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${
-                    groupSubject === sub
-                      ? 'bg-white/10 text-white border border-white/10'
-                      : 'text-slate-400 hover:text-white hover:bg-white/5'
-                  }`}
-                >
-                  {sub}
-                </button>
-              ))}
-            </div>
-            {/* 所在省 / 城市 筛选 */}
-            <select
-              value={groupProvince}
-              onChange={(e) => {
-                setGroupProvince(e.target.value);
-                // 切换省份时城市重置为空（不限），由用户重新选择
-                setGroupCity('');
-              }}
-              className="bg-white/5 border border-white/20 rounded-xl py-1.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/30 text-slate-200 cursor-pointer hover:border-white/30 transition-all [&_option]:bg-slate-950 [&_option]:text-slate-100"
-              title="所在省"
-            >
-              <option value="">全部省份</option>
-              {provinceOptions.map((p) => (
-                <option key={p} value={p}>
-                  {p}
-                </option>
-              ))}
-            </select>
-            <select
-              value={groupCity}
-              onChange={(e) => setGroupCity(e.target.value)}
-              className="bg-white/5 border border-white/20 rounded-xl py-1.5 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/30 text-slate-200 cursor-pointer hover:border-white/30 transition-all [&_option]:bg-slate-950 [&_option]:text-slate-100"
-              title="城市"
-            >
-              <option value="">全部城市</option>
-              {cityOptions.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
-              ))}
-            </select>
-          </div>
+        {/* Filters — grouped multi-row layout */}
+        <div className="flex flex-col gap-3">
 
-          {/* 搜索 */}
-          <div className="w-full md:w-80 relative">
-            <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-            <input
-              type="text"
-              value={groupSearch}
-              onChange={(e) => setGroupSearch(e.target.value)}
-              placeholder="搜索院校 / 专业 / 专业组代码..."
-              className="w-full bg-white/5 border border-white/20 focus:border-blue-500/80 rounded-xl py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/30 text-slate-100 placeholder:text-slate-500 transition-all"
-            />
-            {groupSearch && (
-              <button
-                onClick={() => setGroupSearch('')}
-                className="absolute right-3 top-3 text-slate-400 hover:text-white cursor-pointer"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            )}
-          </div>
-
-          {/* 排序 */}
-          <div className="flex items-center gap-1">
-            <ArrowUpDown className="w-3.5 h-3.5 text-slate-400" />
-            <select
-              value={groupSortBy}
-              onChange={(e) => setGroupSortBy(e.target.value as SortBy)}
-              className="bg-white/5 border border-white/20 rounded-xl py-2 px-3 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500/30 text-slate-200 cursor-pointer hover:border-white/30 transition-all [&_option]:bg-slate-950 [&_option]:text-slate-100"
-            >
-              <option value="rankAsc">按最低排位 (升序 - 最好在前)</option>
-              <option value="rankDesc">按最低排位 (降序 - 最易在前)</option>
-              <option value="scoreDesc">按最低分 (降序 - 最高在前)</option>
-              <option value="scoreAsc">按最低分 (升序 - 最低在前)</option>
-              <option value="name">按院校名称排序</option>
-            </select>
-          </div>
-        </div>
-
-        {/* 排位 / 分数筛选（专业组 Tab 独立） */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row md:items-center gap-4 shadow-md">
-          <div className="flex items-center gap-2">
-            <Activity className="w-4 h-4 text-indigo-400 animate-pulse" />
-            <span className="text-xs font-bold text-slate-300">
-              按全省排位 / 投档分筛选
-            </span>
-          </div>
-
-          <div className="flex rounded-xl bg-black/20 border border-white/5 p-1 shrink-0">
-            <button
-              onClick={() => setGroupInputMode('rank')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${groupInputMode === 'rank' ? 'bg-white/10 text-white border border-white/10 shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-            >
-              全省排位
-            </button>
-            <button
-              onClick={() => setGroupInputMode('score')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${groupInputMode === 'score' ? 'bg-white/10 text-white border border-white/10 shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-            >
-              投档分数
-            </button>
-          </div>
-
-          <div className="flex-1 flex items-center gap-3">
-            {groupInputMode === 'rank' ? (
-              <div className="relative w-full md:w-64">
-                <input
-                  type="number"
-                  value={groupRankInput}
-                  onChange={(e) => setGroupRankInput(e.target.value)}
-                  placeholder="请输入全省位次..."
-                  className="w-full bg-white/5 border border-white/20 focus:border-blue-500/80 rounded-xl py-2 px-3 text-base font-bold text-blue-400 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all"
-                  min="1"
-                  pattern="[0-9]*"
-                />
-                <span className="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">
-                  名
-                </span>
+          {/* Row: 批次 + 科类 */}
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[13px] font-semibold text-[#86868b]">批次:</span>
+              <div className="grid grid-cols-2 p-1 bg-[#f5f5f7] rounded-[11px]">
+                {(['本科', '专科'] as const).map((lv) => (
+                  <button
+                    key={lv}
+                    onClick={() => setGroupLevel(lv)}
+                    className={`px-3 py-1.5 rounded-[8px] text-[13px] font-semibold cursor-pointer transition-all apple-press ${groupLevel === lv
+                        ? 'bg-white text-[#1d1d1f] shadow-sm'
+                        : 'text-[#86868b] hover:text-[#1d1d1f]'
+                      }`}
+                  >
+                    {lv}
+                  </button>
+                ))}
               </div>
-            ) : (
-              <div className="relative w-full md:w-64">
-                <input
-                  type="number"
-                  value={groupScoreInput}
-                  onChange={(e) => setGroupScoreInput(e.target.value)}
-                  placeholder="请输入高考分数..."
-                  className="w-full bg-white/5 border border-white/20 focus:border-blue-500/80 rounded-xl py-2 px-3 text-base font-bold text-blue-400 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all"
-                  min="100"
-                  max="750"
-                />
-                <span className="absolute right-3 top-2.5 text-xs text-slate-400 font-medium">
-                  分
-                </span>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[13px] font-semibold text-[#86868b]">科类:</span>
+              <div className="grid grid-cols-2 p-1 bg-[#f5f5f7] rounded-[11px]">
+                {(['物理', '历史'] as const).map((sub) => (
+                  <button
+                    key={sub}
+                    onClick={() => setGroupSubject(sub)}
+                    className={`px-3 py-1.5 rounded-[8px] text-[13px] font-semibold cursor-pointer transition-all apple-press ${groupSubject === sub
+                        ? 'bg-white text-[#1d1d1f] shadow-sm'
+                        : 'text-[#86868b] hover:text-[#1d1d1f]'
+                      }`}
+                  >
+                    {sub}
+                  </button>
+                ))}
               </div>
-            )}
-          </div>
-
-          <span className="text-[0.6875rem] text-slate-400 md:text-right">
-            输入后自动划分冲/稳/保梯队：录取最低分 ≤ 我的分数，或 最低位次 ≥
-            我的排位 × 0.85
-          </span>
-        </div>
-
-        {/* 冲/稳/保 梯队筛选（输入排位或分数后生效） */}
-        <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl p-4 flex flex-col md:flex-row md:items-center gap-4 shadow-md">
-          <div className="flex items-center gap-2 shrink-0">
-            <Compass className="w-4 h-4 text-indigo-400" />
-            <span className="text-xs font-bold text-slate-300">
-              志愿梯队筛选
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-1 bg-black/20 p-1 rounded-xl border border-white/5 shrink-0">
-            <button
-              onClick={() => setGroupTier('all')}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all ${groupTier === 'all' ? 'bg-white/10 text-white border border-white/10 shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
-            >
-              全部
-            </button>
-            {tierOrder.map((t) => (
-              <button
-                key={t}
-                onClick={() => setGroupTier(groupTier === t ? 'all' : t)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-all flex items-center gap-1 ${groupTier === t ? 'bg-white/10 text-white border border-white/10 shadow-md' : 'text-slate-400 hover:text-white hover:bg-white/5'}`}
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[13px] font-semibold text-[#86868b]">地区:</span>
+              <select
+                value={groupProvince}
+                onChange={(e) => {
+                  setGroupProvince(e.target.value);
+                  setGroupCity('');
+                }}
+                className={selectClass}
+                title="所在省"
               >
-                <span
-                  className={`w-1.5 h-1.5 rounded-full ${tierMeta[t].dotClass}`}
-                />
-                {t}
-              </button>
-            ))}
+                <option value="">全部省份</option>
+                {provinceOptions.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+              <select
+                value={groupCity}
+                onChange={(e) => setGroupCity(e.target.value)}
+                className={selectClass}
+                title="城市"
+              >
+                <option value="">全部城市</option>
+                {cityOptions.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-[0.825rem] text-slate-400">
+
+          {/* Row: 排位/分数输入 */}
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[13px] font-semibold text-[#86868b]">{groupInputMode === 'rank' ? '排位:' : '分数:'}</span>
+              <div className="flex p-1 bg-[#f5f5f7] rounded-full">
+                <button
+                  onClick={() => setGroupInputMode('rank')}
+                  className={`px-3 py-1.5 rounded-full text-[13px] font-semibold transition-all cursor-pointer apple-press ${groupInputMode === 'rank' ? 'bg-[#1d1d1f] text-white' : 'text-[#86868b] hover:text-[#1d1d1f]'}`}
+                >
+                  排位
+                </button>
+                <button
+                  onClick={() => setGroupInputMode('score')}
+                  className={`px-3 py-1.5 rounded-full text-[13px] font-semibold transition-all cursor-pointer apple-press ${groupInputMode === 'score' ? 'bg-[#1d1d1f] text-white' : 'text-[#86868b] hover:text-[#1d1d1f]'}`}
+                >
+                  分数
+                </button>
+              </div>
+              {groupInputMode === 'rank' ? (
+                <div className="relative w-44">
+                  <input
+                    type="number"
+                    value={groupRankInput}
+                    onChange={(e) => setGroupRankInput(e.target.value)}
+                    placeholder="输入位次"
+                    className="w-full bg-[#f5f5f7] border border-transparent focus:border-[#0066cc] rounded-full py-1.5 px-4 text-[14px] font-semibold text-[#1d1d1f] focus:outline-none focus:ring-2 focus:ring-[#0071e3]/30 transition-all"
+                    min="1"
+                    pattern="[0-9]*"
+                  />
+                  <span className="absolute right-3.5 top-1.5 text-[12px] text-[#86868b] font-medium">名</span>
+                </div>
+              ) : (
+                <div className="relative w-44">
+                  <input
+                    type="number"
+                    value={groupScoreInput}
+                    onChange={(e) => setGroupScoreInput(e.target.value)}
+                    placeholder="输入分数"
+                    className="w-full bg-[#f5f5f7] border border-transparent focus:border-[#0066cc] rounded-full py-1.5 px-4 text-[14px] font-semibold text-[#1d1d1f] focus:outline-none focus:ring-2 focus:ring-[#0071e3]/30 transition-all"
+                    min="100"
+                    max="750"
+                  />
+                  <span className="absolute right-3.5 top-1.5 text-[12px] text-[#86868b] font-medium">分</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Row: 梯队筛选 */}
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[13px] font-semibold text-[#86868b]">梯队:</span>
+              <div className="flex items-center gap-1 p-1 bg-[#f5f5f7] rounded-full">
+                <button
+                  onClick={() => setGroupTier('all')}
+                  className={`px-3 py-1.5 rounded-full text-[13px] font-semibold cursor-pointer transition-all apple-press ${groupTier === 'all' ? 'bg-[#1d1d1f] text-white' : 'text-[#86868b] hover:text-[#1d1d1f]'}`}
+                >
+                  全部
+                </button>
+                {tierOrder.map((t) => (
+                  <button
+                    key={t}
+                    onClick={() => setGroupTier(groupTier === t ? 'all' : t)}
+                    className={`px-3 py-1.5 rounded-full text-[13px] font-semibold cursor-pointer transition-all apple-press flex items-center gap-1 ${groupTier === t ? 'bg-[#1d1d1f] text-white' : 'text-[#86868b] hover:text-[#1d1d1f]'}`}
+                  >
+                    <span className={`w-1.5 h-1.5 rounded-full ${tierMeta[t].dotClass}`} />
+                    {t}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* 梯队说明 */}
+          <div className="flex flex-wrap gap-x-6 gap-y-2 text-[12px] text-[#86868b]">
             {tierOrder.map((t) => (
-              <span key={t} className="flex items-center gap-1">
-                <span
-                  className={`w-1.5 h-1.5 rounded-full ${tierMeta[t].dotClass}`}
-                />
+              <span key={t} className="flex items-center gap-1.5">
+                <span className={`w-1.5 h-1.5 rounded-full ${tierMeta[t].dotClass}`} />
                 <strong className={tierMeta[t].countClass}>{t}</strong>
-                <span>：{tierMeta[t].proportion}</span>
+                <span>：{tierMeta[t].desc}</span>
               </span>
             ))}
           </div>
+
+          {/* Row: 排序 + 搜索 */}
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-2 shrink-0">
+              <span className="text-[13px] font-semibold text-[#86868b]">排序:</span>
+              <div className="flex items-center gap-1.5">
+                <ArrowUpDown className="w-3.5 h-3.5 text-[#86868b]" />
+                <select
+                  value={groupSortBy}
+                  onChange={(e) => setGroupSortBy(e.target.value as SortBy)}
+                  className={selectClass}
+                >
+                  <option value="rankAsc">排位升序</option>
+                  <option value="rankDesc">排位降序</option>
+                  <option value="scoreDesc">分数降序</option>
+                  <option value="scoreAsc">分数升序</option>
+                  <option value="name">名称排序</option>
+                </select>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 flex-1 min-w-[240px]">
+              <span className="text-[13px] font-semibold text-[#86868b] shrink-0">搜索:</span>
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-[#86868b] absolute left-4 top-2.5" />
+                <input
+                  type="text"
+                  value={groupSearch}
+                  onChange={(e) => setGroupSearch(e.target.value)}
+                  placeholder="搜索院校 / 专业 / 专业组代码"
+                  className="w-full bg-[#f5f5f7] border border-transparent focus:border-[#0066cc] rounded-full py-1.5 pl-10 pr-4 text-[14px] focus:outline-none focus:ring-2 focus:ring-[#0071e3]/30 text-[#1d1d1f] placeholder:text-[#86868b] transition-all"
+                />
+                {groupSearch && (
+                  <button
+                    onClick={() => setGroupSearch('')}
+                    className="absolute right-3 top-2.5 text-[#86868b] hover:text-[#1d1d1f] cursor-pointer"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
 
-        {/* 专业组数据表：react-virtualized 虚拟列表，仅渲染可见 DOM 节点 */}
-        <div className="rounded-xl border border-white/10 overflow-hidden">
-          {/* 表头（固定不滚动） */}
-          <div className="grid grid-cols-[0.3fr_0.5fr_1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 bg-white/5 text-slate-300 font-bold border-b border-white/10 text-[0.6875rem] px-3 py-2">
+        {/* 专业组数据表 */}
+        <div className="rounded-[18px] border border-[#d2d2d7] overflow-hidden">
+          {/* Desktop table header */}
+          <div className="hidden md:grid grid-cols-[0.3fr_0.5fr_1.5fr_2.5fr_0.8fr_1fr_1fr_1.1fr_1.1fr_0.8fr] gap-1 bg-[#f5f5f7] text-[#1d1d1f] font-semibold border-b border-[#d2d2d7] text-[12px] px-3 py-2.5">
             <span className="text-center whitespace-nowrap">收藏</span>
             <span className="text-center whitespace-nowrap">梯队</span>
             <span className="whitespace-nowrap">院校名称</span>
             <span>专业名称</span>
-            <span className="text-center whitespace-nowrap">专业组代码</span>
-            <span className="text-center whitespace-nowrap">
-              院校专业组代码
-            </span>
-            <span className="text-center whitespace-nowrap">批次</span>
-            <span className="text-center whitespace-nowrap">
-              专业录取最低分
-            </span>
-            <span className="text-center whitespace-nowrap">专业最低位次</span>
+            <span className="text-center whitespace-nowrap">录取最低分</span>
+            <span className="text-center whitespace-nowrap">最低位次</span>
             <span className="text-center whitespace-nowrap">录取人数</span>
+            <span className="text-center whitespace-nowrap">专业组代码</span>
+            <span className="text-center whitespace-nowrap">院校专业组代码</span>
+            <span className="text-center whitespace-nowrap">批次</span>
+
           </div>
 
           {!groupData ? (
-            <div className="p-8 text-center text-slate-400 text-xs">
+            <div className="p-8 text-center text-[#86868b] text-[13px]">
               正在加载专业录取数据，请稍候…
             </div>
           ) : filteredGroupData.length === 0 ? (
-            <div className="p-8 text-center text-slate-400 text-xs">
+            <div className="p-8 text-center text-[#86868b] text-[13px]">
               未找到匹配的院校专业组，请调整筛选条件或搜索关键词。
             </div>
           ) : (
+            <>
+            {/* Desktop: virtualized table */}
+            <div className="hidden md:block">
             <div style={{ height: 600 }}>
               <AutoSizer>
                 {({ width, height }) => (
@@ -443,14 +407,14 @@ export default function GroupTab() {
                     width={width}
                     height={height}
                     rowCount={filteredGroupData.length}
-                    rowHeight={52}
+                    rowHeight={56}
                     rowRenderer={(props: ListRowProps) => {
                       const g = filteredGroupData[props.index];
                       return (
                         <div
                           key={props.key}
                           style={props.style}
-                          className="grid grid-cols-[0.3fr_0.5fr_1.5fr_2.5fr_0.8fr_1fr_1fr_1fr_1fr_0.8fr] gap-1 items-center border-b border-white/5 hover:bg-white/5 transition-all text-[0.6875rem] px-3"
+                          className="grid grid-cols-[0.3fr_0.5fr_1.5fr_2.5fr_0.8fr_1fr_1fr_1.1fr_1.1fr_0.8fr] gap-1 items-center border-b border-[#e8e8ed] hover:bg-[#f5f5f7] transition-all text-[13px] text-[#1d1d1f] px-3"
                         >
                           <span className="text-center">
                             {(() => {
@@ -462,7 +426,7 @@ export default function GroupTab() {
                               return (
                                 <button
                                   onClick={() => handleToggleFav(g)}
-                                  className={`cursor-pointer transition-colors ${fav ? 'text-amber-400 hover:text-amber-300' : 'text-slate-600 hover:text-amber-400'}`}
+                                  className={`cursor-pointer transition-colors ${fav ? 'text-[#0066cc] hover:text-[#0055aa]' : 'text-[#d2d2d7] hover:text-[#0066cc]'}`}
                                   title={fav ? '取消收藏' : '收藏'}
                                 >
                                   <Star className="w-3.5 h-3.5" fill={fav ? 'currentColor' : 'none'} />
@@ -472,21 +436,19 @@ export default function GroupTab() {
                           </span>
                           <span className="text-center">
                             {g.tier ? (
-                              <span
-                                className={`text-[0.5625rem] px-1 py-0.5 rounded font-bold ${tierMeta[g.tier].badgeClass}`}
-                              >
+                              <span className={`text-[11px] px-1.5 py-0.5 rounded-full font-semibold ${tierMeta[g.tier].badgeClass}`}>
                                 {g.tier}
                               </span>
                             ) : (
-                              <span className="text-slate-600">—</span>
+                              <span className="text-[#d2d2d7]">—</span>
                             )}
                           </span>
                           <span
-                            className="font-bold text-white truncate cursor-pointer hover:text-blue-300 transition-colors"
+                            className="font-semibold text-[#1d1d1f] truncate cursor-pointer hover:text-[#0066cc] transition-colors"
                             title={g.school}
                             onClick={(e) => {
                               const el = e.currentTarget as HTMLElement;
-                              if (el.scrollWidth <= el.clientWidth) return; // 未截断不弹
+                              if (el.scrollWidth <= el.clientWidth) return;
                               const rect = el.getBoundingClientRect();
                               setCellPopover({
                                 x: rect.left,
@@ -498,11 +460,11 @@ export default function GroupTab() {
                             {g.school}
                           </span>
                           <span
-                            className="text-slate-300 truncate cursor-pointer hover:text-blue-300 transition-colors"
+                            className="text-[#1d1d1f] truncate cursor-pointer hover:text-[#0066cc] transition-colors"
                             title={g.majorName}
                             onClick={(e) => {
                               const el = e.currentTarget as HTMLElement;
-                              if (el.scrollWidth <= el.clientWidth) return; // 未截断不弹
+                              if (el.scrollWidth <= el.clientWidth) return;
                               const rect = el.getBoundingClientRect();
                               setCellPopover({
                                 x: rect.left,
@@ -518,34 +480,32 @@ export default function GroupTab() {
                                 rel="noopener noreferrer"
                                 title="查看招生章程"
                                 onClick={(e) => e.stopPropagation()}
-                                className="inline-flex items-center justify-center shrink-0 text-slate-400 hover:text-blue-400 transition-colors align-[-3px] mr-0.5"
+                                className="inline-flex items-center justify-center shrink-0 text-[#86868b] hover:text-[#0066cc] transition-colors align-[-3px] mr-0.5"
                               >
                                 <ExternalLink className="w-3.5 h-3.5" />
                               </a>
                             )}
                             {g.majorName}
                           </span>
-                          <span className="text-center font-mono text-slate-200">
-                            {g.groupCode}
-                          </span>
-                          <span className="text-center font-mono text-slate-200">
-                            {g.schoolGroupCode}
-                          </span>
-                          <span
-                            className="text-center text-slate-300 truncate"
-                            title={g.batch}
-                          >
-                            {g.batch}
-                          </span>
-                          <span className="text-center font-bold text-blue-400 bg-blue-500/5">
+                          <span className="text-center font-bold text-[#0066cc] text-[16px]">
                             {g.minScore}
                           </span>
-                          <span className="text-center font-semibold text-slate-200 bg-blue-500/5">
+                          <span className="text-center font-bold text-[#0066cc] text-[16px]">
                             {g.minRank.toLocaleString()}
                           </span>
-                          <span className="text-center font-mono text-emerald-300">
+                          <span className="text-center text-[#1d1d1f]">
                             {g.admissionCount}
                           </span>
+                          <span className="text-center text-[#1d1d1f]">
+                            {g.groupCode}
+                          </span>
+                          <span className="text-center text-[#1d1d1f]">
+                            {g.schoolGroupCode}
+                          </span>
+                          <span className="text-center text-[#1d1d1f] truncate" title={g.batch}>
+                            {g.batch}
+                          </span>
+
                         </div>
                       );
                     }}
@@ -554,11 +514,85 @@ export default function GroupTab() {
                 )}
               </AutoSizer>
             </div>
+            </div>
+
+            {/* Mobile: card layout */}
+            <div className="md:hidden flex flex-col gap-2 p-3 max-h-[600px] overflow-y-auto">
+              {filteredGroupData.map((g, i) => {
+                const fav = favorites.some(
+                  (f) =>
+                    f.schoolGroupCode === g.schoolGroupCode &&
+                    f.majorCode === g.majorCode
+                );
+                return (
+                  <div
+                    key={`${g.schoolGroupCode}-${g.majorCode}-${i}`}
+                    className="bg-white rounded-xl border border-[#e8e8ed] p-3.5 flex flex-col gap-2.5"
+                  >
+                    {/* Header: 收藏 + 梯队 + school */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleToggleFav(g)}
+                        className={`shrink-0 cursor-pointer transition-colors ${
+                          fav ? 'text-[#0066cc] hover:text-[#0055aa]' : 'text-[#d2d2d7] hover:text-[#0066cc]'
+                        }`}
+                      >
+                        <Star className="w-4 h-4" fill={fav ? 'currentColor' : 'none'} />
+                      </button>
+                      {g.tier && (
+                        <span className={`shrink-0 text-[11px] px-1.5 py-0.5 rounded-full font-semibold ${tierMeta[g.tier].badgeClass}`}>
+                          {g.tier}
+                        </span>
+                      )}
+                      <span className="font-semibold text-[14px] text-[#1d1d1f] leading-snug flex-1">
+                        {g.school}
+                      </span>
+                    </div>
+
+                    {/* 专业名称 */}
+                    <div className="flex items-start gap-1">
+                      {g.schoolUrl && (
+                        <a
+                          href={g.schoolUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="shrink-0 text-[#86868b] hover:text-[#0066cc] transition-colors mt-0.5"
+                        >
+                          <ExternalLink className="w-3.5 h-3.5" />
+                        </a>
+                      )}
+                      <span className="text-[13px] text-[#1d1d1f] leading-snug break-all">
+                        {g.majorName}
+                      </span>
+                    </div>
+
+                    {/* Key metrics: 录取最低分 + 最低位次 */}
+                    <div className="flex items-center gap-3">
+                      <div className="flex flex-col items-center bg-[#f5f5f7] rounded-xl px-4 py-2.5 flex-1">
+                        <span className="text-[11px] text-[#86868b] font-medium">录取最低分</span>
+                        <span className="text-[18px] font-bold text-[#0066cc]">{g.minScore}</span>
+                      </div>
+                      <div className="flex flex-col items-center bg-[#f5f5f7] rounded-xl px-4 py-2.5 flex-1">
+                        <span className="text-[11px] text-[#86868b] font-medium">最低位次</span>
+                        <span className="text-[18px] font-bold text-[#0066cc]">{g.minRank.toLocaleString()}</span>
+                      </div>
+                    </div>
+
+                    {/* Secondary info */}
+                    <div className="flex items-center gap-3 text-[12px] text-[#86868b] flex-wrap">
+                      <span>专业组代码: <span className="text-[#1d1d1f] font-medium">{g.groupCode}</span></span>
+                      <span>录取人数: <span className="text-[#1d1d1f] font-medium">{g.admissionCount}</span></span>
+                      <span className="truncate">批次: <span className="text-[#1d1d1f] font-medium">{g.batch}</span></span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            </>
           )}
         </div>
       </div>
 
-      {/* ???? */}
       <FavoritePanel
         favorites={favorites}
         onRemove={(g) => handleToggleFav(g)}
@@ -574,7 +608,7 @@ export default function GroupTab() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.96 }}
             transition={{ duration: 0.14 }}
-            className="fixed z-[60] max-w-[280px] bg-slate-900/95 backdrop-blur-xl border border-white/15 rounded-xl px-3 py-2 text-[0.6875rem] leading-relaxed text-slate-100 shadow-2xl"
+            className="fixed z-[60] max-w-[280px] bg-[#1d1d1f] rounded-[11px] px-3 py-2 text-[12px] leading-relaxed text-white"
             style={{
               left: Math.min(
                 cellPopover.x,
