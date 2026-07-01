@@ -38,8 +38,8 @@ export default function App() {
   // const [subject, setSubject] = useState<Subject>('physics');
 
   // 跨 Tab 共享：对比院校列表（recommend 写入、compare 展示）
-  const [comparedSchools, setComparedSchools] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<TabKey>('group');
+  // const [comparedSchools, setComparedSchools] = useState<string[]>([]);
+  // const [activeTab, setActiveTab] = useState<TabKey>('group');
 
   // Toggle school comparison
   // const handleToggleCompare = (schoolName: string) => {
@@ -163,9 +163,9 @@ export default function App() {
             <MacroTab currentDataset={currentDataset} />
           )} */}
 
-          {activeTab === 'group' && (
-            <GroupTab />
-          )}
+
+          <GroupTab />
+
 
         </div>
 
