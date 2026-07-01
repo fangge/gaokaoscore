@@ -27,7 +27,7 @@ import {
 import PWAUpdatePrompt from './components/PWAUpdatePrompt';
 // import RecommendTab from './components/RecommendTab';
 // import CompareTab from './components/CompareTab';
-import MacroTab from './components/MacroTab';
+// import MacroTab from './components/MacroTab';
 import GroupTab from './components/GroupTab';
 
 type TabKey = 'recommend' | 'compare' | 'macro' | 'group';
